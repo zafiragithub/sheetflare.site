@@ -109,11 +109,20 @@
         @media (min-width: 768px) { .grid-products { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .grid-products { grid-template-columns: repeat(3, 1fr); } }
 
-        .prod-card { background-color: white; padding: 2rem; border-radius: 2rem; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.3s; }
+        /* PRODUCT CARD WITH IMAGE */
+        .prod-card { background-color: white; border-radius: 1.5rem; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.3s; overflow: hidden; }
         .prod-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-0.5rem); }
-        .prod-badge { display: inline-block; background-color: #ecfdf5; color: #10b981; padding: 0.375rem 1rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; width: max-content; }
+        
+        .prod-img-wrap { width: 100%; height: 12rem; background-color: #f8fafc; position: relative; overflow: hidden; border-bottom: 1px solid #f1f5f9; }
+        .prod-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .prod-card:hover .prod-img { transform: scale(1.05); }
+        
+        .prod-badge-abs { position: absolute; top: 1rem; left: 1rem; z-index: 10; background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: #10b981; padding: 0.375rem 1rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        
+        .prod-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
         .prod-title { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; line-height: 1.2; }
         .prod-desc { font-size: 0.875rem; color: #64748b; margin-bottom: 2rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
+        
         .prod-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #f8fafc; }
         .prod-price { font-size: 1.125rem; font-weight: 900; color: #1e293b; }
         .btn-detail { background-color: #0f172a; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.75rem; transition: background-color 0.3s; box-shadow: 0 10px 15px -3px rgba(226, 232, 240, 0.5); }
@@ -123,17 +132,19 @@
         .skel-loader { text-align: center; grid-column: 1 / -1; padding: 1rem 0; margin-bottom: 0.5rem; }
         .skel-loader-text { color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         
-        .skel-card { background-color: white; padding: 2rem; border-radius: 2rem; border: 1px solid #f1f5f9; display: flex; flex-direction: column; height: 100%; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .skeleton { background-color: #f1f5f9; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .skel-card { background-color: white; border-radius: 1.5rem; border: 1px solid #f1f5f9; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
         .skel-card.hidden-md { display: none; } @media (min-width: 768px) { .skel-card.hidden-md { display: flex; } }
         .skel-card.hidden-lg { display: none; } @media (min-width: 1024px) { .skel-card.hidden-lg { display: flex; } }
         
-        .skel-badge { height: 1.5rem; background-color: #f1f5f9; border-radius: 9999px; width: 6rem; margin-bottom: 1.5rem; }
-        .skel-title { height: 1.5rem; background-color: #f1f5f9; border-radius: 0.25rem; width: 75%; margin-bottom: 1rem; }
-        .skel-line { height: 1rem; background-color: #f1f5f9; border-radius: 0.25rem; width: 100%; margin-bottom: 0.5rem; }
+        .skel-img { height: 12rem; width: 100%; border-bottom: 1px solid #f1f5f9; }
+        .skel-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .skel-title { height: 1.5rem; border-radius: 0.25rem; width: 75%; margin-bottom: 1rem; }
+        .skel-line { height: 1rem; border-radius: 0.25rem; width: 100%; margin-bottom: 0.5rem; }
         .skel-line.short { width: 83.333333%; margin-bottom: 2rem; flex: 1; }
         .skel-footer { display: flex; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid #f8fafc; }
-        .skel-price { height: 1.5rem; background-color: #f1f5f9; border-radius: 0.25rem; width: 6rem; }
-        .skel-btn { height: 2.5rem; background-color: #f1f5f9; border-radius: 0.75rem; width: 7rem; }
+        .skel-price { height: 1.5rem; border-radius: 0.25rem; width: 6rem; }
+        .skel-btn { height: 2.5rem; border-radius: 0.75rem; width: 7rem; }
 
         /* Footer */
         .footer { background-color: white; border-top: 1px solid #e2e8f0; padding-top: 3rem; margin-top: 5rem; }
@@ -348,35 +359,41 @@
                 <div class="skel-loader"><p class="skel-loader-text">Menarik Data Produk Terbaru...</p></div>
                 
                 <div class="skel-card">
-                    <div class="skel-badge"></div>
-                    <div class="skel-title"></div>
-                    <div class="skel-line"></div>
-                    <div class="skel-line short"></div>
-                    <div class="skel-footer">
-                        <div class="skel-price"></div>
-                        <div class="skel-btn"></div>
+                    <div class="skel-img skeleton"></div>
+                    <div class="skel-body">
+                        <div class="skel-title skeleton"></div>
+                        <div class="skel-line skeleton"></div>
+                        <div class="skel-line skeleton short"></div>
+                        <div class="skel-footer">
+                            <div class="skel-price skeleton"></div>
+                            <div class="skel-btn skeleton"></div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="skel-card hidden-md">
-                    <div class="skel-badge"></div>
-                    <div class="skel-title"></div>
-                    <div class="skel-line"></div>
-                    <div class="skel-line short"></div>
-                    <div class="skel-footer">
-                        <div class="skel-price"></div>
-                        <div class="skel-btn"></div>
+                    <div class="skel-img skeleton"></div>
+                    <div class="skel-body">
+                        <div class="skel-title skeleton"></div>
+                        <div class="skel-line skeleton"></div>
+                        <div class="skel-line skeleton short"></div>
+                        <div class="skel-footer">
+                            <div class="skel-price skeleton"></div>
+                            <div class="skel-btn skeleton"></div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="skel-card hidden-lg">
-                    <div class="skel-badge"></div>
-                    <div class="skel-title"></div>
-                    <div class="skel-line"></div>
-                    <div class="skel-line short"></div>
-                    <div class="skel-footer">
-                        <div class="skel-price"></div>
-                        <div class="skel-btn"></div>
+                    <div class="skel-img skeleton"></div>
+                    <div class="skel-body">
+                        <div class="skel-title skeleton"></div>
+                        <div class="skel-line skeleton"></div>
+                        <div class="skel-line skeleton short"></div>
+                        <div class="skel-footer">
+                            <div class="skel-price skeleton"></div>
+                            <div class="skel-btn skeleton"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -460,14 +477,23 @@
             }
             container.innerHTML = [...products].reverse().map((p) => {
                 const targetLink = (p.lp_url && p.lp_url !== "") ? `/${p.lp_url.replace(/^\/|\/$/g, '').trim()}` : `/checkout?id=${p.id}`;
+                
+                // Set default image jika gambar produk dari Sheets (kolom N) tidak ada
+                const imgUrl = p.gambar || 'https://ik.imagekit.io/maihfdgfn5/download.png';
+                
                 return `
-                <div class="prod-card">
-                    <div><span class="prod-badge">PRODUK DIGITAL</span></div>
-                    <h3 class="prod-title">${p.nama}</h3>
-                    <p class="prod-desc">${p.deskripsi || 'Akses materi premium kami di sini.'}</p>
-                    <div class="prod-footer">
-                        <span class="prod-price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
-                        <a href="${targetLink}" class="btn-detail">Lihat Detail</a>
+                <div class="prod-card" style="padding: 0;">
+                    <div class="prod-img-wrap">
+                        <span class="prod-badge-abs">PRODUK DIGITAL</span>
+                        <img src="${imgUrl}" alt="${p.nama}" class="prod-img" loading="lazy">
+                    </div>
+                    <div class="prod-body">
+                        <h3 class="prod-title">${p.nama}</h3>
+                        <p class="prod-desc">${p.deskripsi || 'Akses materi premium kami di sini.'}</p>
+                        <div class="prod-footer">
+                            <span class="prod-price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
+                            <a href="${targetLink}" class="btn-detail">Lihat Detail</a>
+                        </div>
                     </div>
                 </div>
                 `;
@@ -582,7 +608,15 @@
                                 const katalogData = [];
                                 json.table.rows.forEach(row => {
                                     const c = row.c;
-                                    katalogData.push({ id: c[0]?c[0].v:'', nama: c[1]?c[1].v:'', deskripsi: c[2]?c[2].v:'', harga: c[4]?(c[4].f||c[4].v):0, lp_url: c[6]?c[6].v:'' });
+                                    // Deteksi Gambar (Diasumsikan pengguna akan menaruh link gambar di Kolom N / Index 13 pada Sheet Access_Rules)
+                                    katalogData.push({ 
+                                        id: c[0]?c[0].v:'', 
+                                        nama: c[1]?c[1].v:'', 
+                                        deskripsi: c[2]?c[2].v:'', 
+                                        harga: c[4]?(c[4].f||c[4].v):0, 
+                                        lp_url: c[6]?c[6].v:'',
+                                        gambar: c[13]?c[13].v:''
+                                    });
                                 });
                                 const freshCatStr = JSON.stringify(katalogData);
                                 if (cachedCatStr !== freshCatStr) {

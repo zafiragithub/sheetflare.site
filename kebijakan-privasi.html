@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kebijakan Privasi - SheetFlare</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <style>
+        /* === CSS RESET & GLOBAL === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.625;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Layout */
+        .container {
+            max-width: 56rem; /* 896px */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 4rem 1.5rem;
+        }
+
+        /* Card Wrapper */
+        .card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 2.5rem;
+            border: 1px solid #f1f5f9; /* slate-100 */
+            box-shadow: 0 25px 50px -12px rgba(226, 232, 240, 0.5); /* shadow-2xl slate-200/50 */
+        }
+        @media (min-width: 768px) {
+            .card { padding: 3rem; } /* md:p-12 */
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9; /* slate-100 */
+            padding-bottom: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .header-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 4rem; height: 4rem;
+            background-color: #ecfdf5; /* emerald-50 */
+            color: #10b981; /* emerald-600 */
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .header-icon-wrap svg { width: 2rem; height: 2rem; }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 900;
+            color: #0f172a; /* slate-900 */
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+        }
+        @media (min-width: 768px) { .page-title { font-size: 3rem; } } /* md:text-5xl */
+        
+        .page-subtitle {
+            color: #64748b; /* slate-500 */
+            font-weight: 500;
+        }
+        .page-subtitle strong { color: #334155; /* slate-700 */ }
+
+        /* Intro Box */
+        .intro-box {
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 3rem;
+            color: #475569; /* slate-600 */
+            font-size: 0.875rem;
+        }
+        @media (min-width: 768px) { .intro-box { font-size: 1rem; } }
+        .intro-box strong { color: #1e293b; /* slate-800 */ }
+
+        /* Content Sections */
+        .clause-section { margin-bottom: 3rem; }
+        .clause-section:last-child { margin-bottom: 0; }
+        
+        .clause-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e293b; /* slate-800 */
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        @media (min-width: 768px) { .clause-title { font-size: 1.5rem; } } /* md:text-2xl */
+        
+        .clause-number {
+            width: 2rem; height: 2rem;
+            background-color: #10b981; /* emerald-600 */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .clause-content {
+            margin-left: 1rem;
+            color: #475569; /* slate-600 */
+        }
+        @media (min-width: 768px) { .clause-content { margin-left: 2.75rem; } } /* md:ml-11 */
+        
+        .clause-content > p { margin-bottom: 1rem; }
+        
+        /* Grid Info Boxes (Point 1) */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        @media (min-width: 768px) {
+            .info-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .info-card {
+            background-color: white;
+            border: 1px solid #e2e8f0; /* slate-200 */
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .info-card svg {
+            width: 1.5rem; height: 1.5rem;
+            color: #10b981; /* emerald-500 */
+            margin-bottom: 0.5rem;
+        }
+        .info-card h4 {
+            font-weight: 700;
+            color: #1e293b; /* slate-800 */
+            margin-bottom: 0.25rem;
+        }
+        .info-card p {
+            font-size: 0.75rem;
+            color: #64748b; /* slate-500 */
+            line-height: 1.625;
+        }
+
+        /* Lists */
+        .custom-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .custom-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .custom-list li svg {
+            width: 1.25rem; height: 1.25rem;
+            color: #10b981; /* emerald-500 */
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        /* Special Boxes */
+        .box-secure {
+            background-color: #ecfdf5; /* emerald-50 */
+            border: 1px solid #a7f3d0; /* emerald-200 */
+            color: #065f46; /* emerald-800 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .box-secure svg {
+            width: 2rem; height: 2rem;
+            color: #059669; /* emerald-600 */
+            flex-shrink: 0;
+        }
+        .box-secure h4 {
+            font-weight: 700;
+            color: #064e3b; /* emerald-900 */
+            margin-bottom: 0.25rem;
+        }
+        .box-secure p { font-size: 0.875rem; line-height: 1.625; }
+
+        .box-third-party {
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #f1f5f9; /* slate-100 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .box-third-party li {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+        }
+        .box-third-party li svg {
+            width: 1.25rem; height: 1.25rem;
+            color: #94a3b8; /* slate-400 */
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+        .box-third-party li span { font-size: 0.875rem; color: #475569; }
+        .box-third-party li strong { color: #1e293b; }
+
+        /* Sub Section (Perubahan & Kontak) */
+        .sub-section-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f1f5f9; /* slate-100 */
+            margin-top: 2rem;
+        }
+        @media (min-width: 768px) {
+            .sub-section-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .sub-section-card h3 {
+            font-weight: 700;
+            color: #1e293b; /* slate-800 */
+            margin-bottom: 0.5rem;
+        }
+        .sub-section-card p {
+            font-size: 0.875rem;
+            color: #64748b; /* slate-500 */
+            line-height: 1.625;
+        }
+
+        /* Footer / Back Button */
+        .card-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #f1f5f9; /* slate-100 */
+            text-align: center;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #475569; /* slate-600 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #e2e8f0; /* slate-200 */
+        }
+        .btn-back svg { width: 1rem; height: 1rem; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        
+        <div class="page-header">
+            <div class="header-icon-wrap">
+                <i data-lucide="shield-check"></i>
+            </div>
+            <h1 class="page-title">Kebijakan Privasi</h1>
+            <p class="page-subtitle">Pembaruan Terakhir: <strong>1 April 2026</strong></p>
+        </div>
+
+        <div class="intro-box">
+            Selamat datang di <strong>SheetFlare</strong>. Kami sangat menghargai privasi Anda dan berkomitmen penuh untuk melindungi data pribadi yang Anda bagikan saat berinteraksi, mendaftar, atau melakukan transaksi di platform kami. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda.
+        </div>
+
+        <div class="clauses-container">
+            
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">1</span>
+                    Informasi yang Kami Kumpulkan
+                </h2>
+                <div class="clause-content">
+                    <p>Saat Anda melakukan pembelian atau mendaftar, kami mengumpulkan beberapa informasi dasar yang diperlukan untuk memproses pesanan dan mengelola akun Anda:</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <i data-lucide="user"></i>
+                            <h4>Nama Lengkap</h4>
+                            <p>Untuk identifikasi dan personalisasi akun Member Area Anda.</p>
+                        </div>
+                        <div class="info-card">
+                            <i data-lucide="mail"></i>
+                            <h4>Alamat Email</h4>
+                            <p>Digunakan sebagai kredensial login, invoice, link akses, dan pemberitahuan layanan.</p>
+                        </div>
+                        <div class="info-card">
+                            <i data-lucide="phone"></i>
+                            <h4>Nomor WhatsApp</h4>
+                            <p>Untuk konfirmasi cepat, notifikasi transaksi, dan dukungan pelanggan (CS).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">2</span>
+                    Bagaimana Kami Menggunakan Informasi Anda?
+                </h2>
+                <div class="clause-content">
+                    <p>Kami hanya menggunakan data pribadi Anda untuk keperluan operasional layanan kami, yaitu:</p>
+                    <ul class="custom-list">
+                        <li><i data-lucide="check-circle-2"></i> <span>Memproses transaksi pembayaran dan mengaktifkan akses produk digital.</span></li>
+                        <li><i data-lucide="check-circle-2"></i> <span>Membuatkan dan mengelola akun Member Area Anda di database kami.</span></li>
+                        <li><i data-lucide="check-circle-2"></i> <span>Mengirimkan pesan otomatis (Email dan WhatsApp) berisi detail tagihan dan instruksi akses.</span></li>
+                        <li><i data-lucide="check-circle-2"></i> <span>Mencegah aktivitas penipuan, transaksi palsu, dan pelanggaran hak cipta.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">3</span>
+                    Perlindungan dan Keamanan Data
+                </h2>
+                <div class="clause-content">
+                    <p>Kami mengimplementasikan langkah-langkah keamanan digital yang ketat untuk melindungi informasi Anda. Data seperti password disimpan dalam format yang aman, dan seluruh alur transaksi diproses melalui jalur komunikasi yang terenkripsi.</p>
+                    
+                    <div class="box-secure">
+                        <i data-lucide="lock"></i>
+                        <div>
+                            <h4>Komitmen Keamanan Kami</h4>
+                            <p>Kami <strong>tidak pernah dan tidak akan pernah</strong> menjual, menyewakan, atau mendistribusikan data pribadi Anda (seperti Email dan Nomor WA) kepada pihak ketiga untuk tujuan pemasaran tanpa izin tertulis dari Anda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">4</span>
+                    Berbagi Informasi dengan Pihak Ketiga
+                </h2>
+                <div class="clause-content">
+                    <p>Kami hanya membagikan data Anda kepada pihak ketiga yang berstatus sebagai mitra operasional resmi kami dan terikat oleh kewajiban kerahasiaan yang ketat, seperti:</p>
+                    <ul class="box-third-party">
+                        <li>
+                            <i data-lucide="credit-card"></i> 
+                            <span><strong>Payment Gateway Resmi:</strong> Untuk memfasilitasi dan memverifikasi pembayaran Anda secara otomatis.</span>
+                        </li>
+                        <li>
+                            <i data-lucide="send"></i> 
+                            <span><strong>Layanan Notifikasi API:</strong> Sistem pengiriman pesan pihak ketiga yang meneruskan notifikasi WhatsApp dan Email ke perangkat Anda.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">5</span>
+                    Cookies dan Penyimpanan Lokal
+                </h2>
+                <div class="clause-content">
+                    <p>Sistem kami menggunakan fitur penyimpanan lokal pada browser (seperti <em>Session Storage</em> dan <em>Local Storage</em>) semata-mata untuk mengingat sesi login Anda dan mempercepat proses pemuatan katalog (Stale-While-Revalidate). Kami sama sekali tidak menggunakan <em>cookies</em> pelacak iklan pihak ketiga yang invasif.</p>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">6</span>
+                    Hak Anda atas Data Pribadi
+                </h2>
+                <div class="clause-content">
+                    <p>Anda memiliki hak penuh untuk meminta akses, koreksi, atau penghapusan data pribadi Anda dari sistem kami. Jika Anda ingin menghapus akun Member beserta seluruh riwayat pembelian Anda secara permanen, silakan hubungi tim dukungan kami.</p>
+
+                    <div class="sub-section-grid">
+                        <div class="sub-section-card">
+                            <h3>Perubahan Kebijakan</h3>
+                            <p>Kami berhak untuk mengubah Kebijakan Privasi ini kapan saja agar sejalan dengan perkembangan layanan maupun regulasi yang berlaku.</p>
+                        </div>
+                        <div class="sub-section-card">
+                            <h3>Hubungi Kami</h3>
+                            <p>Jika Anda memiliki pertanyaan lebih lanjut, masukan, atau keluhan terkait privasi, silakan hubungi kami melalui WhatsApp Admin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <a href="/" class="btn-back">
+                <i data-lucide="arrow-left"></i> Kembali ke Beranda
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>SheetFlare - Web Membership & CMS Auto-Pilot</title>
+    <meta name="description" content="Revolusi sistem penjualan produk digital menggunakan 100% Google Sheets + Cloudflare. Buat halaman dinamis dan kelola membership tanpa bayar server bulanan.">
+    <meta name="keywords" content="landing page google sheets, web membership gratis, script e-course, cms auto-pilot, cloudflare pages, sistem afiliasi otomatis, whitelabel script, jual produk digital, jasa pembuatan website">
+    <meta name="author" content="SheetFlare">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="rd47CuNHt8IIScr7i9Rnk4K5c4CMBHALQDYBnzCRfzk" />
+    <link rel="canonical" href="https://sheetflare.net/">
+
+    <link rel="icon" href="https://ik.imagekit.io/vwxppst46/fav_sheetflare.png" type="image/png">
+    <link rel="apple-touch-icon" href="https://ik.imagekit.io/vwxppst46/fav_sheetflare.png">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sheetflare.net/">
+    <meta property="og:site_name" content="SheetFlare">
+    <meta property="og:title" content="SheetFlare - Web Membership & CMS Auto-Pilot">
+    <meta property="og:description" content="Revolusi sistem penjualan produk digital menggunakan 100% Google Sheets + Cloudflare.">
+    <meta property="og:image" content="https://ik.imagekit.io/vwxppst46/Cuplikan%20layar%202026-04-04%20165645.png?updatedAt=1775296636289">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SheetFlare - Web Membership & CMS Auto-Pilot">
+    <meta name="twitter:description" content="Revolusi sistem penjualan produk digital menggunakan 100% Google Sheets + Cloudflare. Buat halaman dinamis dan kelola membership tanpa bayar server.">
+    <meta name="twitter:image" content="https://ik.imagekit.io/vwxppst46/Cuplikan%20layar%202026-04-04%20165645.png?updatedAt=1775296636289">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <style>
+        /* === CSS RESET & GLOBAL === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            background-color: #f8fafc; 
+            color: #0f172a; 
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+            padding-top: 5rem; /* Space for fixed header */
+        }
+
+        @media (min-width: 768px) {
+            body { padding-bottom: 0; }
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+        /* === TYPOGRAPHY === */
+        .text-center { text-align: center; }
+        .text-transparent { color: transparent; }
+        .bg-clip-text { -webkit-background-clip: text; background-clip: text; }
+        .text-gradient-amber { background-image: linear-gradient(to right, #fcd34d, #eab308); }
+        .font-black { font-weight: 900; }
+        .font-bold { font-weight: 700; }
+        .font-medium { font-weight: 500; }
+        .font-mono { font-family: monospace; }
+        .uppercase { text-transform: uppercase; }
+        .tracking-widest { letter-spacing: 0.1em; }
+        .tracking-tight { letter-spacing: -0.025em; }
+        .tracking-tighter { letter-spacing: -0.05em; }
+        .leading-none { line-height: 1; }
+        .leading-tight { line-height: 1.25; }
+        .leading-relaxed { line-height: 1.625; }
+        .break-all { word-break: break-all; }
+
+        /* === UTILITY CLASSES === */
+        .max-w-2xl { max-width: 42rem; margin-inline: auto; }
+        .max-w-3xl { max-width: 48rem; margin-inline: auto; }
+        .max-w-4xl { max-width: 56rem; margin-inline: auto; }
+        .max-w-5xl { max-width: 64rem; margin-inline: auto; }
+        .max-w-6xl { max-width: 72rem; margin-inline: auto; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .flex { display: flex; }
+        .inline-flex { display: inline-flex; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .grid { display: grid; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-5 { gap: 1.25rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .z-10 { z-index: 10; }
+        .z-20 { z-index: 20; }
+        .z-50 { z-index: 50; }
+        .shrink-0 { flex-shrink: 0; }
+        .overflow-hidden { overflow: hidden; }
+
+        /* === ANIMATIONS === */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        .btn-glow { box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); transition: all 0.3s ease; }
+        .btn-glow:hover { box-shadow: 0 0 40px rgba(251, 191, 36, 0.8); transform: translateY(-3px); }
+        
+        @keyframes pulse-anim {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .7; transform: scale(1.05); }
+        }
+        .animate-pulse-custom { animation: pulse-anim 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        @keyframes bounce-anim {
+            0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+            50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+        }
+        .animate-bounce-custom { animation: bounce-anim 1s infinite; }
+
+        .transition-transform { transition: transform 0.3s ease; }
+        .transition-colors { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        .transition-all { transition: all 0.3s ease; }
+        .group:hover .group-hover-translate-x { transform: translateX(4px); }
+        .group:hover .group-hover-scale { transform: scale(1.02); }
+        .group:hover .group-hover-scale-110 { transform: scale(1.1); }
+        .group:hover .group-hover-opacity { opacity: 1; }
+
+        /* === COMPONENT STYLES === */
+
+        /* Header / Navbar */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
+        .nav-container {
+            max-width: 64rem; margin: 0 auto; padding: 0.75rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo img { height: 56px; width: auto; object-fit: contain; }
+        .nav-login-btn {
+            background-image: linear-gradient(to right, #10b981, #059669); /* Tema Hijau SheetFlare */
+            color: white; font-weight: 700; font-size: 0.875rem;
+            padding: 0.6rem 1.25rem; border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2); transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .nav-login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); }
+
+        /* Mobile Bottom Nav */
+        .mobile-bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #fff;
+            border-top: 1px solid #e2e8f0; padding: 1rem; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
+        }
+        @media (min-width: 768px) { .mobile-bottom-nav { display: none; } }
+        .btn-mobile-nav {
+            background-color: #10b981; color: white; padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; font-weight: 900; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Hero Section (Lurus / Tanpa Lengkungan) */
+        .hero-section {
+            position: relative; padding: 5rem 1.5rem 6rem; text-align: center; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); margin-bottom: 4rem;
+            /* Gradient Hijau ke Biru Gelap/Slate */
+            background-image: linear-gradient(to bottom right, #064e3b, #0f172a, #0f172a);
+            color: white;
+        }
+        @media (min-width: 768px) { .hero-section { padding-top: 6rem; padding-bottom: 8rem; } }
+        .hero-bg-pattern {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==');
+        }
+        .hero-blur-1 { position: absolute; top: -6rem; right: -6rem; width: 18rem; height: 18rem; background: rgba(16, 185, 129, 0.3); border-radius: 50%; filter: blur(100px); }
+        .hero-blur-2 { position: absolute; bottom: -6rem; left: -6rem; width: 18rem; height: 18rem; background: rgba(52, 211, 153, 0.2); border-radius: 50%; filter: blur(100px); }
+        .hero-badge {
+            display: inline-flex; items-center; gap: 0.5rem; background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1.25rem; border-radius: 9999px;
+            font-size: 0.625rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
+            margin-bottom: 2rem; backdrop-filter: blur(12px);
+        }
+        .hero-title { font-size: 2.25rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 2rem; line-height: 1.2; }
+        @media (min-width: 768px) { .hero-title { font-size: 3rem; } }
+        @media (min-width: 1024px) { .hero-title { font-size: 3.75rem; } }
+        .hero-desc { font-size: 1.125rem; color: #e0e7ff; margin-bottom: 2.5rem; line-height: 1.625; opacity: 0.9; }
+        @media (min-width: 768px) { .hero-desc { font-size: 1.25rem; } }
+        .hero-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+            background-image: linear-gradient(to right, #fbbf24, #eab308); color: #0f172a;
+            padding: 1.25rem 2.5rem; border-radius: 1rem; font-weight: 900; font-size: 0.875rem;
+            text-transform: uppercase; letter-spacing: 0.2em; position: relative; z-index: 20; width: 100%;
+        }
+        @media (min-width: 640px) { .hero-btn { width: auto; font-size: 1rem; } }
+        .hero-btn:hover { background-image: linear-gradient(to right, #f59e0b, #ca8a04); }
+
+        .hero-dashboard-preview {
+            width: 100%; margin-top: 4rem; border-radius: 1.5rem; overflow: hidden;
+            box-shadow: 0 0 80px rgba(16, 185, 129, 0.4); border: 1px solid #334155; background: #0f172a;
+            position: relative; z-index: 10; cursor: pointer;
+        }
+        @media (min-width: 768px) { .hero-dashboard-preview { margin-top: 6rem; border-radius: 2rem; } }
+        .browser-bar { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(4px); padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid rgba(51, 65, 85, 0.5); }
+        .browser-dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .browser-dot.red { background-color: #ef4444; }
+        .browser-dot.yellow { background-color: #f59e0b; }
+        .browser-dot.green { background-color: #10b981; }
+        .dashboard-img-wrap { overflow: hidden; background: #1e293b; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; }
+        .dashboard-img { width: 100%; height: auto; object-fit: cover; opacity: 0.9; transition: transform 0.7s ease-out, opacity 0.3s; }
+
+        /* Pain Points Section */
+        .section-padding { padding: 4rem 1.5rem; }
+        .pain-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 768px) { .pain-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .pain-grid { grid-template-columns: repeat(4, 1fr); } }
+        .pain-card { background: white; padding: 2rem; border-radius: 1.5rem; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+        .pain-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-0.5rem); }
+        .icon-box { width: 3.5rem; height: 3.5rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+        .icon-box.red { background: #fef2f2; color: #ef4444; }
+        .icon-box.primary { background: white; color: #10b981; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); } /* Tema Hijau */
+        .icon-box.emerald { background: #ecfdf5; color: #059669; }
+
+        /* Benefits Grid */
+        .benefit-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem; }
+        @media (min-width: 768px) { .benefit-grid { grid-template-columns: repeat(2, 1fr); } }
+        .benefit-card { display: flex; gap: 1.25rem; padding: 1.5rem; border-radius: 1.5rem; border: 1px solid #f1f5f9; background: #f8fafc; }
+        .benefit-card:hover { border-color: #a7f3d0; }
+        .benefit-card-featured { grid-column: 1 / -1; background-image: linear-gradient(to right, #ecfdf5, #f0fdfa); border-color: #a7f3d0; padding: 2rem; }
+
+        /* Demo Section */
+        .demo-section { padding: 6rem 1.5rem; background: #f0fdfa; border-top: 1px solid #ccfbf1; border-bottom: 1px solid #ccfbf1; position: relative; }
+        .demo-overlay { position: absolute; inset: 0; opacity: 0.5; background-image: radial-gradient(circle at center, rgba(167,243,208,0.5), transparent, transparent); pointer-events: none; }
+        .demo-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 56rem; margin-inline: auto; }
+        @media (min-width: 768px) { .demo-grid { grid-template-columns: repeat(2, 1fr); } }
+        .demo-card { background: white; padding: 2rem; border-radius: 1.5rem; position: relative; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        @media (min-width: 768px) { .demo-card { padding: 2.5rem; } }
+        .demo-card:hover { transform: translateY(-0.5rem); }
+        .demo-card-top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 0.5rem; }
+        .demo-card-top-bar.primary { background-image: linear-gradient(to right, #10b981, #059669); }
+        .demo-card-top-bar.emerald { background-image: linear-gradient(to right, #34d399, #14b8a6); }
+        .demo-field { background: #f8fafc; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #f1f5f9; font-family: monospace; font-size: 0.875rem; font-weight: 700; color: #1e293b; user-select: all; cursor: text; }
+        .demo-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 1rem; border-radius: 0.75rem; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: white; }
+        .demo-btn.primary { background: #10b981; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.5); }
+        .demo-btn.primary:hover { background: #059669; }
+        .demo-btn.emerald { background: #14b8a6; box-shadow: 0 10px 15px -3px rgba(45, 212, 191, 0.5); }
+        .demo-btn.emerald:hover { background: #0d9488; }
+
+        /* Pricing Section (2 Cards) */
+        .pricing-section { padding: 6rem 1.5rem; background: #f8fafc; position: relative; overflow: hidden; }
+        .pricing-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 56rem; margin-inline: auto; align-items: stretch; }
+        @media (min-width: 768px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+        .pricing-card { background: white; border-radius: 2.5rem; padding: 2rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; }
+        @media (min-width: 768px) { .pricing-card { padding: 2.5rem; } }
+        .pricing-card.featured { background: #0f172a; border: 4px solid #10b981; color: white; z-index: 10; box-shadow: 0 25px 50px -12px rgba(6, 78, 59, 0.5); }
+        .pricing-badge { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background-image: linear-gradient(to right, #fbbf24, #eab308); color: #0f172a; padding: 0.375rem 1.5rem; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); white-space: nowrap; }
+        .pricing-price { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; letter-spacing: -0.05em; line-height: 1; }
+        .pricing-price-amber { background-image: linear-gradient(to right, #fcd34d, #eab308); -webkit-background-clip: text; color: transparent; }
+        .pricing-list { flex-grow: 1; }
+        .pricing-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+        .pricing-btn { display: block; width: 100%; text-align: center; padding: 1.25rem; border-radius: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; margin-top: auto; }
+
+        /* FAQ Section */
+        .faq-section { padding: 5rem 1.5rem; background: white; border-top: 1px solid #f1f5f9; }
+        .faq-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; margin-bottom: 1rem; overflow: hidden; cursor: pointer; }
+        .faq-header { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s; }
+        .faq-header:hover { background: #f1f5f9; }
+        .faq-icon { transition: transform 0.3s ease; color: #94a3b8; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: all 0.4s ease-out; opacity: 0; background: white; border-top: 1px solid transparent; }
+        .faq-answer.show { opacity: 1; border-top-color: #e2e8f0; }
+        .faq-answer-inner { padding: 1.5rem; font-size: 0.875rem; color: #475569; line-height: 1.625; }
+
+        /* Footer Section */
+        .footer { background: #0f172a; color: #94a3b8; padding: 4rem 1.5rem 2rem; border-top: 1px solid #1e293b; position: relative; z-index: 10; }
+        .affiliate-box { background: rgba(6, 78, 59, 0.3); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 2rem; padding: 2rem; margin-bottom: 4rem; display: block; width: 100%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-width: 56rem; margin-inline: auto; }
+        @media (min-width: 768px) { .affiliate-box { padding: 3rem; } }
+        .affiliate-icon-wrap { width: 4rem; height: 4rem; background-image: linear-gradient(to bottom right, #fbbf24, #eab308); color: #0f172a; border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2); }
+        .affiliate-btn { display: inline-flex; items-center; gap: 0.5rem; background: #10b981; color: white; font-weight: 900; padding: 1rem 2rem; border-radius: 0.75rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); }
+        .affiliate-btn:hover { background: #059669; }
+
+        /* Footer Grid Layout */
+        .footer-grid {
+            display: grid; grid-template-columns: 1fr; gap: 3rem;
+            max-width: 64rem; margin: 0 auto 3rem; text-align: left;
+            border-bottom: 1px solid #1e293b; padding-bottom: 3rem;
+        }
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+        }
+        .footer-logo-container { background: white; padding: 0.5rem 1rem; border-radius: 0.5rem; display: inline-block; margin-bottom: 1.25rem; }
+        .footer-col h4 { color: white; font-weight: 700; margin-bottom: 1.25rem; font-size: 1.125rem; }
+        .footer-link { color: #94a3b8; transition: color 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+        .footer-link:hover { color: white; }
+        .footer-bottom { text-align: center; }
+
+        /* Floating WA */
+        .floating-wa { position: fixed; bottom: 5rem; right: 1.5rem; background: #25D366; color: white; padding: 1rem; border-radius: 50%; box-shadow: 0 10px 20px rgba(37,211,102,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
+        @media (min-width: 768px) { .floating-wa { bottom: 2.5rem; right: 2.5rem; } }
+        .floating-wa:hover { transform: scale(1.1); }
+
+    </style>
+
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      fbq('init', '2189480848543217'); 
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2189480848543217&ev=PageView&noscript=1"/></noscript>
+
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org/",
+        "@type": "SoftwareApplication",
+        "name": "SheetFlare Engine",
+        "operatingSystem": "Web",
+        "applicationCategory": "BusinessApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "147000",
+          "priceCurrency": "IDR",
+          "availability": "https://schema.org/InStock"
+        },
+        "description": "Script E-commerce berskala Enterprise berbasis Google Sheets. Buat Landing Page dinamis dan LMS E-Course otomatis tanpa bayar tagihan server bulanan."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+          "@type": "Question",
+          "name": "Apakah saya harus bayar hosting lagi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tidak! Salah satu keunggulan utama SheetFlare adalah Anda menggunakan infrastruktur Serverless. Frontend menggunakan Cloudflare Pages dan Backend menggunakan Google Sheets yang keduanya 100% Gratis."
+          }
+        }, {
+          "@type": "Question",
+          "name": "Apakah pemula bisa menginstallnya?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sangat bisa! Kami menyertakan dokumentasi video dan teks langkah demi langkah (step-by-step) yang sangat mudah dipahami oleh orang awam yang tidak mengerti coding sekalipun."
+          }
+        }, {
+          "@type": "Question",
+          "name": "Apakah Harus menggunakan Moota / Duitku?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tidak wajib. Integrasi Moota atau Duitku hanya opsional jika Anda ingin verifikasi pembayaran berjalan 100% otomatis 24 jam. Kami juga menyediakan opsi 'Aktivasi Manual Transfer Bank' yang bisa Anda setujui 1-klik melalui Dashboard Admin."
+          }
+        }]
+      }
+    ]
+    </script>
+</head>
+<body>
+
+    <header class="header">
+        <div class="nav-container">
+            <a href="https://sheetflare.net/" class="nav-logo">
+                <img src="https://ik.imagekit.io/vwxppst46/logo_sheetflare.png" alt="Logo SheetFlare">
+            </a>
+            <a href="https://sheetflare.net/login" class="nav-login-btn">
+                <i data-lucide="log-in" style="width: 16px; height: 16px;"></i> Login Area
+            </a>
+        </div>
+    </header>
+
+    <div class="mobile-bottom-nav">
+        <div>
+            <p style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Lisensi Lifetime</p>
+            <p style="font-size: 1.125rem; font-weight: 900; line-height: 1;">Rp 147.000</p>
+        </div>
+        <a href="#pricing" class="btn-mobile-nav animate-pulse-custom">Ambil Whitelabel</a>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-bg-pattern"></div>
+        <div class="hero-blur-1"></div>
+        <div class="hero-blur-2"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto flex" style="flex-direction: column; align-items: center;">
+            <div class="hero-badge reveal">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #34d399;" class="animate-pulse-custom"></span> SheetFlare Premium V13
+            </div>
+            
+            <h1 class="hero-title reveal" style="transition-delay: 100ms;">
+                Ubah Google Sheets Jadi Web <span class="bg-clip-text text-transparent text-gradient-amber">CMS & Membership</span> Auto-Pilot!
+            </h1>
+            
+            <p class="hero-desc reveal" style="max-w: 48rem; transition-delay: 200ms;">
+                Satu sistem untuk dua kebutuhan! Buat halaman <strong>Landing Page</strong> dinamis sesuka hati, SEKALIGUS kelola <strong>Sistem Penjualan E-Course</strong> otomatis tanpa pusing bayar tagihan server bulanan.
+            </p>
+
+            <a href="#pricing" class="hero-btn btn-glow group reveal" style="transition-delay: 300ms;">
+                Bongkar Source Code-nya <i data-lucide="arrow-right" style="width: 20px; height: 20px;" class="transition-transform group-hover-translate-x"></i>
+            </a>
+
+            <div class="hero-dashboard-preview group reveal" style="transition-delay: 400ms;">
+                <div class="browser-bar">
+                    <div class="browser-dot red"></div>
+                    <div class="browser-dot yellow"></div>
+                    <div class="browser-dot green"></div>
+                    <div style="margin-left: 1rem; font-size: 10px; color: #94a3b8; font-family: monospace; letter-spacing: 0.1em; opacity: 0.7;">spotadmin.dashboard</div>
+                </div>
+                <div class="dashboard-img-wrap">
+                    <img src="https://ik.imagekit.io/vwxppst46/Cuplikan%20layar%202026-04-04%20165645.png?updatedAt=1775296636289" alt="Preview SheetFlare Admin Dashboard" width="1280" height="720" loading="lazy" decoding="async" class="dashboard-img group-hover-scale group-hover-opacity">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding max-w-6xl mx-auto">
+        <div class="text-center reveal" style="margin-bottom: 4rem;">
+            <h2 style="font-size: 1.875rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 1rem;">Jujur Saja, Masih Capek Mengalami Ini?</h2>
+            <p style="color: #64748b; font-size: 1.125rem;">Jangan biarkan tagihan & batasan teknis menghambat omset bisnis digital Anda.</p>
+        </div>
+        
+        <div class="pain-grid">
+            <div class="pain-card reveal" style="transition-delay: 100ms;">
+                <div class="icon-box red"><i data-lucide="server-crash" style="width: 28px; height: 28px;"></i></div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Hosting Mahal</h3>
+                <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Pusing setiap bulan/tahun harus bayar sewa VPS atau langganan platform membership yang harganya terus naik?</p>
+            </div>
+            <div class="pain-card reveal" style="transition-delay: 200ms;">
+                <div class="icon-box red"><i data-lucide="code" style="width: 28px; height: 28px;"></i></div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Plugin Ribet</h3>
+                <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Website gampang error, database nyangkut, dan konflik plugin WordPress yang bikin stress seharian?</p>
+            </div>
+            <div class="pain-card reveal" style="transition-delay: 300ms;">
+                <div class="icon-box red"><i data-lucide="moon" style="width: 28px; height: 28px;"></i></div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Capek Kasir Manual</h3>
+                <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Harus cek mutasi bank manual jam 2 pagi dan ngirim akses satu-satu ke pembeli yang transfer?</p>
+            </div>
+            <div class="pain-card reveal" style="transition-delay: 400ms;">
+                <div class="icon-box red"><i data-lucide="hourglass" style="width: 28px; height: 28px;"></i></div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Website Lemot</h3>
+                <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Pengunjung kabur gara-gara loading halaman produk dan checkout muter-muter kelamaan? Konversi hancur!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" style="background: white; border-top: 1px solid #f1f5f9;">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center reveal" style="margin-bottom: 4rem;">
+                <h2 style="font-size: 1.875rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 1.5rem; line-height: 1.2;">Mulai Bangun Kekaisaran Digital Anda<br>Dengan <span style="color: #10b981;">Teknologi God Mode!</span> 🚀</h2>
+                <p style="color: #64748b; font-size: 1.125rem; line-height: 1.625; max-width: 48rem; margin-inline: auto;">
+                    SheetFlare bukan sekadar script membership biasa. Ini adalah mesin E-commerce berskala Enterprise berbasis Google Sheets dengan biaya operasional <strong>Rp 0 / bulan!</strong>
+                </p>
+            </div>
+
+            <div class="benefit-grid">
+                <div class="benefit-card benefit-card-featured group reveal">
+                    <div class="icon-box primary group-hover-scale-110 transition-transform shrink-0"><i data-lucide="zap" style="width: 28px; height: 28px;"></i></div>
+                    <div>
+                        <h4 style="font-size: 1.125rem; font-weight: 900; margin-bottom: 0.5rem;">1. Speed Dewa (0 Detik Loading)</h4>
+                        <p style="color: #475569; font-size: 0.875rem; line-height: 1.625;">Dibangun dengan arsitektur Single Page Application (SPA) dan teknologi <strong>RAM Cache Google</strong>. Checkout & Member Area terbuka instan tanpa loading layar putih!</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card group reveal transition-colors">
+                    <div class="icon-box primary group-hover-scale-110 transition-transform shrink-0"><i data-lucide="bot" style="width: 28px; height: 28px;"></i></div>
+                    <div>
+                        <h4 style="font-size: 1.125rem; font-weight: 900; margin-bottom: 0.5rem;">2. Robot Kasir 100% Auto-Pilot</h4>
+                        <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Pembeli checkout ➡️ Transfer ➡️ Sistem Duitku membaca mutasi ➡️ LUNAS ➡️ Akses & Notif WA dikirim diam-diam di background.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card group reveal transition-colors">
+                    <div class="icon-box primary group-hover-scale-110 transition-transform shrink-0"><i data-lucide="graduation-cap" style="width: 28px; height: 28px;"></i></div>
+                    <div>
+                        <h4 style="font-size: 1.125rem; font-weight: 900; margin-bottom: 0.5rem;">3. LMS E-Course Creator</h4>
+                        <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Punya produk video edukasi? Buat kurikulum kelas (bab per bab) semudah menyalin link YouTube. Terlindungi & rapi di Member Area.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card group reveal transition-colors">
+                    <div class="icon-box primary group-hover-scale-110 transition-transform shrink-0"><i data-lucide="pie-chart" style="width: 28px; height: 28px;"></i></div>
+                    <div>
+                        <h4 style="font-size: 1.125rem; font-weight: 900; margin-bottom: 0.5rem;">4. Sistem Afiliasi Otomatis</h4>
+                        <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Ubah pembeli jadi pasukan sales! Dilengkapi tracking referral canggih. Komisi dihitung otomatis setiap ada penjualan sukses.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card group reveal transition-colors">
+                    <div class="icon-box primary group-hover-scale-110 transition-transform shrink-0"><i data-lucide="tag" style="width: 28px; height: 28px;"></i></div>
+                    <div>
+                        <h4 style="font-size: 1.125rem; font-weight: 900; margin-bottom: 0.5rem;">5. Full White-Label (Bebas Jual)</h4>
+                        <p style="color: #64748b; font-size: 0.875rem; line-height: 1.625;">Gunakan brand Anda sendiri. Sangat cocok untuk ditawarkan kembali (Jasa Pembuatan Web) ke klien dengan margin 100% milik Anda.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-overlay"></div>
+        <div class="max-w-5xl mx-auto relative z-10 reveal">
+            <div class="text-center" style="margin-bottom: 4rem;">
+                <h2 style="font-size: 1.875rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 1rem;">Coba Langsung <span style="color: #10b981;">Live Demo!</span></h2>
+                <p style="color: #475569; font-size: 1.125rem; max-width: 42rem; margin-inline: auto;">Jangan beli kucing dalam karung. Silakan login ke dalam sistem dan rasakan sendiri betapa mudah dan cepatnya SheetFlare bekerja.</p>
+            </div>
+
+            <div class="demo-grid">
+                <div class="demo-card group transition-transform">
+                    <div class="demo-card-top-bar primary"></div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="icon-box primary shrink-0"><i data-lucide="layout-dashboard" style="width: 28px; height: 28px;"></i></div>
+                        <div>
+                            <h3 style="font-size: 1.25rem; font-weight: 900;">Panel Admin</h3>
+                            <p style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Master Control</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                        <div>
+                            <p style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.25rem;">Link Login:</p>
+                            <a href="https://member.melimpah.biz.id/admin" target="_blank" style="font-size: 0.875rem; font-family: monospace; font-weight: 700; color: #10b981; word-break: break-all;">member.melimpah.biz.id/admin</a>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.25rem;">Email:</p>
+                            <div class="demo-field">adminsheetflare@gmail.com</div>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.25rem;">Password:</p>
+                            <div class="demo-field">rahasia123</div>
+                        </div>
+                    </div>
+                    <a href="https://member.melimpah.biz.id/admin" target="_blank" class="demo-btn primary transition-colors">
+                        Coba Login Admin <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                    </a>
+                </div>
+
+                <div class="demo-card group transition-transform">
+                    <div class="demo-card-top-bar emerald"></div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="icon-box emerald shrink-0"><i data-lucide="users" style="width: 28px; height: 28px;"></i></div>
+                        <div>
+                            <h3 style="font-size: 1.25rem; font-weight: 900;">Member Area</h3>
+                            <p style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Tampilan Pembeli</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                        <div>
+                            <p style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.25rem;">Link Login:</p>
+                            <a href="https://member.melimpah.biz.id/login" target="_blank" style="font-size: 0.875rem; font-family: monospace; font-weight: 700; color: #14b8a6; word-break: break-all;">member.melimpah.biz.id/login</a>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.25rem;">Email:</p>
+                            <div class="demo-field">membersheetflare@gmail.com</div>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.25rem;">Password:</p>
+                            <div class="demo-field">rahasia123</div>
+                        </div>
+                    </div>
+                    <a href="https://member.melimpah.biz.id/login" target="_blank" class="demo-btn emerald transition-colors">
+                        Coba Login Member <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+        <div class="relative z-10 max-w-5xl mx-auto">
+            <div class="text-center reveal" style="margin-bottom: 3rem;">
+                <h2 style="font-size: 1.875rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 1rem;">Investasi Sekali, <br>Milik Anda Selamanya</h2>
+                <p style="color: #64748b; font-size: 1.125rem;">Tanpa biaya perpanjangan, tanpa biaya server bulanan.</p>
+            </div>
+
+            <div class="pricing-grid">
+                
+                <div class="pricing-card featured reveal">
+                    <div class="pricing-badge">Lisensi Terlengkap 🔥</div>
+                    <h3 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; margin-top: 1rem;">Paket Whitelabel</h3>
+                    <p style="color: #94a3b8; font-weight: 700; text-decoration: line-through; margin-bottom: 0.25rem;">Harga Normal: Rp 1.500.000</p>
+                    <div class="pricing-price pricing-price-amber">
+                        <span style="font-size: 1.5rem; vertical-align: top; color: #fcd34d;">Rp</span> 147.000
+                    </div>
+                    
+                    <ul class="pricing-list" style="font-size: 0.875rem; font-weight: 500;">
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Akses Source Code SheetFlare</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Fitur CMS & Beranda Custom</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Fitur LMS E-Course Premium</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Fitur Order Bump & Kupon Diskon</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Integrasi Duitku Payment Gateway</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Sistem Afiliasi Otomatis</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Bebas Hak Whitelabel 100%</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Gunakan Nama Brand Sendiri</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Bebas Jual Kembali Berkali-kali</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #fbbf24;" class="shrink-0"></i> <strong>Tanpa Batasan Jumlah Domain</strong></li>
+                    </ul>
+                    <a href="/checkout?id=PRD-15" target="_blank" class="pricing-btn hero-btn btn-glow" style="color: #0f172a;">
+                        Beli Lisensi Sekarang
+                    </a>
+                </div>
+
+                <div class="pricing-card reveal" style="transition-delay: 200ms;">
+                    <div class="pricing-badge" style="background-image: linear-gradient(to right, #e2e8f0, #cbd5e1); color: #0f172a;">Terima Beres 🤝</div>
+                    <h3 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; margin-top: 1rem;">Jasa Pembuatan Web</h3>
+                    <p style="color: #94a3b8; font-weight: 700; margin-bottom: 0.25rem;">Mulai Dari</p>
+                    <div class="pricing-price" style="color: #0f172a;">
+                        <span style="font-size: 1.5rem; vertical-align: top;">Rp</span> 99.000
+                    </div>
+                    
+                    <ul class="pricing-list" style="font-size: 0.875rem; font-weight: 500;">
+                        <li><i data-lucide="check-circle-2" style="color: #10b981;" class="shrink-0"></i> <strong style="color: #1e293b;">Sudah Termasuk Domain Pribadi</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #10b981;" class="shrink-0"></i> <strong style="color: #1e293b;">Berbasis Cloudflare / Blogspot</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #10b981;" class="shrink-0"></i> <strong style="color: #1e293b;">Integrasi Database Spreadsheet</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #10b981;" class="shrink-0"></i> <strong style="color: #1e293b;">Landing Page, Profil, atau Membership</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #10b981;" class="shrink-0"></i> <strong style="color: #1e293b;">Desain Custom Sesuai Request</strong></li>
+                        <li><i data-lucide="check-circle-2" style="color: #10b981;" class="shrink-0"></i> <strong style="color: #1e293b;">Konsultasi & Support via WA</strong></li>
+                    </ul>
+                    <a href="https://wa.me/6282124984382" target="_blank" class="pricing-btn" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                        Konsultasi via WhatsApp
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="max-w-3xl mx-auto reveal">
+            <div class="text-center" style="margin-bottom: 3rem;">
+                <h2 style="font-size: 1.875rem; font-weight: 900; letter-spacing: -0.025em;">Tanya Jawab Seputar SheetFlare</h2>
+            </div>
+
+            <div style="display: grid; gap: 1rem;">
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h4 style="font-weight: 700; color: #1e293b; padding-right: 1rem;">Apakah saya harus bayar hosting lagi?</h4>
+                        <i data-lucide="chevron-down" class="faq-icon shrink-0"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Tidak! Salah satu keunggulan utama SheetFlare adalah Anda menggunakan infrastruktur Serverless. Frontend menggunakan Cloudflare Pages dan Backend menggunakan Google Sheets yang keduanya 100% Gratis.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h4 style="font-weight: 700; color: #1e293b; padding-right: 1rem;">Apakah pemula bisa menginstallnya?</h4>
+                        <i data-lucide="chevron-down" class="faq-icon shrink-0"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Sangat bisa! Kami menyertakan dokumentasi video dan teks langkah demi langkah (step-by-step) yang sangat mudah dipahami oleh orang awam yang tidak mengerti coding sekalipun.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h4 style="font-weight: 700; color: #1e293b; padding-right: 1rem;">Apakah Harus menggunakan Moota / Duitku?</h4>
+                        <i data-lucide="chevron-down" class="faq-icon shrink-0"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Tidak wajib. Integrasi Moota atau Duitku hanya opsional jika Anda ingin verifikasi pembayaran berjalan 100% otomatis 24 jam. Kami juga menyediakan opsi "Aktivasi Manual Transfer Bank" yang bisa Anda setujui 1-klik melalui Dashboard Admin.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="affiliate-box reveal">
+            <div class="affiliate-icon-wrap">
+                <i data-lucide="handshake" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h3 style="color: white; font-weight: 900; font-size: 1.5rem; margin-bottom: 1rem; letter-spacing: -0.025em;">Program Affiliate <span style="color: #fbbf24;">Komisi 50%</span></h3>
+            <p style="color: #c7d2fe; font-size: 0.875rem; line-height: 1.625; max-width: 42rem; margin: 0 auto 2rem;">
+                Bantu rekomendasikan kecanggihan SheetFlare ke teman atau audiens Anda dan nikmati bagi hasil <strong>50%</strong> dari setiap penjualan sukses. Komisi cair cepat, tanpa ribet!
+            </p>
+            <a href="https://sheetflare.net/login" target="_blank" class="affiliate-btn transition-colors">
+                Daftar Affiliate Sekarang <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
+            </a>
+        </div>
+        
+        <div class="footer-grid reveal">
+            <div class="footer-col">
+                <div class="footer-logo-container">
+                    <img src="https://ik.imagekit.io/vwxppst46/logo_sheetflare.png" alt="Logo SheetFlare" style="height: 48px; object-fit: contain;">
+                </div>
+                <p style="color: #94a3b8; font-size: 0.875rem; line-height: 1.625;">
+                    Revolusi sistem penjualan produk digital menggunakan 100% Google Sheets + Cloudflare. Buat halaman dinamis dan kelola membership tanpa bayar server.
+                </p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Informasi</h4>
+                <ul style="display: grid; gap: 0.75rem;">
+                    <li><a href="tentang-kami" class="footer-link">Tentang Kami</a></li>
+                    <li><a href="syarat-ketentuan" class="footer-link">Syarat & Ketentuan</a></li>
+                    <li><a href="kebijakan-privasi" class="footer-link">Kebijakan Privasi</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Hubungi Kami</h4>
+                <ul style="display: grid; gap: 0.75rem;">
+                    <li>
+                        <a href="mailto:info@sheetflare.net" class="footer-link">
+                            <i data-lucide="mail" style="width: 16px; height: 16px;"></i> info@sheetflare.net
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/6282124984382" target="_blank" class="footer-link">
+                            <i data-lucide="phone" style="width: 16px; height: 16px;"></i> +62 82124984382
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <i data-lucide="zap" style="color: #fbbf24; width: 16px; height: 16px;"></i>
+                <span style="color: white; font-weight: 900; font-size: 1rem; letter-spacing: -0.05em;">SheetFlare</span>
+            </div>
+            <p style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">
+                &copy; 2026 SheetFlare Engine. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/6282124984382" target="_blank" rel="noopener noreferrer" class="floating-wa animate-bounce-custom" aria-label="Chat WhatsApp">
+        <i data-lucide="message-circle" style="width: 32px; height: 32px;"></i>
+    </a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Affiliate Tracking dari URL Parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            if(ref) { localStorage.setItem('melimpah_affiliate', ref); }
+
+            // Reveal Animation Observer (Scroll Effect)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { 
+                    if (e.isIntersecting) { 
+                        e.target.classList.add('active'); 
+                        observer.unobserve(e.target);
+                    } 
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // FAQ Accordion Logic
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const answer = item.querySelector('.faq-answer');
+                    const icon = item.querySelector('.faq-icon');
+                    const isActive = answer.classList.contains('show');
+
+                    // Tutup semua FAQ lainnya
+                    document.querySelectorAll('.faq-answer').forEach(ans => {
+                        ans.style.maxHeight = null;
+                        ans.classList.remove('show');
+                    });
+                    document.querySelectorAll('.faq-icon').forEach(ic => ic.style.transform = 'rotate(0deg)');
+
+                    // Buka FAQ yang diklik
+                    if (!isActive) {
+                        answer.classList.add('show');
+                        answer.style.maxHeight = answer.scrollHeight + 50 + "px";
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            // Initialize Lucide Icons (Render SVG Icons)
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                setTimeout(() => {
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

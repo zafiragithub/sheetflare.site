@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami - SheetFlare</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <style>
+        /* === CSS RESET & GLOBAL === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.625;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Layout */
+        .container {
+            max-width: 56rem; /* 896px */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 4rem 1.5rem;
+        }
+
+        /* Hero Header */
+        .page-header { margin-bottom: 4rem; text-align: center; }
+        .header-icon-wrap {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 4rem; height: 4rem;
+            background-color: #ecfdf5; /* emerald-50 */
+            color: #10b981; /* emerald-500 */
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .header-icon-wrap svg { width: 2rem; height: 2rem; }
+        .page-title {
+            font-size: 2.25rem; font-weight: 900; color: #0f172a;
+            letter-spacing: -0.025em; margin-bottom: 1rem;
+        }
+        @media (min-width: 768px) { .page-title { font-size: 3rem; } }
+        .page-subtitle {
+            font-size: 1.125rem; color: #64748b; /* slate-500 */
+            max-width: 42rem; margin-inline: auto; font-weight: 500;
+        }
+
+        /* Intro Box (Gradient) */
+        .intro-box {
+            background-image: linear-gradient(to bottom right, #059669, #047857); /* Emerald gradient */
+            border-radius: 2.5rem;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.25);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) { .intro-box { padding: 3rem; } }
+        .intro-blur {
+            position: absolute; top: -6rem; right: -6rem;
+            width: 16rem; height: 16rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; filter: blur(48px);
+        }
+        .intro-content { position: relative; z-index: 10; }
+        .intro-title {
+            font-size: 1.5rem; font-weight: 900; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        @media (min-width: 768px) { .intro-title { font-size: 1.875rem; } }
+        .intro-title svg { width: 1.75rem; height: 1.75rem; color: #a7f3d0; /* emerald-200 */ }
+        .intro-text {
+            color: #ecfdf5; /* emerald-50 */
+            font-size: 1.125rem; font-weight: 500; line-height: 1.625;
+        }
+        @media (min-width: 768px) { .intro-text { font-size: 1.25rem; } }
+        .text-highlight { color: #fcd34d; /* amber-300 */ }
+
+        /* Visi Misi Grid */
+        .vision-mission-grid {
+            display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 4rem;
+        }
+        @media (min-width: 768px) { .vision-mission-grid { grid-template-columns: repeat(2, 1fr); } }
+        .vm-card {
+            background-color: white; padding: 2rem; border-radius: 2rem;
+            border: 1px solid #f1f5f9; box-shadow: 0 20px 25px -5px rgba(226, 232, 240, 0.4);
+            transition: transform 0.3s ease;
+        }
+        .vm-card:hover { transform: translateY(-4px); }
+        .vm-icon {
+            width: 3.5rem; height: 3.5rem; border-radius: 1rem;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;
+        }
+        .vm-icon.amber { background-color: #fffbeb; color: #f59e0b; }
+        .vm-icon.emerald { background-color: #ecfdf5; color: #10b981; }
+        .vm-icon svg { width: 1.75rem; height: 1.75rem; }
+        .vm-title { font-size: 1.5rem; font-weight: 900; color: #1e293b; margin-bottom: 0.75rem; }
+        .vm-desc { color: #475569; line-height: 1.625; }
+
+        /* Offerings Section */
+        .offers-section { margin-bottom: 4rem; }
+        .section-title { font-size: 1.5rem; font-weight: 900; color: #0f172a; margin-bottom: 2rem; text-align: center; }
+        @media (min-width: 768px) { .section-title { font-size: 1.875rem; } }
+        .offers-grid {
+            display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+        }
+        @media (min-width: 768px) { .offers-grid { grid-template-columns: repeat(3, 1fr); } }
+        .offer-card {
+            background-color: #f8fafc; padding: 2rem; border-radius: 2rem;
+            border: 1px solid #f1f5f9; text-align: center; transition: background-color 0.3s ease;
+        }
+        .offer-card:hover { background-color: #ecfdf5; /* hover emerald-50 */ }
+        .offer-icon {
+            width: 2.5rem; height: 2.5rem; color: #10b981; /* emerald-500 */
+            margin: 0 auto 1rem; transition: transform 0.3s ease;
+        }
+        .offer-card:hover .offer-icon { transform: scale(1.1); }
+        .offer-title { font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; font-size: 1.125rem; }
+        .offer-desc { font-size: 0.875rem; color: #64748b; line-height: 1.625; }
+
+        /* Why Us Section */
+        .why-section {
+            background-color: white; padding: 2rem; border-radius: 2.5rem;
+            border: 1px solid #f1f5f9; box-shadow: 0 20px 25px -5px rgba(226, 232, 240, 0.5);
+            margin-bottom: 4rem;
+        }
+        @media (min-width: 768px) { .why-section { padding: 3rem; } }
+        .why-list { display: flex; flex-direction: column; gap: 2rem; }
+        .why-item { display: flex; align-items: flex-start; gap: 1.25rem; }
+        .why-icon-wrap {
+            width: 3rem; height: 3rem; background-color: #ecfdf5; color: #10b981;
+            border-radius: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .why-icon-wrap svg { width: 1.5rem; height: 1.5rem; }
+        .why-title { font-weight: 900; color: #1e293b; font-size: 1.125rem; margin-bottom: 0.25rem; }
+        .why-desc { color: #64748b; line-height: 1.625; }
+
+        /* Closing Section */
+        .closing-section {
+            text-align: center; background-color: #f8fafc; padding: 2.5rem;
+            border-radius: 2.5rem; border: 1px solid #e2e8f0; margin-bottom: 3rem;
+        }
+        .closing-icon {
+            width: 4rem; height: 4rem; background-color: white; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        .closing-icon svg { width: 2rem; height: 2rem; color: #10b981; /* emerald-500 */ }
+        .closing-title { font-size: 1.5rem; font-weight: 900; color: #0f172a; margin-bottom: 1rem; }
+        .closing-desc { color: #475569; max-width: 42rem; margin: 0 auto 2rem; line-height: 1.625; }
+        .closing-sign { font-weight: 900; color: #1e293b; font-size: 1.125rem; }
+        .closing-brand { color: #10b981; } /* emerald-600 */
+
+        /* Back Button */
+        .back-nav { padding-top: 2rem; text-align: center; }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background-color: white; border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); color: #475569;
+            padding: 1rem 2rem; border-radius: 0.75rem; font-weight: 700;
+            font-size: 0.875rem; transition: all 0.3s ease;
+        }
+        .btn-back:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transform: translateY(-4px);
+            color: #10b981; border-color: #10b981;
+        }
+        .btn-back svg { width: 1rem; height: 1rem; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="page-header">
+        <div class="header-icon-wrap">
+            <i data-lucide="building-2"></i>
+        </div>
+        <h1 class="page-title">Tentang Kami</h1>
+        <p class="page-subtitle">Mitra terbaik untuk revolusi website tanpa server dan tanpa biaya bulanan.</p>
+    </div>
+
+    <div class="intro-box">
+        <div class="intro-blur"></div>
+        <div class="intro-content">
+            <h2 class="intro-title">
+                <i data-lucide="terminal-square"></i> Siapa Kami?
+            </h2>
+            <p class="intro-text">
+                <strong style="color: white;">SheetFlare</strong> adalah pelopor penyedia <em>source code</em> web membership dan CMS berbasis Serverless di Indonesia. Kami berfokus pada pemanfaatan <strong class="text-highlight">Cloudflare, Blogspot, dan Google Sheets</strong> untuk menciptakan ekosistem website yang canggih, otomatis, dan dengan biaya operasional Rp 0/bulan. Selain *script* premium, kami juga melayani Jasa Pembuatan Website profesional yang siap pakai.
+            </p>
+        </div>
+    </div>
+
+    <div class="vision-mission-grid">
+        <div class="vm-card">
+            <div class="vm-icon amber">
+                <i data-lucide="target"></i>
+            </div>
+            <h3 class="vm-title">Visi Kami</h3>
+            <p class="vm-desc">Menjadi pionir teknologi web <em>serverless</em> di Indonesia yang memberdayakan kreator dan pebisnis untuk memiliki sistem e-commerce serta membership canggih tanpa beban biaya <em>hosting</em> bulanan.</p>
+        </div>
+        <div class="vm-card">
+            <div class="vm-icon emerald">
+                <i data-lucide="rocket"></i>
+            </div>
+            <h3 class="vm-title">Misi Kami</h3>
+            <p class="vm-desc">Menyediakan <em>source code</em> berkualitas tinggi yang mudah dimodifikasi, serta memberikan layanan pembuatan website <em>terima beres</em> dengan dukungan penuh bagi pemula hingga profesional.</p>
+        </div>
+    </div>
+
+    <div class="offers-section">
+        <h2 class="section-title">Layanan & Produk Kami</h2>
+        <div class="offers-grid">
+            <div class="offer-card group">
+                <i data-lucide="file-code-2" class="offer-icon"></i>
+                <h4 class="offer-title">Source Code Membership</h4>
+                <p class="offer-desc">Script premium untuk mengelola member area, e-course, dan sistem afiliasi secara otomatis penuh.</p>
+            </div>
+            <div class="offer-card group">
+                <i data-lucide="database-zap" class="offer-icon"></i>
+                <h4 class="offer-title">CMS Cloudflare & Sheets</h4>
+                <p class="offer-desc">Sistem manajemen konten revolusioner dan sangat cepat yang menggunakan Google Sheets sebagai <em>database</em>.</p>
+            </div>
+            <div class="offer-card group">
+                <i data-lucide="monitor-smartphone" class="offer-icon"></i>
+                <h4 class="offer-title">Jasa Pembuatan Website</h4>
+                <p class="offer-desc">Layanan <em>terima beres</em> pembuatan landing page, profil bisnis, hingga web e-course lengkap dengan domain.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="why-section">
+        <h2 class="section-title" style="margin-bottom: 2.5rem;">Kenapa Memilih Kami?</h2>
+        <div class="why-list">
+            <div class="why-item">
+                <div class="why-icon-wrap"><i data-lucide="server-off"></i></div>
+                <div>
+                    <h4 class="why-title">Bebas Biaya Hosting Bulanan</h4>
+                    <p class="why-desc">Infrastruktur kami memanfaatkan layanan gratis berkinerja tinggi skala global (Cloudflare Pages, Blogspot, & Google Sheets) sehingga menghemat anggaran bisnis Anda.</p>
+                </div>
+            </div>
+            <div class="why-item">
+                <div class="why-icon-wrap"><i data-lucide="bot"></i></div>
+                <div>
+                    <h4 class="why-title">Sistem 100% Auto-Pilot</h4>
+                    <p class="why-desc">Terintegrasi penuh dengan <em>payment gateway</em> (Duitku/Moota) untuk verifikasi pembayaran, aktivasi akses, dan perhitungan komisi afiliasi secara otomatis 24 jam non-stop.</p>
+                </div>
+            </div>
+            <div class="why-item">
+                <div class="why-icon-wrap"><i data-lucide="laptop-minimal"></i></div>
+                <div>
+                    <h4 class="why-title">Terima Beres (Jasa Web)</h4>
+                    <p class="why-desc">Tidak paham coding atau hal teknis? Tidak masalah. Tim ahli kami siap merakit, mendesain, dan meluncurkan website impian Anda sampai <em>live</em> dan siap jualan.</p>
+                </div>
+            </div>
+            <div class="why-item">
+                <div class="why-icon-wrap"><i data-lucide="life-buoy"></i></div>
+                <div>
+                    <h4 class="why-title">Support Prioritas</h4>
+                    <p class="why-desc">Baik Anda membeli <em>source code</em> atau menggunakan jasa kami, tim dukungan teknis selalu siap memandu Anda dari proses instalasi hingga pemecahan masalah.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="closing-section">
+        <div class="closing-icon">
+            <i data-lucide="handshake"></i>
+        </div>
+        <h2 class="closing-title">Mari Bertumbuh Bersama!</h2>
+        <p class="closing-desc">Kami percaya bahwa setiap bisnis layak memiliki website profesional tanpa harus tercekik biaya operasional server. Bergabunglah dengan pengguna <strong style="color: #1e293b;">SheetFlare</strong> lainnya dan rasakan kebebasan teknologi <em>serverless</em> hari ini juga.</p>
+        <p class="closing-sign">Salam Sukses,<br><span class="closing-brand">Tim SheetFlare</span></p>
+    </div>
+
+    <div class="back-nav">
+        <a href="/" class="btn-back">
+            <i data-lucide="arrow-left"></i> Kembali ke Beranda
+        </a>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+
+</body>
+</html>

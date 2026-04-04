@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script>
+        // ⚡ PENGAMAN 0 DETIK: Tendang penyusup sebelum layar terbuka!
+        if(!sessionStorage.getItem('user_email')) {
+            alert("Sesi login Anda tidak ditemukan. Silakan login kembali.");
+            window.location.replace('/login');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Belajar - SheetFlare</title>
+
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+
+    <script src="config.js?v=2026"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === CSS RESET & VARIABLES === */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --emerald-50: #ecfdf5; --emerald-100: #d1fae5; --emerald-500: #10b981; --emerald-600: #059669; --emerald-700: #047857; --emerald-800: #065f46;
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-800: #1e293b; --slate-900: #0f172a;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-50); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; outline: none; }
+        .hidden { display: none !important; }
+
+        /* === SCROLLBAR === */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+
+        /* === ANIMATIONS === */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* === LOADER OVERLAY === */
+        #loader { position: fixed; inset: 0; background: white; z-index: 999; display: flex; flex-direction: column; items-center; justify-content: center; align-items: center; color: var(--emerald-600); transition: opacity 0.3s; }
+        #loader svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; }
+        #loader p { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* === HEADER === */
+        .header { background: white; border-bottom: 1px solid var(--slate-200); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; z-index: 30; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        @media (min-width: 768px) { .header { padding: 1rem 1.5rem; } }
+        
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .btn-back { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.75rem; color: var(--slate-500); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; }
+        @media (min-width: 768px) { .btn-back { padding: 0.5rem 1rem; } }
+        .btn-back:hover { background: var(--slate-100); color: var(--slate-900); }
+        .btn-back svg { width: 1rem; height: 1rem; }
+        .btn-back span { display: none; }
+        @media (min-width: 768px) { .btn-back span { display: inline; } }
+        
+        .header-divider { width: 1px; height: 2rem; background: var(--slate-200); display: none; }
+        @media (min-width: 768px) { .header-divider { display: block; } }
+        
+        .header-info-sub { font-size: 0.5625rem; font-weight: 700; color: var(--emerald-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.125rem; }
+        .header-info-title { font-size: 0.875rem; font-weight: 900; color: var(--slate-800); line-height: 1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @media (min-width: 768px) { .header-info-title { font-size: 1rem; max-width: 400px; } }
+
+        /* === MAIN LAYOUT === */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        @media (min-width: 1024px) { .main-wrapper { flex-direction: row; } }
+
+        /* Left Content (Video & Desc) */
+        .content-area { width: 100%; height: 100%; overflow-y: auto; background: var(--slate-50); position: relative; padding-bottom: 5rem; }
+        @media (min-width: 1024px) { .content-area { width: 70%; padding-bottom: 0; } }
+        @media (min-width: 1280px) { .content-area { width: 75%; } }
+
+        /* Video Player Wrapper */
+        .video-wrapper-bg { width: 100%; background: var(--slate-900); display: flex; justify-content: center; align-items: center; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.5); }
+        @media (min-width: 768px) { .video-wrapper-bg { padding: 2rem 0; } }
+        @media (min-width: 1024px) { .video-wrapper-bg { padding: 2.5rem 0; } }
+        
+        .video-container { width: 100%; max-width: 56rem; aspect-ratio: 16 / 9; position: relative; overflow: hidden; background: black; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        @media (min-width: 768px) { .video-container { border-radius: 1rem; } }
+        .video-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        /* Video Info & Description */
+        .info-container { padding: 1.5rem; max-width: 64rem; margin: 0 auto; }
+        @media (min-width: 768px) { .info-container { padding: 2.5rem; } }
+        
+        .info-header { display: flex; flex-direction: column; gap: 1rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        @media (min-width: 768px) { .info-header { flex-direction: row; align-items: flex-start; justify-content: space-between; } }
+        .video-title { font-size: 1.5rem; font-weight: 900; color: var(--slate-900); letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem; }
+        @media (min-width: 768px) { .video-title { font-size: 1.875rem; } }
+
+        .desc-box { background: rgba(236, 253, 245, 0.5); /* emerald-50/50 */ border: 1px solid var(--emerald-100); border-radius: 1rem; padding: 1.5rem; }
+        @media (min-width: 768px) { .desc-box { padding: 2rem; } }
+        .desc-box-title { font-size: 0.75rem; font-weight: 900; color: var(--emerald-800); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .desc-box-title svg { width: 1rem; height: 1rem; }
+        .desc-content { font-size: 0.875rem; color: var(--slate-600); line-height: 1.625; }
+        @media (min-width: 768px) { .desc-content { font-size: 1rem; } }
+        
+        /* Sidebar Playlist */
+        .playlist-sidebar { width: 100%; height: 40vh; background: white; border-top: 1px solid var(--slate-200); display: flex; flex-direction: column; z-index: 20; box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.05); }
+        @media (min-width: 1024px) { .playlist-sidebar { width: 30%; height: 100%; border-top: none; border-left: 1px solid var(--slate-200); box-shadow: -10px 0 15px -3px rgba(0,0,0,0.03); } }
+        @media (min-width: 1280px) { .playlist-sidebar { width: 25%; } }
+        
+        .playlist-header { padding: 1.25rem; border-bottom: 1px solid var(--slate-100); background: white; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
+        .playlist-title { font-weight: 900; color: var(--slate-800); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem; }
+        .playlist-count { background: var(--emerald-50); color: var(--emerald-600); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; }
+        
+        .playlist-scroll { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 2.5rem; }
+        
+        /* Module Item Button */
+        .module-item { width: 100%; text-align: left; padding: 0.75rem; border-radius: 0.75rem; display: flex; align-items: flex-start; gap: 0.75rem; transition: all 0.2s ease-in-out; border: 1px solid transparent; background: white; }
+        .module-item:hover { background-color: var(--slate-50); border-color: var(--slate-100); transform: translateX(4px); }
+        .module-item.active { background-color: var(--emerald-50); border-color: var(--emerald-200); border-left: 4px solid var(--emerald-500); transform: translateX(4px); }
+        
+        .module-icon { width: 1.25rem; height: 1.25rem; color: var(--slate-400); margin-top: 0.125rem; flex-shrink: 0; transition: color 0.2s; }
+        .module-item.active .module-icon { color: var(--emerald-600); }
+        
+        .module-text-wrap { display: flex; flex-direction: column; }
+        .module-title { font-weight: 700; color: var(--slate-600); font-size: 0.875rem; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
+        .module-item.active .module-title { color: var(--emerald-900); }
+        
+        .module-session { font-size: 0.625rem; color: var(--slate-400); font-weight: 500; margin-top: 0.25rem; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <i data-lucide="loader" class="animate-spin"></i>
+        <p class="animate-pulse">Memverifikasi Akses...</p>
+    </div>
+
+    <header class="header hidden" id="header-ui">
+        <div class="header-left">
+            <a href="/dashboard" class="btn-back">
+                <i data-lucide="arrow-left"></i> <span>Dashboard</span>
+            </a>
+            <div class="header-divider"></div>
+            <div>
+                <p class="header-info-sub">Sedang Dipelajari</p>
+                <h1 id="header-product-id" class="header-info-title">Memuat Data...</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-wrapper hidden" id="main-ui">
+        
+        <div class="content-area custom-scroll">
+            
+            <div class="video-wrapper-bg">
+                <div class="video-container">
+                    <iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="info-container">
+                <div class="info-header">
+                    <div>
+                        <h2 id="lms-title" class="video-title">Pilih video di playlist</h2>
+                    </div>
+                </div>
+
+                <div class="desc-box">
+                    <h3 class="desc-box-title"><i data-lucide="book-open"></i> Deskripsi Kelas</h3>
+                    <div id="lms-desc" class="desc-content">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="playlist-sidebar">
+            <div class="playlist-header">
+                <h3 class="playlist-title">Kurikulum</h3>
+                <span id="video-count" class="playlist-count">0 Video</span>
+            </div>
+            
+            <div id="video-playlist" class="playlist-scroll custom-scroll">
+                </div>
+        </aside>
+
+    </main>
+
+    <script>
+        (function() {
+            window.waAdminGlobal = '';
+            function applyBrandingSapuJagat(data) {
+                if(data.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+                    link.href = data.site_favicon;
+                }
+                if(data.wa_admin) window.waAdminGlobal = data.wa_admin;
+                
+                if(data.site_name) {
+                    if (!document.title.includes(data.site_name)) { document.title = "Ruang Belajar - " + data.site_name; }
+                    const updateDomElements = () => { document.querySelectorAll('.dyn-site-name').forEach(el => { el.innerText = data.site_name; }); };
+                    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', updateDomElements); } else { updateDomElements(); }
+                }
+            }
+
+            const cachedStr = localStorage.getItem('melimpah_global_settings');
+            if (cachedStr) { try { applyBrandingSapuJagat(JSON.parse(cachedStr).data); } catch(e){} }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                if(typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL !== 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI' && SCRIPT_URL !== '') {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
+                    .then(res => res.json())
+                    .then(r => {
+                        if(r.status === 'success') {
+                            localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() }));
+                            applyBrandingSapuJagat(r.data); 
+                        }
+                    }).catch(e => console.log('Branding sync skipped.'));
+                }
+            });
+        })();
+
+        // === CORE LOGIC ===
+        let globalVideos = [];
+
+        async function verifyAndLoad() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const userEmail = sessionStorage.getItem('user_email');
+
+            if (!productId) {
+                alert("Link materi tidak valid (ID Produk hilang).");
+                window.location.replace('/dashboard');
+                return;
+            }
+
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'get_lms_materi', email: userEmail, product_id: productId })
+                });
+                
+                const r = await res.json();
+
+                if (r.status === 'success') {
+                    document.getElementById('header-product-id').innerText = "Produk: " + r.data.product_id;
+                    document.getElementById('lms-desc').innerHTML = r.data.desc || "<i>Belum ada deskripsi untuk kelas ini.</i>";
+                    
+                    globalVideos = r.data.videos;
+                    document.getElementById('video-count').innerText = globalVideos.length + " Video";
+                    
+                    if (globalVideos.length > 0) {
+                        renderPlaylist();
+                        playVideo(0); 
+                    } else {
+                        document.getElementById('video-playlist').innerHTML = `<p style="font-size: 0.75rem; color: #94a3b8; text-align: center; margin-top: 2.5rem;">Belum ada video ditambahkan.</p>`;
+                    }
+
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('header-ui').classList.remove('hidden');
+                    document.getElementById('main-ui').classList.remove('hidden');
+                    lucide.createIcons();
+                } else {
+                    alert("AKSES DITOLAK: " + r.message);
+                    window.location.replace('/dashboard');
+                }
+            } catch (e) {
+                alert("Terjadi kesalahan sistem saat memverifikasi data.");
+                window.location.replace('/dashboard');
+            }
+        }
+
+        function renderPlaylist() {
+            const container = document.getElementById('video-playlist');
+            let html = '';
+            
+            globalVideos.forEach((vid, index) => {
+                html += `
+                <button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item">
+                    <i data-lucide="play-circle" class="module-icon"></i>
+                    <div class="module-text-wrap">
+                        <h5 class="module-title">${vid.title}</h5>
+                        <p class="module-session">Sesi ${index + 1}</p>
+                    </div>
+                </button>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function playVideo(index) {
+            const vid = globalVideos[index];
+            if(!vid) return;
+
+            document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`;
+            document.getElementById('lms-title').innerText = vid.title;
+
+            // Reset all active classes
+            document.querySelectorAll('.module-item').forEach(btn => btn.classList.remove('active'));
+            
+            // Set active class to clicked button
+            const activeBtn = document.getElementById(`vid-btn-${index}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            lucide.createIcons();
+        }
+
+        window.onload = () => {
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            verifyAndLoad();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syarat & Ketentuan - SheetFlare</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <style>
+        /* === CSS RESET & GLOBAL === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.625;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Layout */
+        .container {
+            max-width: 56rem; /* 896px */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 4rem 1.5rem;
+        }
+
+        /* Card Wrapper */
+        .card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 2.5rem;
+            border: 1px solid #f1f5f9; /* slate-100 */
+            box-shadow: 0 25px 50px -12px rgba(226, 232, 240, 0.5); /* shadow-2xl slate-200/50 */
+        }
+        @media (min-width: 768px) {
+            .card { padding: 3rem; } /* md:p-12 */
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9; /* slate-100 */
+            padding-bottom: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .header-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 4rem; height: 4rem;
+            background-color: #ecfdf5; /* emerald-50 */
+            color: #10b981; /* emerald-600 */
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .header-icon-wrap svg { width: 2rem; height: 2rem; }
+        
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 900;
+            color: #0f172a; /* slate-900 */
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+        }
+        @media (min-width: 768px) { .page-title { font-size: 3rem; } } /* md:text-5xl */
+        
+        .page-subtitle {
+            color: #64748b; /* slate-500 */
+            font-weight: 500;
+        }
+        .page-subtitle strong { color: #334155; /* slate-700 */ }
+
+        /* Intro Box */
+        .intro-box {
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 3rem;
+            color: #475569; /* slate-600 */
+            font-size: 0.875rem;
+        }
+        @media (min-width: 768px) { .intro-box { font-size: 1rem; } }
+        .intro-box strong { color: #1e293b; /* slate-800 */ }
+
+        /* Content Sections */
+        .clause-section { margin-bottom: 3rem; }
+        .clause-section:last-child { margin-bottom: 0; }
+        
+        .clause-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e293b; /* slate-800 */
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        @media (min-width: 768px) { .clause-title { font-size: 1.5rem; } } /* md:text-2xl */
+        
+        .clause-number {
+            width: 2rem; height: 2rem;
+            background-color: #10b981; /* emerald-600 */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .clause-content {
+            margin-left: 1rem;
+            color: #475569; /* slate-600 */
+        }
+        @media (min-width: 768px) { .clause-content { margin-left: 2.75rem; } } /* md:ml-11 */
+        
+        .clause-content > p { margin-bottom: 1rem; }
+        
+        /* Lists */
+        .custom-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .custom-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .custom-list li svg {
+            width: 1.25rem; height: 1.25rem;
+            color: #10b981; /* emerald-500 */
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        /* Warning & Info Boxes */
+        .box-warning {
+            background-color: #fef2f2; /* red-50 */
+            border: 1px solid #fee2e2; /* red-100 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+        .box-warning li svg { color: #ef4444; /* red-500 */ }
+        
+        .box-info {
+            background-color: #fffbeb; /* amber-50 */
+            border: 1px solid #fef3c7; /* amber-100 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+        .box-info li svg { color: #d97706; /* amber-600 */ }
+        
+        .box-dark {
+            background-color: #0f172a; /* slate-900 */
+            color: #cbd5e1; /* slate-300 */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 768px) { .box-dark { padding: 2rem; } }
+        .box-dark .box-dark-header {
+            display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;
+        }
+        .box-dark .box-dark-header svg {
+            width: 1.5rem; height: 1.5rem; color: #ef4444; /* red-500 */
+        }
+        .box-dark .box-dark-title {
+            font-weight: 700; color: white; font-size: 1.125rem;
+        }
+
+        /* Footer / Back Button */
+        .card-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #f1f5f9; /* slate-100 */
+            text-align: center;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #475569; /* slate-600 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #e2e8f0; /* slate-200 */
+        }
+        .btn-back svg { width: 1rem; height: 1rem; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        
+        <div class="page-header">
+            <div class="header-icon-wrap">
+                <i data-lucide="scale"></i>
+            </div>
+            <h1 class="page-title">Syarat & Ketentuan</h1>
+            <p class="page-subtitle">Pembaruan Terakhir: <strong>1 April 2026</strong></p>
+        </div>
+
+        <div class="intro-box">
+            Selamat datang di <strong>SheetFlare</strong>. Dengan mengakses, mendaftar, dan melakukan pembelian di platform kami, Anda secara otomatis menyetujui untuk terikat dengan syarat dan ketentuan yang berlaku di bawah ini. Harap baca dengan saksama.
+        </div>
+
+        <div class="clauses-container">
+            
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">1</span>
+                    Definisi Layanan dan Produk
+                </h2>
+                <div class="clause-content">
+                    <ul class="custom-list">
+                        <li><i data-lucide="check"></i> <span>Semua produk yang tersedia di SheetFlare merupakan <strong>produk digital</strong> (seperti source code, template, kursus video, script, dan aset kreatif) yang tidak memiliki bentuk fisik.</span></li>
+                        <li><i data-lucide="check"></i> <span>Pengiriman produk dilakukan secara instan atau manual melalui sistem Dashboard Member setelah pembayaran berhasil diverifikasi.</span></li>
+                        <li><i data-lucide="check"></i> <span>Kami berhak memodifikasi, memperbarui, atau menghentikan produk kapan saja tanpa pemberitahuan sebelumnya guna menjaga kualitas layanan.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">2</span>
+                    Lisensi dan Hak Cipta
+                </h2>
+                <div class="clause-content">
+                    <p>Kecuali disebutkan secara spesifik pada halaman penjualan (seperti Lisensi Whitelabel atau PLR), semua produk yang Anda beli di SheetFlare menggunakan <strong>Lisensi Personal (Personal Use)</strong>. Anda sangat dilarang untuk:</p>
+                    <ul class="custom-list box-warning">
+                        <li><i data-lucide="x"></i> <span>Menjual kembali (resell), menyewakan, atau mendistribusikan ulang produk kepada pihak ketiga tanpa lisensi yang sesuai.</span></li>
+                        <li><i data-lucide="x"></i> <span>Membagikan akses akun (email dan password) Anda kepada orang lain (Account Sharing).</span></li>
+                        <li><i data-lucide="x"></i> <span>Mengklaim hak cipta atas materi, script, template, atau aset desain milik SheetFlare.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">3</span>
+                    Proses Pembayaran dan Akses
+                </h2>
+                <div class="clause-content">
+                    <ul class="custom-list">
+                        <li><i data-lucide="check"></i> <span>Harga produk dapat berubah sewaktu-waktu sesuai dengan masa promo yang berlaku.</span></li>
+                        <li><i data-lucide="check"></i> <span>Pembayaran harus dilakukan sesuai dengan nominal invoice (tagihan) yang diberikan sistem hingga digit terakhir.</span></li>
+                        <li><i data-lucide="check"></i> <span>Akses produk akan terbuka secara otomatis setelah status pesanan diubah menjadi "Lunas" oleh sistem Payment Gateway atau divalidasi oleh Admin.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">4</span>
+                    Kebijakan Pengembalian Dana (Refund Policy)
+                </h2>
+                <div class="clause-content">
+                    <p>Karena sifat produk digital (termasuk source code) yang langsung dapat diakses, disalin, dan diunduh, maka <strong>semua penjualan bersifat final</strong>. Kami <strong>tidak melayani pengembalian dana (refund)</strong> dengan alasan apa pun setelah akses produk diberikan, kecuali jika:</p>
+                    <ul class="custom-list box-info" style="margin-top: 1rem;">
+                        <li><i data-lucide="info"></i> <span>File produk terbukti rusak/corrupt dan tim dukungan kami tidak dapat memberikan file penggantinya.</span></li>
+                        <li><i data-lucide="info"></i> <span>Anda tidak sengaja melakukan transfer ganda (double payment) untuk invoice yang sama.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">5</span>
+                    Keamanan Akun Member
+                </h2>
+                <div class="clause-content">
+                    <p>Anda bertanggung jawab penuh atas keamanan kredensial akun Anda (Email dan Password). SheetFlare tidak bertanggung jawab atas penyalahgunaan akun yang diakibatkan oleh kelalaian pengguna. Jika Anda mendeteksi aktivitas mencurigakan pada akun Anda, segera hubungi Admin.</p>
+                </div>
+            </div>
+
+            <div class="clause-section">
+                <h2 class="clause-title">
+                    <span class="clause-number">6</span>
+                    Pelanggaran Ketentuan
+                </h2>
+                <div class="clause-content">
+                    <div class="box-dark">
+                        <div class="box-dark-header">
+                            <i data-lucide="alert-triangle"></i>
+                            <h3 class="box-dark-title">Sanksi Pelanggaran</h3>
+                        </div>
+                        <p>SheetFlare memiliki hak penuh untuk mencabut akses produk, membekukan, hingga menghapus akun member secara permanen <strong style="color: white;">tanpa peringatan dan tanpa pengembalian dana</strong>, apabila member terbukti melanggar Syarat dan Ketentuan ini (khususnya pada poin Lisensi dan pembagian akun).</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <a href="/" class="btn-back">
+                <i data-lucide="arrow-left"></i> Kembali ke Beranda
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+
+</body>
+</html>

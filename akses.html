@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script>
+        // Lempar penyusup ke halaman login sebelum 1 piksel pun tergambar
+        if (!sessionStorage.getItem('user_email')) {
+            window.location.replace('/login');
+        }
+    </script>
+
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+
+    <script src="config.js?v=2026"></script>
+    
+    <script>
+        (function() {
+            window.waAdminGlobal = '';
+            
+            function applyBrandingSapuJagat(data) {
+                if(data.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+                    link.href = data.site_favicon;
+                }
+                if(data.wa_admin) window.waAdminGlobal = data.wa_admin;
+                
+                if(data.site_name) {
+                    if (!document.title.includes(data.site_name)) {
+                        document.title = "Akses Materi - " + data.site_name;
+                    }
+                    const updateDomElements = () => {
+                        document.querySelectorAll('.dyn-site-name').forEach(el => { el.innerText = data.site_name; });
+                    };
+                    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', updateDomElements); } else { updateDomElements(); }
+                }
+            }
+
+            const cachedStr = localStorage.getItem('melimpah_global_settings');
+            if (cachedStr) {
+                try { applyBrandingSapuJagat(JSON.parse(cachedStr).data); } catch(e){}
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                if(typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL !== 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI' && SCRIPT_URL !== '') {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
+                    .then(res => res.json())
+                    .then(r => {
+                        if(r.status === 'success') {
+                            localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() }));
+                            applyBrandingSapuJagat(r.data); 
+                        }
+                    }).catch(e => console.log('Branding sync skipped.'));
+                }
+            });
+        })();
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akses Materi - SheetFlare</title>
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === CSS RESET & GLOBAL === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+        .hidden { display: none !important; }
+
+        /* === ANIMATIONS === */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        
+        @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+        .animate-spin-reverse { animation: spin-reverse 1.5s linear infinite; }
+        
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* === HEADER === */
+        .header {
+            background-color: white;
+            border-bottom: 1px solid #f1f5f9; /* slate-100 */
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .header-container {
+            max-width: 48rem; /* 768px */
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-logo {
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            color: #10b981; /* emerald-500 */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+        .brand-logo svg { width: 1.5rem; height: 1.5rem; }
+        
+        .header-nav { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-link {
+            color: #64748b; /* slate-500 */
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+        }
+        .nav-link:hover { color: #10b981; /* emerald-500 */ }
+        
+        .btn-logout {
+            color: #94a3b8; /* slate-400 */
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: color 0.3s;
+        }
+        .btn-logout:hover { color: #f43f5e; /* rose-500 */ }
+        .btn-logout svg { width: 1rem; height: 1rem; }
+
+        /* === MAIN CONTENT === */
+        .main-wrapper {
+            flex: 1;
+            max-width: 48rem; /* 768px */
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @media (min-width: 768px) { .main-wrapper { padding: 5rem 1.5rem; } }
+
+        /* Loading State */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 0;
+        }
+        .loader-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 4rem;
+            height: 4rem;
+            margin-bottom: 1rem;
+        }
+        .loader-ring-1 {
+            position: absolute; inset: 0;
+            border-radius: 50%; border: 4px solid #f1f5f9;
+        }
+        .loader-ring-2 {
+            position: absolute; inset: 0;
+            border-radius: 50%; border: 4px solid #10b981; /* emerald-500 */
+            border-top-color: transparent;
+        }
+        .loader-ring-3 {
+            position: absolute; inset: 0.5rem;
+            border-radius: 50%; border: 4px solid #34d399; /* emerald-400 */
+            border-bottom-color: transparent;
+        }
+        .loader-icon { width: 1.25rem; height: 1.25rem; color: #10b981; }
+
+        /* Error State */
+        .error-state {
+            text-align: center;
+            padding: 5rem 0;
+        }
+        .error-icon-wrap {
+            width: 5rem; height: 5rem;
+            background-color: #fef2f2; /* rose-50 */
+            color: #ef4444; /* rose-500 */
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        .error-icon-wrap svg { width: 2.5rem; height: 2.5rem; }
+        .error-title {
+            font-size: 1.875rem; font-weight: 900; color: #0f172a;
+            margin-bottom: 1rem; letter-spacing: -0.025em;
+        }
+        .error-msg {
+            color: #64748b; font-size: 1rem; max-width: 28rem;
+            margin: 0 auto 2.5rem; line-height: 1.625;
+        }
+        .btn-return {
+            display: inline-flex; align-items: center; gap: 0.75rem;
+            background-color: #0f172a; color: white;
+            padding: 1rem 2rem; border-radius: 0.75rem;
+            font-weight: 700; font-size: 0.75rem; text-transform: uppercase;
+            letter-spacing: 0.1em; transition: background-color 0.3s;
+        }
+        .btn-return:hover { background-color: #10b981; /* emerald-500 */ }
+        .btn-return svg { width: 1rem; height: 1rem; }
+
+        /* Access Content */
+        .access-container { width: 100%; display: flex; flex-direction: column; gap: 2rem; }
+        
+        .welcome-header { text-align: center; margin-bottom: 1rem; }
+        .welcome-badge {
+            color: #10b981; /* emerald-500 */
+            font-weight: 700; font-size: 0.875rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .welcome-badge svg { width: 1rem; height: 1rem; }
+        .welcome-title {
+            font-size: 1.875rem; font-weight: 900; color: #0f172a;
+            letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem;
+        }
+        @media (min-width: 768px) { .welcome-title { font-size: 3rem; } }
+        .welcome-name { color: #10b981; }
+        .welcome-desc { color: #64748b; font-size: 1rem; }
+        @media (min-width: 768px) { .welcome-desc { font-size: 1.125rem; } }
+
+        /* Card Produk */
+        .product-card {
+            background-color: white; border: 1px solid #e2e8f0;
+            border-radius: 2rem; padding: 2rem; text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative; overflow: hidden;
+        }
+        @media (min-width: 768px) { .product-card { padding: 3rem; } }
+        
+        .card-bg-icon {
+            position: absolute; top: 0; right: 0; padding: 2rem; opacity: 0.05;
+            color: #0f172a; transform: rotate(-12deg) translate(2.5rem, -2.5rem);
+            pointer-events: none;
+        }
+        .card-bg-icon svg { width: 16rem; height: 16rem; }
+        
+        .card-content { position: relative; z-index: 10; }
+        .product-label {
+            display: inline-block; padding: 0.5rem 1rem; background-color: #f8fafc;
+            border: 1px solid #f1f5f9; color: #64748b; font-size: 0.625rem;
+            font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
+            border-radius: 9999px; margin-bottom: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.5rem; font-weight: 900; color: #0f172a;
+            margin-bottom: 1rem; line-height: 1.25;
+        }
+        @media (min-width: 768px) { .product-title { font-size: 2.25rem; } }
+        
+        .product-desc {
+            color: #64748b; font-size: 0.875rem; max-width: 32rem; margin: 0 auto 3rem; line-height: 1.625;
+        }
+        @media (min-width: 768px) { .product-desc { font-size: 1rem; } }
+
+        .btn-access {
+            display: inline-flex; align-items: center; justify-content: center; gap: 1rem;
+            background-color: #10b981; /* emerald-500 */
+            color: white; width: 100%; padding: 1.5rem; border-radius: 1rem;
+            font-weight: 900; font-size: 0.875rem; text-transform: uppercase;
+            letter-spacing: 0.2em; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+        }
+        @media (min-width: 768px) { .btn-access { width: auto; padding: 1.5rem 3rem; } }
+        .btn-access:hover {
+            background-color: #059669; /* emerald-600 */
+            transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4);
+        }
+        .btn-access svg { width: 1.25rem; height: 1.25rem; transition: transform 0.3s; }
+        .btn-access:hover svg { transform: translateX(4px); }
+
+        /* Footer License */
+        .license-info {
+            text-align: center; margin-top: 1rem;
+        }
+        .license-text {
+            font-size: 0.625rem; font-weight: 700; color: #94a3b8;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .license-text svg { width: 1rem; height: 1rem; color: #10b981; }
+        .license-email { color: #334155; font-weight: 900; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="brand-logo">
+                <i data-lucide="layers"></i> <span class="dyn-site-name">SheetFlare</span>
+            </div>
+            <div class="header-nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <button onclick="logout()" class="btn-logout">
+                    Keluar <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        
+        <div id="loading-state" class="loading-state">
+            <div class="loader-wrapper">
+                <div class="loader-ring-1"></div>
+                <div class="loader-ring-2 animate-spin"></div>
+                <div class="loader-ring-3 animate-spin-reverse"></div>
+                <i data-lucide="sparkles" class="loader-icon animate-pulse"></i>
+            </div>
+        </div>
+
+        <div id="error-state" class="error-state hidden">
+            <div class="error-icon-wrap">
+                <i data-lucide="lock"></i>
+            </div>
+            <h2 class="error-title">Akses Terkunci</h2>
+            <p id="error-msg" class="error-msg">Anda belum memiliki akses ke produk ini atau tagihan Anda masih menunggu verifikasi.</p>
+            <a href="/dashboard" class="btn-return">
+                <i data-lucide="arrow-left"></i> Kembali ke Dashboard
+            </a>
+        </div>
+
+        <div id="access-content" class="access-container hidden">
+            
+            <div class="welcome-header">
+                <p class="welcome-badge">
+                    <i data-lucide="sparkles"></i> Akses Premium Dibuka
+                </p>
+                <h1 class="welcome-title">
+                    Halo, <span id="greeting-name" class="welcome-name">Member</span>! 👋
+                </h1>
+                <p class="welcome-desc">Terima kasih, berikut adalah akses materi yang Anda pesan.</p>
+            </div>
+
+            <div class="product-card">
+                <div class="card-bg-icon">
+                    <i data-lucide="box"></i>
+                </div>
+
+                <div class="card-content">
+                    <div class="product-label">Detail Produk</div>
+                    
+                    <h2 id="prod-title" class="product-title">Memuat...</h2>
+                    
+                    <p id="prod-desc" class="product-desc">Sedang menyiapkan materi Anda...</p>
+
+                    <a href="#" id="btn-access" target="_blank" class="btn-access">
+                        Akses Materi Sekarang 
+                        <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="license-info">
+                <p class="license-text">
+                    <i data-lucide="shield-check"></i>
+                    Lisensi Resmi Terdaftar Atas Email: <span id="display-email" class="license-email"></span>
+                </p>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        const DASHBOARD_CACHE_KEY = 'melimpah_dashboard_data'; 
+
+        const userEmail = sessionStorage.getItem('user_email');
+        const userNama = sessionStorage.getItem('user_nama');
+        
+        if(userNama) document.getElementById('greeting-name').innerText = userNama.split(' ')[0]; 
+        
+        document.getElementById('display-email').innerText = userEmail || '';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        function showError(msg) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('error-state').classList.remove('hidden');
+            document.getElementById('access-content').classList.add('hidden');
+            if(msg) document.getElementById('error-msg').innerText = msg;
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function renderAccessUI(product) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('error-state').classList.add('hidden');
+            document.getElementById('access-content').classList.remove('hidden');
+            
+            document.getElementById('prod-title').innerText = product.title;
+            document.getElementById('prod-desc').innerText = product.desc || "Silakan klik tombol di bawah untuk membuka akses penuh ke materi Anda.";
+            document.getElementById('btn-access').href = product.url; 
+            
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        async function verifyAccess() {
+            if (!productId) {
+                showError("ID Produk tidak ditemukan di sistem kami.");
+                return;
+            }
+
+            const cacheKeyUser = DASHBOARD_CACHE_KEY + '_' + userEmail;
+            const cachedDataStr = localStorage.getItem(cacheKeyUser);
+            let accessGrantedFromCache = false;
+
+            // Cek di local storage dulu biar instan
+            if (cachedDataStr) {
+                try {
+                    const cachedData = JSON.parse(cachedDataStr);
+                    if (cachedData.status === 'success' && cachedData.owned) {
+                        const product = cachedData.owned.find(p => p.id === productId);
+                        if (product) {
+                            renderAccessUI(product);
+                            accessGrantedFromCache = true;
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // Verifikasi ke server (background sync)
+            try {
+                if(typeof SCRIPT_URL === 'undefined' || SCRIPT_URL === 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI') {
+                    if(!accessGrantedFromCache) showError("Sistem belum dikonfigurasi.");
+                    return;
+                }
+                
+                const res = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'get_products', email: userEmail }) 
+                });
+                const r = await res.json();
+
+                if (r.status === 'success') {
+                    const freshDataStr = JSON.stringify(r);
+                    if(cachedDataStr !== freshDataStr) {
+                        localStorage.setItem(cacheKeyUser, freshDataStr);
+                    }
+                    const product = r.owned.find(p => p.id === productId);
+
+                    if (product) {
+                        if(!accessGrantedFromCache) renderAccessUI(product);
+                    } else {
+                        showError("Maaf, Anda belum membeli produk ini atau akses pembayaran Anda telah ditangguhkan.");
+                    }
+                } else {
+                    if(!accessGrantedFromCache) showError("Gagal menghubungi server verifikasi.");
+                }
+            } catch (err) {
+                if(!accessGrantedFromCache) showError("Koneksi bermasalah. Pastikan internet Anda stabil.");
+            }
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            localStorage.removeItem(DASHBOARD_CACHE_KEY + '_' + userEmail);
+            window.location.replace('/login');
+        }
+
+        window.onload = () => {
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            verifyAccess();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+
+    <script src="config.js?v=2026"></script>
+    <script src="engine.js?v=2026"></script>
+
+    <script>
+        (function() {
+            const CACHE_KEY = 'melimpah_global_settings';
+            const CACHE_AGE = 60 * 60 * 1000; 
+
+            function applyGlobalSettings(data) {
+                if(data.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+                    link.href = data.site_favicon;
+                }
+                if(data.site_name) {
+                    document.title = document.title.replace(/Melimpah Digital/gi, data.site_name).replace(/Melimpah/gi, data.site_name);
+                }
+
+                const updateDomElements = () => {
+                    if(data.site_name) {
+                        document.querySelectorAll('.dyn-site-name').forEach(el => el.innerText = data.site_name);
+                    }
+                    if(data.site_tagline) {
+                        document.querySelectorAll('.dyn-site-tagline').forEach(el => el.innerText = data.site_tagline);
+                    }
+                };
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', updateDomElements);
+                } else {
+                    updateDomElements();
+                }
+            }
+
+            const cachedStr = localStorage.getItem(CACHE_KEY);
+            let cached = null;
+            try { cached = JSON.parse(cachedStr); } catch(e){}
+            const now = Date.now();
+
+            if (cached && cached.data) { applyGlobalSettings(cached.data); }
+
+            if (!cached || !cached.time || (now - cached.time > CACHE_AGE)) {
+                if(typeof window.SCRIPT_URL === 'undefined' && typeof SCRIPT_URL === 'undefined') return;
+                const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
+                fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
+                    .then(res => res.json())
+                    .then(r => {
+                        if(r.status === 'success') {
+                            localStorage.setItem(CACHE_KEY, JSON.stringify({ data: r.data, time: now }));
+                            applyGlobalSettings(r.data); 
+                        }
+                    }).catch(e => console.error("Global Sync Failed", e));
+            }
+        })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheetFlare Admin V13.0 - CMS Edition</title>
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === CSS RESET & VARIABLES === */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --emerald-50: #ecfdf5; --emerald-100: #d1fae5; --emerald-500: #10b981; --emerald-600: #059669; --emerald-700: #047857;
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-400: #94a3b8; --slate-500: #64748b; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
+            --rose-50: #fff1f2; --rose-500: #f43f5e; --rose-600: #e11d48;
+            --amber-50: #fffbeb; --amber-500: #f59e0b; --amber-600: #d97706;
+            --blue-50: #eff6ff; --blue-600: #2563eb;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-50); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+        a { text-decoration: none; color: inherit; }
+        input, select, textarea { font-family: inherit; }
+        .hidden { display: none !important; }
+
+        /* === SCROLLBAR === */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+
+        /* === LOGIN SCREEN (CLEAN & WHITE) === */
+        #login-overlay { position: fixed; inset: 0; background-color: var(--slate-50); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        .login-bg-shape { position: absolute; width: 400px; height: 400px; background: var(--emerald-100); border-radius: 50%; filter: blur(100px); opacity: 0.5; pointer-events: none; }
+        .login-bg-shape.top { top: -10%; left: -10%; }
+        .login-bg-shape.bottom { bottom: -10%; right: -10%; background: #cffafe; }
+        
+        .login-card {
+            background: white; width: 100%; max-width: 28rem; border-radius: 2rem; padding: 3rem 2rem;
+            box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.15); border: 1px solid var(--slate-100);
+            position: relative; z-index: 10; text-align: center;
+        }
+        .login-logo { display: inline-flex; align-items: center; justify-content: center; width: 4rem; height: 4rem; background: var(--emerald-50); color: var(--emerald-600); border-radius: 1rem; margin-bottom: 1.5rem; }
+        .login-card h1 { font-size: 1.875rem; font-weight: 900; color: var(--slate-900); margin-bottom: 0.5rem; letter-spacing: -0.025em; }
+        .login-card p { font-size: 0.875rem; color: var(--slate-500); margin-bottom: 2.5rem; }
+        
+        .login-form-group { text-align: left; margin-bottom: 1.5rem; position: relative; }
+        .login-form-group label { display: block; font-size: 0.625rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-left: 0.5rem; }
+        .login-input-wrap { position: relative; }
+        .login-input-icon { position: absolute; top: 50%; transform: translateY(-50%); left: 1.25rem; color: var(--slate-400); pointer-events: none; }
+        .login-input-icon svg { width: 1.25rem; height: 1.25rem; }
+        .login-input {
+            width: 100%; padding: 1rem 1rem 1rem 3.25rem; background: var(--slate-50); border: 1px solid var(--slate-200);
+            border-radius: 1rem; font-weight: 700; color: var(--slate-800); outline: none; transition: all 0.3s;
+        }
+        .login-input:focus { background: white; border-color: var(--emerald-500); box-shadow: 0 0 0 4px var(--emerald-100); }
+        .login-btn-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--slate-400); cursor: pointer; }
+        .login-btn-toggle:hover { color: var(--emerald-600); }
+        .login-btn-toggle svg { width: 1.25rem; height: 1.25rem; }
+        
+        .btn-login-submit {
+            width: 100%; background: var(--emerald-600); color: white; padding: 1.25rem; border-radius: 1rem;
+            font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); transition: all 0.3s; margin-top: 1rem;
+        }
+        .btn-login-submit:hover { background: var(--emerald-700); transform: translateY(-2px); }
+        .login-footer { margin-top: 2rem; border-top: 1px solid var(--slate-100); padding-top: 1.5rem; }
+        .login-footer a { font-size: 0.75rem; font-weight: 700; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; }
+        .login-footer a:hover { color: var(--emerald-600); }
+
+        /* === ADMIN LAYOUT === */
+        #admin-main { display: none; height: 100vh; width: 100vw; }
+        
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--slate-900); color: var(--slate-400); display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.3s ease-in-out; position: relative; z-index: 50; }
+        .sidebar-header { padding: 2rem; font-size: 1.5rem; font-weight: 900; color: white; letter-spacing: -0.05em; border-bottom: 1px solid var(--slate-800); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-close { display: none; color: var(--slate-500); }
+        .sidebar-nav { padding: 1.5rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.25rem; }
+        
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; font-weight: 700; font-size: 0.875rem; border-radius: 0.75rem; transition: all 0.2s; color: var(--slate-400); width: 100%; text-align: left; }
+        .nav-item svg { width: 1.25rem; height: 1.25rem; }
+        .nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .nav-item.active { background: var(--emerald-600); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        
+        .nav-divider { margin: 0.75rem 0; border-top: 1px solid var(--slate-800); }
+        
+        .sidebar-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--slate-800); display: flex; flex-direction: column; gap: 1rem; }
+        .sidebar-link { display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--emerald-500); transition: color 0.2s; }
+        .sidebar-link:hover { color: var(--emerald-400); }
+        .sidebar-logout { display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--slate-500); transition: color 0.2s; cursor: pointer; border: none; background: none; }
+        .sidebar-logout:hover { color: var(--rose-500); }
+
+        /* Overlay Mobile */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 40; backdrop-filter: blur(2px); }
+
+        /* Main Content */
+        .main-content { flex: 1; overflow-y: auto; background-color: var(--slate-50); padding: 1.5rem; position: relative; }
+        @media (min-width: 768px) { .main-content { padding: 2.5rem; } }
+        
+        /* Top Header */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; position: sticky; top: 0; background: rgba(248, 250, 252, 0.9); backdrop-filter: blur(8px); padding-bottom: 1rem; z-index: 30; }
+        .header-title-wrap { display: flex; align-items: center; gap: 1rem; }
+        .btn-menu { display: none; padding: 0.75rem; background: white; border-radius: 0.75rem; border: 1px solid var(--slate-200); color: var(--slate-600); }
+        .header-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); text-transform: uppercase; letter-spacing: -0.025em; }
+        @media (min-width: 768px) { .header-title { font-size: 1.875rem; } }
+        
+        .header-user { display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1rem; border-radius: 1rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .sync-badge { font-size: 0.5rem; font-weight: 900; background: var(--slate-100); color: var(--slate-400); padding: 0.25rem 0.5rem; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.1em; display: none; }
+        .sync-badge.show { display: inline-block; animation: pulse 2s infinite; }
+        .admin-name { font-weight: 700; font-size: 0.875rem; color: var(--slate-800); display: none; }
+        @media (min-width: 640px) { .admin-name { display: block; } }
+        .admin-avatar { width: 2rem; height: 2rem; background: var(--emerald-100); color: var(--emerald-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.875rem; }
+        .btn-refresh { color: var(--slate-400); transition: color 0.3s; }
+        .btn-refresh:hover { color: var(--emerald-600); }
+
+        /* Responsive Sidebar */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-close { display: block; }
+            .btn-menu { display: block; }
+            .sidebar-overlay.open { display: block; }
+        }
+
+        /* === COMPONENTS === */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Action Bar */
+        .action-bar { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+        @media (min-width: 640px) { .action-bar { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .action-title { font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        /* Cards & Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 2rem; }
+        @media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 1.5rem; border: 1px solid var(--slate-100); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 1.25rem; }
+        .stat-icon { width: 3rem; height: 3rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        @media (min-width: 768px) { .stat-icon { width: 4rem; height: 4rem; } }
+        .stat-icon.blue { background: var(--blue-50); color: var(--blue-600); }
+        .stat-icon.emerald { background: var(--emerald-50); color: var(--emerald-600); }
+        .stat-label { font-size: 0.625rem; font-weight: 900; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+        .stat-value { font-size: 1.5rem; font-weight: 900; color: var(--slate-800); }
+        @media (min-width: 768px) { .stat-value { font-size: 1.875rem; } }
+        .stat-value.emerald { color: var(--emerald-600); }
+
+        /* Tables */
+        .table-wrap { background: white; border-radius: 1.5rem; border: 1px solid var(--slate-100); box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
+        .table th { background: var(--slate-50); padding: 1rem 1.5rem; font-size: 0.625rem; font-weight: 900; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--slate-100); }
+        .table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--slate-50); font-size: 0.875rem; color: var(--slate-700); vertical-align: middle; }
+        .table tr:hover td { background: var(--slate-50); }
+        
+        .td-bold { font-weight: 700; color: var(--slate-800); }
+        .td-mono { font-family: monospace; font-weight: 900; color: var(--emerald-600); }
+        .td-sub { font-size: 0.625rem; color: var(--slate-400); font-weight: 500; display: block; margin-top: 0.25rem; }
+        
+        .action-btns { display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn-icon { padding: 0.5rem; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .btn-icon svg { width: 1.25rem; height: 1.25rem; }
+        .btn-icon.emerald { background: var(--emerald-50); color: var(--emerald-600); }
+        .btn-icon.emerald:hover { background: var(--emerald-600); color: white; }
+        .btn-icon.rose { background: var(--rose-50); color: var(--rose-500); }
+        .btn-icon.rose:hover { background: var(--rose-600); color: white; }
+        .btn-icon.amber { background: var(--amber-50); color: var(--amber-600); }
+        .btn-icon.amber:hover { background: var(--amber-600); color: white; }
+        .btn-icon.blue { background: var(--blue-50); color: var(--blue-600); }
+        .btn-icon.blue:hover { background: var(--blue-600); color: white; }
+
+        /* Badges */
+        .badge { padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.5625rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; }
+        .badge.active { background: var(--emerald-100); color: var(--emerald-700); }
+        .badge.inactive { background: var(--rose-100); color: var(--rose-700); }
+        .badge.warning { background: var(--amber-100); color: var(--amber-700); }
+        .badge.outline { border: 1px solid currentColor; background: transparent; }
+
+        /* General Buttons */
+        .btn-primary { background: var(--emerald-600); color: white; padding: 1rem 2rem; border-radius: 0.75rem; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2); transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; }
+        @media (min-width: 640px) { .btn-primary { width: auto; } }
+        .btn-primary:hover { background: var(--emerald-700); transform: translateY(-2px); }
+        
+        .btn-outline { background: white; color: var(--slate-600); border: 1px solid var(--slate-200); padding: 1rem 2rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; }
+        @media (min-width: 640px) { .btn-outline { width: auto; } }
+        .btn-outline:hover { background: var(--slate-50); border-color: var(--slate-300); }
+
+        .btn-dark { background: var(--slate-900); color: white; padding: 1rem 2rem; border-radius: 0.75rem; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.2); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; }
+        .btn-dark:hover { background: var(--emerald-600); transform: translateY(-2px); }
+
+        /* Products Grid */
+        .prod-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 768px) { .prod-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .prod-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .prod-card { background: white; padding: 1.5rem; border-radius: 1.5rem; border: 1px solid var(--slate-100); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.2s; }
+        .prod-card:not(.inactive):hover { transform: translateY(-4px); }
+        .prod-card.inactive { opacity: 0.6; filter: grayscale(50%); }
+        .prod-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .prod-id-wrap { display: flex; align-items: center; gap: 0.5rem; }
+        .prod-id { font-size: 0.5625rem; font-weight: 900; background: var(--slate-50); color: var(--slate-400); padding: 0.25rem 0.5rem; border-radius: 9999px; text-transform: uppercase; }
+        .prod-price { font-size: 0.875rem; font-weight: 900; color: var(--slate-800); font-style: italic; }
+        .prod-title { font-size: 1.125rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.5rem; line-height: 1.2; }
+        .prod-desc { font-size: 0.625rem; color: var(--slate-400); line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .prod-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: auto; }
+        .btn-prod { padding: 0.75rem; border-radius: 0.5rem; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 0.25rem; transition: all 0.2s; }
+        .btn-prod svg { width: 1rem; height: 1rem; }
+        .btn-prod-link { background: var(--blue-50); color: var(--blue-600); } .btn-prod-link:hover { background: var(--blue-600); color: white; }
+        .btn-prod-edit { background: var(--slate-50); color: var(--slate-500); } .btn-prod-edit:hover { background: var(--slate-200); color: var(--emerald-600); }
+        .btn-prod-toggle.active { background: var(--rose-50); color: var(--rose-500); } .btn-prod-toggle.active:hover { background: var(--rose-600); color: white; }
+        .btn-prod-toggle.inactive { background: var(--emerald-50); color: var(--emerald-600); } .btn-prod-toggle.inactive:hover { background: var(--emerald-600); color: white; }
+
+        /* Forms inside Settings / Modals */
+        .settings-card { background: white; padding: 1.5rem; border-radius: 1.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        @media (min-width: 768px) { .settings-card { padding: 2rem; } }
+        .settings-title { font-size: 1.125rem; font-weight: 900; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .settings-title.emerald { color: var(--emerald-600); }
+        .settings-title.green { color: #16a34a; }
+        .settings-title.orange { color: #ea580c; }
+        .settings-title svg { width: 1.25rem; height: 1.25rem; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 768px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label { display: block; font-size: 0.625rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem 1rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.5rem; font-size: 0.875rem; color: var(--slate-800); outline: none; transition: border-color 0.2s; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--emerald-500); }
+        .form-textarea { min-height: 80px; resize: vertical; }
+        
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
+        .modal-card { background: white; width: 100%; border-radius: 2rem; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
+        @media (min-width: 768px) { .modal-card { padding: 2.5rem; } }
+        .modal-card.md { max-width: 28rem; }
+        .modal-card.lg { max-width: 36rem; }
+        .modal-card.xl { max-width: 48rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; color: var(--slate-800); margin-bottom: 1.5rem; font-style: italic; }
+        .modal-footer { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--slate-100); }
+        @media (min-width: 640px) { .modal-footer { flex-direction: row; justify-content: flex-end; } }
+        .btn-cancel { padding: 1rem; font-weight: 700; color: var(--slate-400); border: none; background: transparent; cursor: pointer; transition: color 0.2s; }
+        .btn-cancel:hover { color: var(--slate-600); }
+
+        /* Media Box */
+        .media-box { background: white; padding: 2rem; border-radius: 2rem; border: 1px solid var(--slate-100); margin-bottom: 2rem; }
+        .media-box h3 { font-size: 1.5rem; font-weight: 900; color: var(--slate-800); margin-bottom: 0.5rem; font-style: italic; }
+        .media-box p { font-size: 0.875rem; color: var(--slate-400); margin-bottom: 2rem; }
+        .media-upload-area { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+        @media (min-width: 768px) { .media-upload-area { flex-direction: row; } }
+        .media-input { width: 100%; padding: 1rem; border: 2px dashed var(--slate-200); border-radius: 1rem; background: var(--slate-50); outline: none; }
+        .media-res-box { background: var(--emerald-50); border: 1px solid var(--emerald-100); padding: 1.5rem; border-radius: 1.5rem; margin-top: 1.5rem; }
+        .media-res-flex { display: flex; flex-direction: column; gap: 0.75rem; }
+        @media (min-width: 768px) { .media-res-flex { flex-direction: row; } }
+        .media-res-input { width: 100%; padding: 1rem; background: white; border: 1px solid var(--emerald-200); border-radius: 0.75rem; font-family: monospace; font-size: 0.75rem; }
+
+        /* Editor Toolbar */
+        .editor-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem; background: var(--slate-100); border: 1px solid var(--slate-200); border-radius: 0.75rem 0.75rem 0 0; border-bottom: none; }
+        .btn-toolbar { padding: 0.5rem 0.75rem; background: white; border: 1px solid var(--slate-200); border-radius: 0.5rem; font-size: 0.625rem; font-weight: 700; color: var(--slate-700); cursor: pointer; }
+        .btn-toolbar:hover { background: var(--slate-50); }
+        .btn-toolbar.link { background: var(--blue-50); color: var(--blue-700); border-color: var(--blue-100); }
+        .btn-toolbar.img { background: var(--emerald-50); color: var(--emerald-700); border-color: var(--emerald-100); }
+        .editor-textarea { width: 100%; padding: 1.5rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0 0 0.75rem 0.75rem; font-family: monospace; font-size: 0.75rem; outline: none; min-height: 250px; }
+        .editor-textarea:focus { border-color: var(--emerald-500); background: white; }
+
+        /* Toast */
+        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background-color: var(--emerald-500); }
+        .toast.error { background-color: var(--rose-500); }
+        .toast.warning { background-color: var(--amber-500); }
+        .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+
+        /* SweetAlert Custom Override */
+        div:where(.swal2-container) { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <div id="login-overlay">
+        <div class="login-bg-shape top"></div>
+        <div class="login-bg-shape bottom"></div>
+        
+        <div class="login-card">
+            <div class="login-logo">
+                <i data-lucide="shield-check" style="width: 2rem; height: 2rem;"></i>
+            </div>
+            <h1>Login Master</h1>
+            <p>Area terbatas khusus pengelola <span class="dyn-site-name font-bold text-emerald-600">SheetFlare</span>.</p>
+            
+            <form id="form-login">
+                <div class="login-form-group">
+                    <label>Email Master</label>
+                    <div class="login-input-wrap">
+                        <div class="login-input-icon"><i data-lucide="mail"></i></div>
+                        <input type="email" id="adm-email" class="login-input" required>
+                    </div>
+                </div>
+                <div class="login-form-group">
+                    <label>Password</label>
+                    <div class="login-input-wrap">
+                        <div class="login-input-icon"><i data-lucide="lock"></i></div>
+                        <input type="password" id="adm-pass" class="login-input" required style="padding-right: 3.25rem;">
+                        <button type="button" onclick="togglePass()" class="login-btn-toggle"><i data-lucide="eye" id="eye-icon"></i></button>
+                    </div>
+                </div>
+                <button type="submit" id="btn-login" class="btn-login-submit">Masuk Panel</button>
+            </form>
+            
+            <div class="login-footer">
+                <a href="index.html">&larr; Kembali ke Beranda</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-main">
+        
+        <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <span>SPOTADMIN</span>
+                <button onclick="toggleSidebar()" class="sidebar-close"><i data-lucide="x"></i></button>
+            </div>
+            
+            <nav class="sidebar-nav custom-scroll">
+                <button onclick="switchTab('orders')" id="nav-orders" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</button>
+                <button onclick="switchTab('products')" id="nav-products" class="nav-item"><i data-lucide="package"></i> Produk</button>
+                <button onclick="switchTab('coupons')" id="nav-coupons" class="nav-item"><i data-lucide="ticket"></i> Kupon Diskon</button>
+                
+                <div class="nav-divider"></div>
+                
+                <button onclick="switchTab('affiliate')" id="nav-affiliate" class="nav-item"><i data-lucide="users"></i> Komisi Affiliate</button>
+                <button onclick="switchTab('lms')" id="nav-lms" class="nav-item"><i data-lucide="graduation-cap"></i> Kelas LMS</button>
+                
+                <div class="nav-divider"></div>
+
+                <button onclick="switchTab('pages')" id="nav-pages" class="nav-item"><i data-lucide="file-text"></i> Halaman CMS</button>
+                <button onclick="switchTab('media')" id="nav-media" class="nav-item"><i data-lucide="image"></i> Media Center</button>
+                
+                <div class="nav-divider"></div>
+                <button onclick="switchTab('settings')" id="nav-settings" class="nav-item"><i data-lucide="settings"></i> Pengaturan</button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="index.html" target="_blank" class="sidebar-link"><i data-lucide="external-link"></i> Kunjungi Website</a>
+                <button onclick="logout()" class="sidebar-logout"><i data-lucide="log-out"></i> Keluar Panel</button>
+            </div>
+        </aside>
+
+        <main class="main-content custom-scroll">
+            
+            <header class="top-header">
+                <div class="header-title-wrap">
+                    <button onclick="toggleSidebar()" class="btn-menu"><i data-lucide="menu"></i></button>
+                    <h2 id="tab-title" class="header-title">Dashboard</h2>
+                </div>
+                <div class="header-user">
+                    <span id="sync-status" class="sync-badge">Sync...</span>
+                    <span id="admin-name" class="admin-name">Admin</span>
+                    <div class="admin-avatar">A</div>
+                    <button onclick="forceSync(false)" class="btn-refresh" title="Refresh Data"><i data-lucide="refresh-cw"></i></button>
+                </div>
+            </header>
+
+            <div id="tab-orders" class="tab-content active">
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i data-lucide="shopping-bag"></i></div>
+                        <div>
+                            <p class="stat-label">Total Pesanan</p>
+                            <h3 id="stat-orders" class="stat-value">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon emerald"><i data-lucide="wallet"></i></div>
+                        <div>
+                            <p class="stat-label">Cuan (Lunas)</p>
+                            <h3 id="stat-rev" class="stat-value emerald">Rp 0</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Invoice</th><th>Customer</th><th>Produk</th><th>Status</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="list-orders"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-affiliate" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Pencairan Komisi Affiliate</h3>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 20%">Affiliate ID</th><th style="width: 35%">Detail Member</th><th style="width: 25%">Saldo Komisi</th><th style="width: 20%; text-align: right;">Aksi Panel</th></tr>
+                        </thead>
+                        <tbody id="list-affiliates"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-products" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Katalog Produk (<span id="count-prod">0</span>)</h3>
+                    <button onclick="openProdModal()" class="btn-primary">+ Produk</button>
+                </div>
+                <div id="list-products" class="prod-grid"></div>
+            </div>
+
+            <div id="tab-coupons" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Manajemen Kupon Diskon</h3>
+                    <button onclick="openCouponModal()" class="btn-primary">+ Kupon Baru</button>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 20%">Kode Kupon</th><th style="width: 25%">Tipe & Nilai</th><th style="width: 20%">Status</th><th style="width: 20%">Berlaku Untuk</th><th style="width: 15%; text-align: right;">Aksi</th></tr>
+                        </thead>
+                        <tbody id="list-coupons"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-lms" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Materi Kelas LMS</h3>
+                    <button onclick="openLmsModal()" class="btn-primary">+ Setup Kelas Baru</button>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 25%">Produk ID</th><th style="width: 40%">Total Video</th><th style="width: 35%; text-align: right;">Link Sakti & Aksi</th></tr>
+                        </thead>
+                        <tbody id="list-lms"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-pages" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Halaman CMS</h3>
+                    <div style="display: flex; gap: 0.75rem; width: 100%; flex-wrap: wrap;">
+                        <button onclick="resetHome()" class="btn-outline" style="flex: 1;"><i data-lucide="rotate-ccw"></i> Katalog Asli</button>
+                        <button onclick="openPageModal()" class="btn-primary" style="flex: 1;">+ Buat Halaman</button>
+                    </div>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 35%">Judul Halaman</th><th style="width: 35%">URL Permalinks</th><th style="width: 30%; text-align: right;">Aksi Panel</th></tr>
+                        </thead>
+                        <tbody id="list-pages"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-media" class="tab-content">
+                <div class="media-box">
+                    <h3>Media Center</h3>
+                    <p>Upload file gambar Anda ke CDN ImageKit untuk performa maksimal.</p>
+                    <div class="media-upload-area">
+                        <input type="file" id="media-file" class="media-input">
+                        <button onclick="uploadMedia()" id="btn-upload" class="btn-primary" style="width: auto;">UPLOAD SEKARANG</button>
+                    </div>
+                </div>
+                <div id="media-res-box" class="media-res-box hidden">
+                    <p class="stat-label" style="color: var(--emerald-600); margin-bottom: 0.5rem;">Berhasil Diupload. Silakan copy link di bawah:</p>
+                    <div class="media-res-flex">
+                        <input type="text" id="media-url-res" readonly class="media-res-input">
+                        <button onclick="copyLink()" class="btn-primary" style="width: auto; padding: 1rem;">COPY LINK</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="header-title" style="font-size: 1.5rem;">Master Settings</h3>
+                    <button onclick="triggerPurgeCache()" id="btn-purge" class="btn-outline" style="color: var(--amber-600); border-color: var(--amber-200); background: var(--amber-50);"><i data-lucide="eraser"></i> Purge CF Cache</button>
+                </div>
+                
+                <form id="admin-settings-form">
+                    <div class="settings-card">
+                        <h3 class="settings-title emerald"><i data-lucide="layout"></i> Umum & Tampilan</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">Nama Website</label><input type="text" data-key="site_name" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">Tagline</label><input type="text" data-key="site_tagline" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">URL Website Utama</label><input type="url" data-key="site_url" class="form-input"></div>
+                            
+                            <div class="form-group full" style="border-top: 1px solid var(--slate-100); padding-top: 1rem;">
+                                <label class="form-label" style="color: var(--emerald-600);">Pilih Halaman Beranda (Dari CMS)</label>
+                                <select data-key="home_page_slug" class="form-select" style="background: var(--emerald-50); border-color: var(--emerald-200); color: var(--emerald-700); font-weight: bold;"></select>
+                            </div>
+
+                            <div class="form-group"><label class="form-label">URL Logo</label><input type="url" data-key="site_logo" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">URL Favicon</label><input type="url" data-key="site_favicon" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">Status Registrasi</label><select data-key="registration_open" class="form-select"><option value="true">Buka (True)</option><option value="false">Tutup (False)</option></select></div>
+                            <div class="form-group"><label class="form-label">Mode Perbaikan (Maintenance)</label><select data-key="maintenance_mode" class="form-select"><option value="false">Normal (False)</option><option value="true">Maintenance Aktif (True)</option></select></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title emerald"><i data-lucide="credit-card"></i> Gerbang Pembayaran</h3>
+                        
+                        <div style="background: var(--emerald-50); padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--emerald-100); margin-bottom: 1.5rem;">
+                            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--emerald-800); margin-bottom: 1rem;">Otomatis - Duitku API (Kosongkan jika pakai Manual Bank)</h4>
+                            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                <div class="form-group"><label class="form-label" style="color: var(--emerald-700);">Merchant Code</label><input type="text" data-key="duitku_merchant_code" class="form-input" style="background: white;"></div>
+                                <div class="form-group"><label class="form-label" style="color: var(--emerald-700);">API Key</label><input type="password" autocomplete="new-password" data-key="duitku_api_key" class="form-input" style="background: white;"></div>
+                                <div class="form-group"><label class="form-label" style="color: var(--emerald-700);">Environment</label><select data-key="duitku_env" class="form-select" style="background: white;"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">Nama Bank Lokal</label><input type="text" data-key="bank_name" class="form-input" placeholder="Contoh: BCA"></div>
+                            <div class="form-group"><label class="form-label">No Rekening</label><input type="text" data-key="bank_norek" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">Atas Nama Bank</label><input type="text" data-key="bank_owner" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">Token Moota</label><input type="text" data-key="moota_token" class="form-input" placeholder="*Opsional"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title green"><i data-lucide="message-circle"></i> WhatsApp & Notifikasi</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">No WA Admin</label><input type="number" data-key="wa_admin" class="form-input" placeholder="628123xxxx"></div>
+                            <div class="form-group">
+                                <label class="form-label">Pilih WA Gateway</label>
+                                <select data-key="wa_gateway" class="form-select"><option value="onesender">OneSender (Default)</option><option value="fonnte">Fonnte</option></select>
+                            </div>
+                            <div class="form-group full"><label class="form-label">API Token WhatsApp</label><input type="password" autocomplete="new-password" data-key="wa_token" class="form-input"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title orange"><i data-lucide="cpu"></i> Integrasi API Lanjutan</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">Cloudflare Zone ID</label><input type="text" data-key="cf_zone_id" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group"><label class="form-label">Cloudflare API Token</label><input type="password" autocomplete="new-password" data-key="cf_api_token" class="form-input" style="font-family: monospace;"></div>
+                            
+                            <div class="form-group full" style="border-top: 1px solid var(--slate-100); padding-top: 1rem;"></div>
+                            
+                            <div class="form-group"><label class="form-label">ImageKit URL Endpoint</label><input type="url" data-key="ik_endpoint" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group"><label class="form-label">ImageKit Public Key</label><input type="text" data-key="ik_public_key" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group full"><label class="form-label">ImageKit Private Key</label><input type="password" autocomplete="new-password" data-key="ik_private_key" class="form-input" style="font-family: monospace;"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="btn-save-settings" class="btn-dark" style="padding: 1.25rem;"><i data-lucide="save"></i> Simpan Semua Pengaturan</button>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modal-confirm" class="modal-overlay hidden">
+        <div class="modal-card md" style="text-align: center; padding: 2rem;">
+            <div class="stat-icon warning" style="margin: 0 auto 1rem; background: var(--amber-50); color: var(--amber-500);"><i data-lucide="help-circle"></i></div>
+            <h3 class="modal-title" id="confirm-title" style="font-style: normal; margin-bottom: 0.5rem;">Konfirmasi</h3>
+            <p style="color: var(--slate-500); font-size: 0.875rem; margin-bottom: 2rem;" id="confirm-msg">Yakin ingin melanjutkan tindakan ini?</p>
+            <div style="display: flex; gap: 1rem;">
+                <button id="btn-confirm-cancel" class="btn-outline" style="flex: 1;">Batal</button>
+                <button id="btn-confirm-ok" class="btn-primary" style="flex: 1; background: var(--amber-500); box-shadow: none;">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-coupon" class="modal-overlay hidden">
+        <div class="modal-card md">
+            <h3 class="modal-title">Setup Kupon</h3>
+            <form id="form-coupon">
+                <input type="hidden" id="c-is-edit">
+                <input type="hidden" id="c-old-code">
+                
+                <div class="form-group">
+                    <label class="form-label">Kode Promo</label>
+                    <input type="text" id="c-code" class="form-input" style="text-transform: uppercase; font-weight: 900;" placeholder="Misal: DISKON50" required>
+                </div>
+                
+                <div class="form-grid" style="gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Tipe Diskon</label>
+                        <select id="c-type" class="form-select font-bold">
+                            <option value="Persen">Persentase (%)</option>
+                            <option value="Nominal">Nominal (Rp)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Nilai Potongan</label>
+                        <input type="number" id="c-val" class="form-input font-bold" placeholder="Misal: 50" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Berlaku Untuk Produk</label>
+                    <input type="text" id="c-products" class="form-input" placeholder="Kosongkan u/ semua produk. (Atau ID: PRD-01)">
+                    <span class="td-sub">*Pisahkan dengan koma jika lebih dari 1</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status Kupon</label>
+                    <select id="c-status" class="form-select font-bold">
+                        <option value="Active">Aktif</option>
+                        <option value="Inactive">Nonaktif / Expired</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-coupon')" class="btn-cancel">BATAL</button>
+                    <button type="submit" class="btn-primary" style="width: auto;">Simpan Kupon</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-prod" class="modal-overlay hidden">
+        <div class="modal-card lg">
+            <h3 class="modal-title">Setup Produk</h3>
+            <form id="form-prod">
+                <input type="hidden" id="p-is-edit">
+                <input type="hidden" id="p-status" value="Active">
+                
+                <div class="form-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;"><input type="text" id="p-id" class="form-input font-bold" placeholder="ID (PRD-01)" required></div>
+                    <div class="form-group" style="margin: 0;"><input type="number" id="p-harga" class="form-input font-bold" placeholder="Harga (Rp)" required></div>
+                    <div class="form-group" style="margin: 0;"><input type="number" id="p-komisi" class="form-input font-bold" style="background: var(--amber-50); border-color: var(--amber-200); color: var(--amber-700);" placeholder="Komisi (%)" required></div>
+                </div>
+                
+                <div class="form-group"><input type="text" id="p-title" class="form-input font-bold" placeholder="Nama Produk" required></div>
+                <div class="form-group"><input type="text" id="p-lp" class="form-input font-bold" style="background: var(--emerald-50); color: var(--emerald-700); border-color: var(--emerald-200);" placeholder="Landing Page URL (Contoh: /promo)" required></div>
+                <div class="form-group"><input type="text" id="p-url" class="form-input font-bold" placeholder="Link Akses Materi" required></div>
+                <div class="form-group"><textarea id="p-desc" class="form-textarea" placeholder="Deskripsi Singkat"></textarea></div>
+                
+                <div style="background: var(--emerald-50); border: 1px solid var(--emerald-100); padding: 1.5rem; border-radius: 1rem; margin-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 class="stat-label" style="color: var(--emerald-800); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="zap" style="width: 1rem; color: var(--amber-500);"></i> Order Bump (Upsell)</h4>
+                        <select id="p-bump-status" class="form-select" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.625rem; font-weight: 900; background: white;" onchange="toggleBumpFields()">
+                            <option value="Inactive">Nonaktif</option>
+                            <option value="Active">Aktifkan</option>
+                        </select>
+                    </div>
+                    <div id="bump-fields" class="hidden" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <input type="text" id="p-bump-title" class="form-input" style="background: white;" placeholder="Judul Penawaran Bump (Misal: E-Book Copywriting)">
+                        <input type="number" id="p-bump-price" class="form-input" style="background: white;" placeholder="Harga Bump (Rp)">
+                        <input type="text" id="p-bump-url" class="form-input" style="background: white;" placeholder="Link Akses Order Bump">
+                        <textarea id="p-bump-desc" class="form-textarea custom-scroll" style="background: white; min-height: 60px;" placeholder="Kalimat ajakan (Misal: Centang ini untuk...)"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-prod')" class="btn-cancel">BATAL</button>
+                    <button type="submit" class="btn-primary" style="width: auto;">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-lms" class="modal-overlay hidden">
+        <div class="modal-card lg">
+            <h3 class="modal-title">Setup Materi Kelas</h3>
+            <form id="form-lms">
+                <div class="form-group">
+                    <label class="form-label">Pilih Produk</label>
+                    <select id="lms-product-id" class="form-select font-bold" required></select>
+                </div>
+                
+                <div style="border: 1px solid var(--slate-200); padding: 1rem; border-radius: 1rem; background: var(--slate-50); margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <label class="form-label" style="margin: 0;">Daftar Video / Kurikulum</label>
+                        <button type="button" onclick="addVideoInput()" class="badge active" style="border: none; cursor: pointer;">+ Tambah Video</button>
+                    </div>
+                    <div id="video-list-container" class="custom-scroll" style="max-height: 16rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                    <span class="td-sub" style="margin-top: 0.75rem;">*ID YouTube adalah kode acak setelah `v=`.</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Deskripsi / Pengumuman Kelas</label>
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="insertAtCursor('lms-desc', '<b>Teks Tebal</b>')" class="btn-toolbar">Tebal</button>
+                        <button type="button" onclick="insertAtCursor('lms-desc', '<i>Teks Miring</i>')" class="btn-toolbar">Miring</button>
+                        <button type="button" onclick="insertAtCursor('lms-desc', '<br>\n')" class="btn-toolbar">Enter</button>
+                    </div>
+                    <textarea id="lms-desc" class="editor-textarea custom-scroll" placeholder="Instruksi tambahan..."></textarea>
+                </div>
+                
+                <div id="lms-result-box" class="hidden" style="background: var(--emerald-50); padding: 1rem; border-radius: 1rem; border: 1px solid var(--emerald-100); margin-top: 1rem;">
+                    <p class="stat-label" style="color: var(--emerald-600); margin-bottom: 0.5rem;">Link Sakti Berhasil Dibuat!</p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="lms-generated-link" readonly class="form-input" style="font-family: monospace; font-size: 0.75rem; padding: 0.5rem;">
+                        <button type="button" onclick="copyLmsLink()" class="btn-primary" style="padding: 0.5rem 1rem; width: auto;">COPY</button>
+                    </div>
+                    <span class="td-sub" style="margin-top: 0.5rem;">Segera <b>Copy</b> link ini dan <b>Paste</b> di menu Edit Produk pada kolom "Link Akses Materi".</span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-lms')" class="btn-cancel">TUTUP</button>
+                    <button type="submit" class="btn-primary" style="width: auto;"><i data-lucide="zap"></i> Simpan & Generate Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-page" class="modal-overlay hidden">
+        <div class="modal-card xl">
+            <h3 class="modal-title">Editor Halaman CMS</h3>
+            <form id="form-page">
+                <input type="hidden" id="pg-id">
+                <input type="hidden" id="pg-is-edit">
+                
+                <div class="form-grid" style="margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Judul Halaman</label>
+                        <input type="text" id="pg-title" class="form-input font-bold" placeholder="Contoh: Tentang Kami" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">URL Slug (Permalink)</label>
+                        <input type="text" id="pg-slug" class="form-input font-bold" style="font-family: monospace; color: var(--emerald-600);" placeholder="Contoh: tentang-kami" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i data-lucide="code" style="width: 0.75rem; display: inline-block;"></i> Editor HTML</label>
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="insertAtCursor('pg-content', '<h2>Subjudul</h2>\n')" class="btn-toolbar">H2</button>
+                        <button type="button" onclick="insertAtCursor('pg-content', '<p>Tulis paragraf disini...</p>\n')" class="btn-toolbar">Paragraf</button>
+                        <button type="button" onclick="insertAtCursor('pg-content', '<b>Teks Tebal</b>')" class="btn-toolbar">Tebal</button>
+                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                            <button type="button" onclick="insertAtCursor('pg-content', '<a href=\'URL_DISINI\'>Nama Link</a>\n')" class="btn-toolbar link">+ Link</button>
+                            <button type="button" onclick="insertAtCursor('pg-content', '<img src=\'URL_GAMBAR\' class=\'w-full rounded-xl my-4\'>\n')" class="btn-toolbar img">+ Gambar</button>
+                        </div>
+                    </div>
+                    <textarea id="pg-content" class="editor-textarea custom-scroll" placeholder="Ketik atau Paste kode HTML Anda di sini..." required></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-page')" class="btn-cancel">BATAL</button>
+                    <button type="submit" class="btn-primary" style="width: auto;"><i data-lucide="save"></i> Simpan & Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Custom UI Functions
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'check-circle';
+            if (type === 'error') icon = 'x-circle';
+            if (type === 'warning') icon = 'alert-triangle';
+            toast.innerHTML = `<i data-lucide="${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons({ root: toast });
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        function customConfirm(msg, title = 'Konfirmasi') {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('modal-confirm');
+                document.getElementById('confirm-title').innerText = title;
+                document.getElementById('confirm-msg').innerText = msg;
+                
+                modal.classList.remove('hidden');
+                
+                const btnOk = document.getElementById('btn-confirm-ok');
+                const btnCancel = document.getElementById('btn-confirm-cancel');
+
+                const cleanup = () => {
+                    modal.classList.add('hidden');
+                    btnOk.removeEventListener('click', onOk); 
+                    btnCancel.removeEventListener('click', onCancel);
+                };
+                const onOk = () => { cleanup(); resolve(true); }; 
+                const onCancel = () => { cleanup(); resolve(false); };
+                
+                btnOk.addEventListener('click', onOk); 
+                btnCancel.addEventListener('click', onCancel);
+            });
+        }
+
+        const CACHE_KEY_ADMIN = 'melimpah_admin_data';
+        let IK_PUB = ''; let IK_END = ''; 
+        let cachedPages = []; let cachedProducts = []; let cachedLms = []; 
+        let cachedCoupons = []; 
+        let currentHomeSlug = ''; 
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('open');
+        }
+
+        function togglePass() {
+            const p = document.getElementById('adm-pass'); const icon = document.getElementById('eye-icon');
+            if (p.type === 'password') { p.type = 'text'; icon.setAttribute('data-lucide', 'eye-off'); } 
+            else { p.type = 'password'; icon.setAttribute('data-lucide', 'eye'); }
+            lucide.createIcons();
+        }
+
+        document.getElementById('form-login').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            const btn = document.getElementById('btn-login'); const oriText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="margin: 0 auto; display: block; width: 1.25rem;"></i>'; 
+            btn.disabled = true; lucide.createIcons();
+            try { 
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                if(!targetUrl) throw new Error("Config.js tidak terpanggil!");
+                const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'admin_login', email: document.getElementById('adm-email').value, password: document.getElementById('adm-pass').value })}); 
+                const r = await res.json(); 
+                if(r.status === 'success') { 
+                    sessionStorage.setItem('adm_v10', 'true'); sessionStorage.setItem('adm_name', r.data.nama); 
+                    showToast('Berhasil Login!', 'success');
+                    init(); 
+                } else { showToast(r.message, 'error'); btn.innerHTML = oriText; btn.disabled = false; } 
+            } catch (err) { showToast('Error Koneksi!', 'error'); btn.innerHTML = oriText; btn.disabled = false; } 
+        };
+
+        function copyCheckoutLink(prodId) {
+            const link = window.location.origin + '/checkout?id=' + prodId;
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Link Checkout disalin!', 'success');
+            }).catch(err => { showToast('Gagal menyalin', 'error'); });
+        }
+
+        function renderCouponsTable() {
+            const tbody = document.getElementById('list-coupons');
+            if (!cachedCoupons || cachedCoupons.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada kupon diskon.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = cachedCoupons.map(c => {
+                const isActive = c[3] === 'Active';
+                const statusBadge = isActive ? `<span class="badge active">Aktif</span>` : `<span class="badge inactive">Nonaktif</span>`;
+                const typeLabel = c[1] === 'Persen' ? `${c[2]}%` : `Rp ${Number(c[2]).toLocaleString('id-ID')}`;
+                
+                return `
+                <tr>
+                    <td class="td-mono">${c[0]}</td>
+                    <td class="td-bold">${typeLabel}</td>
+                    <td>${statusBadge}</td>
+                    <td style="font-size: 0.75rem; color: var(--slate-500);">${c[4] === "" ? "Semua Produk" : c[4]}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button onclick="editCoupon('${c[0]}')" class="btn-icon emerald"><i data-lucide="edit"></i></button>
+                            <button onclick="deleteCoupon('${c[0]}')" class="btn-icon rose"><i data-lucide="trash-2"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function renderPagesTable() {
+            const tbody = document.getElementById('list-pages');
+            if (!cachedPages || cachedPages.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada halaman CMS.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = cachedPages.map(p => {
+                const isHome = p[1] === currentHomeSlug;
+                const homeBtn = isHome 
+                    ? `<button class="btn-icon" style="background: var(--emerald-600); color: white; cursor: default;" title="Beranda Aktif"><i data-lucide="home"></i></button>`
+                    : `<button onclick="setAsHome('${p[1]}')" class="btn-icon" style="background: var(--slate-100); color: var(--slate-500);" title="Jadikan Beranda Utama"><i data-lucide="home"></i></button>`;
+                
+                return `
+                <tr>
+                    <td class="td-bold">
+                        ${p[2]} ${isHome ? '<span class="badge outline" style="margin-left: 0.5rem; color: var(--emerald-600);">Beranda</span>' : ''}
+                    </td>
+                    <td style="font-family: monospace; color: var(--slate-500);">/${p[1]}</td>
+                    <td>
+                        <div class="action-btns">
+                            ${homeBtn}
+                            <button onclick="window.open('/${p[1]}', '_blank')" class="btn-icon blue" title="Preview"><i data-lucide="external-link"></i></button>
+                            <button onclick="editPage('${p[0]}')" class="btn-icon emerald" title="Edit"><i data-lucide="edit"></i></button>
+                            <button onclick="deletePage('${p[0]}')" class="btn-icon rose" title="Hapus"><i data-lucide="trash-2"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function renderLmsTable() {
+            const tbody = document.getElementById('list-lms');
+            if (!cachedLms || cachedLms.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada kelas LMS yang di-setup.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = cachedLms.map(l => {
+                let vCount = 0; try { vCount = JSON.parse(l[1]).length; } catch(e){}
+                return `
+                <tr>
+                    <td class="td-mono">${l[0]}</td>
+                    <td class="td-bold" style="color: var(--slate-600);">${vCount} Video Topik</td>
+                    <td>
+                        <div class="action-btns">
+                            <button onclick="copyLmsLinkDirect('${l[0]}')" class="btn-icon emerald" title="Copy Link Sakti"><i data-lucide="link"></i></button>
+                            <button onclick="editLms('${l[0]}')" class="btn-icon amber" title="Edit Materi"><i data-lucide="edit"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function renderAffiliatesTable(affList) {
+            const tbody = document.getElementById('list-affiliates');
+            if (!affList || affList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada data komisi affiliate.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = affList.map(a => `
+            <tr>
+                <td class="td-mono">${a.id}</td>
+                <td class="td-bold">${a.name} <span class="td-sub">${a.email}</span></td>
+                <td class="td-bold" style="color: var(--emerald-600);">Rp ${Number(a.komisi).toLocaleString('id-ID')}</td>
+                <td>
+                    <div class="action-btns">
+                        <a href="https://wa.me/${a.wa}" target="_blank" class="btn-icon emerald" title="WA Member"><i data-lucide="message-circle"></i></a>
+                        <button onclick="cairkanKomisi('${a.id}', ${a.komisi})" class="btn-icon amber" style="width: auto; padding: 0.5rem 1rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase;"><i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.25rem;"></i> Cairkan</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+            lucide.createIcons();
+        }
+
+        function copyLmsLinkDirect(id) {
+            const link = window.location.origin + `/akses-lms.html?id=${id}`;
+            const temp = document.createElement('input'); temp.value = link; document.body.appendChild(temp); temp.select(); document.execCommand('copy'); document.body.removeChild(temp);
+            showToast('Link Sakti LMS Berhasil Disalin!', 'success');
+        }
+
+        function populateLmsDropdown() {
+            const selectEl = document.getElementById('lms-product-id');
+            if(!selectEl) return;
+            let html = '<option value="">-- Pilih Produk Tujuan --</option>';
+            cachedProducts.forEach(p => { html += `<option value="${p[0]}">${p[0]} - ${p[1]}</option>`; });
+            selectEl.innerHTML = html;
+        }
+
+        function renderAdminUI(r) {
+            cachedPages = r.pages || []; cachedProducts = r.products || []; cachedLms = r.lms || []; 
+            cachedCoupons = r.coupons || []; 
+            
+            currentHomeSlug = r.settings && r.settings.home_page_slug ? String(r.settings.home_page_slug).trim() : '';
+            
+            populateLmsDropdown();
+
+            document.getElementById('stat-orders').innerText = (r.stats.orders || 0) + ' Transaksi'; 
+            document.getElementById('stat-rev').innerText = 'Rp ' + Number(r.stats.rev || 0).toLocaleString('id-ID');
+            
+            const listOrders = document.getElementById('list-orders');
+            if(r.orders.length === 0) {
+                 listOrders.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada pesanan masuk.</td></tr>`;
+            } else {
+                listOrders.innerHTML = r.orders.map(o => `
+                <tr>
+                    <td class="td-mono">${o[0]}</td>
+                    <td class="td-bold">${o[2]} <span class="td-sub">${o[1]}</span></td>
+                    <td style="font-weight: 700; color: var(--slate-600); max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${o[5]}</td>
+                    <td><span class="badge ${o[7]==='Lunas'?'active':'warning'}">${o[7]}</span></td>
+                    <td>${o[7]==='Pending'?`<button onclick="setLunas('${o[0]}')" style="color: var(--emerald-600); font-weight: 900; text-transform: uppercase; font-size: 0.625rem; text-decoration: underline;">Aktifkan</button>`:'-'}</td>
+                </tr>`).join('');
+            }
+            
+            document.getElementById('count-prod').innerText = cachedProducts.length; 
+            
+            document.getElementById('list-products').innerHTML = [...cachedProducts].reverse().map(p => {
+                const isActive = p[5] !== 'Inactive';
+                const statusBadge = isActive ? `<span class="badge active">Aktif</span>` : `<span class="badge inactive">Nonaktif</span>`;
+                const toggleBtnClass = isActive ? `btn-prod-toggle active` : `btn-prod-toggle inactive`;
+                const toggleBtnIcon = isActive ? `eye-off` : `eye`;
+                const toggleBtnText = isActive ? `Nonaktif` : `Aktifkan`;
+                const toggleBtnAction = isActive ? `Inactive` : `Active`;
+                
+                return `
+                <div class="prod-card ${!isActive ? 'inactive' : ''}">
+                    <div class="prod-header">
+                        <div class="prod-id-wrap"><span class="prod-id">${p[0]}</span> ${statusBadge}</div>
+                        <span class="prod-price">Rp ${Number(p[4]).toLocaleString('id-ID')}</span>
+                    </div>
+                    <h4 class="prod-title">${p[1]}</h4>
+                    <div style="margin-bottom: 1rem;"><span class="badge outline" style="color: var(--amber-600);">Komisi: ${p[7] || 0}%</span></div>
+                    <p class="prod-desc">${p[2]||'-'}</p>
+                    <div class="prod-actions">
+                        <button onclick="copyCheckoutLink('${p[0]}')" class="btn-prod btn-prod-link"><i data-lucide="link"></i> Link</button>
+                        <button onclick="editProd('${p[0]}')" class="btn-prod btn-prod-edit"><i data-lucide="edit"></i> Edit</button>
+                        <button onclick="toggleProductStatus('${p[0]}', '${toggleBtnAction}')" class="btn-prod ${toggleBtnClass}"><i data-lucide="${toggleBtnIcon}"></i> ${toggleBtnText}</button>
+                    </div>
+                </div>`;
+            }).join('');
+            
+            renderPagesTable(); renderLmsTable(); renderCouponsTable(); 
+            if(r.affiliates) { renderAffiliatesTable(r.affiliates); }
+
+            const homeSelect = document.querySelector('#admin-settings-form [data-key="home_page_slug"]');
+            if (homeSelect) {
+                let optHtml = '<option value="">-- Katalog Produk (Bawaan) --</option>';
+                cachedPages.forEach(p => { optHtml += `<option value="${p[1]}">${p[2]} (/${p[1]})</option>`; });
+                homeSelect.innerHTML = optHtml;
+            }
+
+            const inputs = document.querySelectorAll('#admin-settings-form [data-key]');
+            inputs.forEach(input => {
+                const key = input.getAttribute('data-key');
+                if (r.settings && r.settings[key] !== undefined) { input.value = r.settings[key]; } else { input.value = ''; }
+            });
+
+            IK_PUB = r.settings.ik_public_key || ''; IK_END = r.settings.ik_endpoint || ''; 
+            lucide.createIcons();
+        }
+
+        async function init(silent = false) {
+            if(!sessionStorage.getItem('adm_v10')) return;
+            document.getElementById('login-overlay').style.display = 'none'; 
+            document.getElementById('admin-main').style.display = 'flex'; 
+            document.getElementById('admin-name').innerText = sessionStorage.getItem('adm_name');
+            
+            const cachedDataStr = localStorage.getItem(CACHE_KEY_ADMIN); 
+            const syncLabel = document.getElementById('sync-status');
+            
+            if (cachedDataStr && !silent) { 
+                renderAdminUI(JSON.parse(cachedDataStr)); 
+                syncLabel.classList.add('show'); 
+            }
+            
+            try { 
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null); if(!targetUrl) return;
+                const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_admin_data' }) }); 
+                const r = await res.json(); 
+                if(r.status === 'success') { 
+                    const freshDataStr = JSON.stringify(r);
+                    if(cachedDataStr !== freshDataStr) { localStorage.setItem(CACHE_KEY_ADMIN, freshDataStr); renderAdminUI(r); }
+                    syncLabel.classList.remove('show');
+                } 
+            } catch (err) { console.error(err); }
+        }
+
+        function forceSync(silent = false) { 
+            localStorage.removeItem(CACHE_KEY_ADMIN); 
+            if(!silent) { 
+                const syncLabel = document.getElementById('sync-status');
+                syncLabel.classList.add('show'); 
+                syncLabel.innerText = 'Refreshing...'; 
+            }
+            init(silent); 
+        }
+
+        async function triggerPurgeCache() {
+            const btn = document.getElementById('btn-purge'); const oriText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROSES...'; btn.disabled = true; lucide.createIcons();
+            try { 
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'purge_cf_cache' }) }); 
+                const r = await res.json(); showToast(r.message, r.status === 'success' ? 'success' : 'error'); 
+            } catch (e) { showToast('Gagal menghubungi server GAS.', 'error'); }
+            btn.innerHTML = oriText; btn.disabled = false; lucide.createIcons();
+        }
+
+        function insertAtCursor(fieldId, myValue) {
+            const myField = document.getElementById(fieldId);
+            if (myField.selectionStart || myField.selectionStart === 0) {
+                var startPos = myField.selectionStart; var endPos = myField.selectionEnd;
+                myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+                myField.focus(); myField.selectionStart = startPos + myValue.length; myField.selectionEnd = startPos + myValue.length;
+            } else { myField.value += myValue; myField.focus(); }
+        }
+
+        document.getElementById('pg-title').addEventListener('keyup', function() { 
+            if(document.getElementById('pg-is-edit').value === 'false') { document.getElementById('pg-slug').value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''); } 
+        });
+
+        async function cairkanKomisi(id, nominal) {
+            const isConfirmed = await customConfirm(`Cairkan komisi sebesar Rp ${Number(nominal).toLocaleString('id-ID')} untuk Affiliate ini? Saldo akan di-reset menjadi 0.`, 'Pencairan Komisi');
+            if(!isConfirmed) return;
+            showToast('Memproses pencairan...', 'warning');
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'reset_commission', aff_id: id }) });
+                const data = await res.json();
+                if(data.status === 'success') { showToast('Komisi berhasil dicairkan (Reset 0)!', 'success'); forceSync(true); } else { showToast(data.message || 'Gagal memproses.', 'error'); }
+            } catch(e) { showToast('Koneksi terputus', 'error'); }
+        }
+
+        async function toggleProductStatus(id, newStatus) {
+            const p = cachedProducts.find(x => x[0] === id); if(!p) return;
+            const msg = newStatus === 'Active' ? 'Yakin ingin mengaktifkan kembali produk ini ke Katalog?' : 'Yakin ingin menyembunyikan (nonaktifkan) produk ini dari Katalog?';
+            const isConfirmed = await customConfirm(msg, 'Ubah Status Produk'); if(!isConfirmed) return;
+            showToast('Memproses...', 'warning');
+            
+            const payload = { action: 'save_product', id: p[0], title: p[1], desc: p[2], url: p[3], harga: p[4], status: newStatus, lp_url: p[6] || "", komisi: p[7] || "0", bump_status: p[8] || "Inactive", bump_title: p[9] || "", bump_price: p[10] || 0, bump_desc: p[11] || "", bump_url: p[12] || "", is_edit: true }; 
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+                const text = await res.text(); let data; try { data = JSON.parse(text); } catch(err) { throw new Error('Format respon error'); }
+                if(data.status === 'success') { showToast('Status produk berhasil diubah!', 'success'); forceSync(true); } else { showToast(data.message || 'Gagal mengubah status.', 'error'); }
+            } catch(err) { showToast('Koneksi terputus.', 'error'); }
+        }
+
+        function toggleBumpFields() {
+            const status = document.getElementById('p-bump-status').value;
+            const fields = document.getElementById('bump-fields');
+            if(status === 'Active') { fields.classList.remove('hidden'); } else { fields.classList.add('hidden'); }
+        }
+
+        function editProd(id) { 
+            const p = cachedProducts.find(x => x[0] === id); if(!p) return; 
+            document.getElementById('p-id').value = p[0]; document.getElementById('p-title').value = p[1]; document.getElementById('p-desc').value = p[2]; document.getElementById('p-url').value = p[3]; document.getElementById('p-harga').value = p[4]; document.getElementById('p-lp').value = p[6] || ""; document.getElementById('p-komisi').value = p[7] || "0"; document.getElementById('p-status').value = p[5] || "Active"; 
+            document.getElementById('p-bump-status').value = p[8] || "Inactive"; document.getElementById('p-bump-title').value = p[9] || ""; document.getElementById('p-bump-price').value = p[10] || ""; document.getElementById('p-bump-desc').value = p[11] || ""; document.getElementById('p-bump-url').value = p[12] || ""; 
+            toggleBumpFields(); 
+            document.getElementById('p-is-edit').value = 'true'; document.getElementById('modal-prod').classList.remove('hidden'); 
+        }
+
+        function editPage(id) { 
+            const p = cachedPages.find(x => x[0] === id); if(!p) return; 
+            document.getElementById('pg-id').value = p[0]; document.getElementById('pg-slug').value = p[1]; document.getElementById('pg-title').value = p[2]; document.getElementById('pg-content').value = p[3]; document.getElementById('pg-is-edit').value = 'true'; document.getElementById('modal-page').classList.remove('hidden'); 
+        }
+
+        function openCouponModal() { 
+            document.getElementById('form-coupon').reset(); 
+            document.getElementById('c-is-edit').value = 'false'; 
+            document.getElementById('modal-coupon').classList.remove('hidden'); 
+        }
+
+        function editCoupon(code) { 
+            const c = cachedCoupons.find(x => x[0] === code); if(!c) return; 
+            document.getElementById('c-code').value = c[0]; 
+            document.getElementById('c-type').value = c[1]; 
+            document.getElementById('c-val').value = c[2]; 
+            document.getElementById('c-status').value = c[3]; 
+            document.getElementById('c-products').value = c[4] || ""; 
+            document.getElementById('c-old-code').value = c[0]; 
+            document.getElementById('c-is-edit').value = 'true'; 
+            document.getElementById('modal-coupon').classList.remove('hidden'); 
+        }
+
+        async function deleteCoupon(code) {
+            Swal.fire({ title: 'Hapus Kupon?', text: "Kupon ini akan dihapus permanen.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48', cancelButtonColor: '#64748b', confirmButtonText: 'Ya, Hapus!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: 'Menghapus...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                    try { 
+                        const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                        const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({action: 'delete_coupon', code: code}) }); 
+                        const data = await res.json(); 
+                        if(data.status === 'success') { 
+                            Swal.fire('Terhapus!', 'Kupon berhasil dihapus.', 'success'); forceSync(true); 
+                        } else { Swal.fire('Gagal', data.message || 'Tidak dapat menghapus', 'error'); } 
+                    } catch(e) { Swal.fire('Error', 'Koneksi gagal menghubungi server.', 'error'); }
+                }
+            });
+        }
+
+        document.getElementById('form-coupon').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            const form = document.getElementById('form-coupon'); const btn = form.querySelector('button[type="submit"]'); const oriText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1rem;"></i> PROSES...'; btn.disabled = true; lucide.createIcons();
+            
+            const p = { 
+                action: 'save_coupon', 
+                code: document.getElementById('c-code').value, 
+                type: document.getElementById('c-type').value, 
+                val: document.getElementById('c-val').value, 
+                status: document.getElementById('c-status').value, 
+                products: document.getElementById('c-products').value, 
+                old_code: document.getElementById('c-old-code').value, 
+                is_edit: document.getElementById('c-is-edit').value === 'true' 
+            }; 
+            
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p) }); const text = await res.text(); let data;
+                try { data = JSON.parse(text); } catch(err) { throw new Error('Format respon error'); }
+                if(data.status === 'success') { closeModal('modal-coupon'); showToast('Kupon berhasil disimpan!', 'success'); forceSync(true); } else { showToast(data.message || 'Gagal menyimpan.', 'error'); }
+            } catch(err) { showToast('Koneksi terputus.', 'error'); } finally { btn.innerHTML = oriText; btn.disabled = false; }
+        };
+
+        async function deletePage(id) {
+            Swal.fire({ title: 'Hapus Halaman?', text: "Halaman CMS ini akan dihapus permanen.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48', cancelButtonColor: '#64748b', confirmButtonText: 'Ya, Hapus!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: 'Menghapus...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                    try { 
+                        const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                        const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({action: 'delete_page', id: id}) }); 
+                        const data = await res.json(); 
+                        if(data.status === 'success') { 
+                            Swal.fire('Terhapus!', 'Halaman telah berhasil dihapus.', 'success'); cachedPages = cachedPages.filter(p => p[0] !== id); renderPagesTable(); setTimeout(() => forceSync(true), 800); 
+                        } else { Swal.fire('Gagal', data.message || 'Tidak dapat menghapus halaman', 'error'); } 
+                    } catch(e) { Swal.fire('Error', 'Koneksi gagal menghubungi server.', 'error'); }
+                }
+            });
+        }
+        
+        async function uploadMedia() { 
+            const fileIn = document.getElementById('media-file'); const btn = document.getElementById('btn-upload'); 
+            if(!fileIn.files[0]) return showToast('Pilih file yang ingin diupload!', 'warning'); btn.disabled=true; btn.innerText='IZIN...'; 
+            try { 
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const authRes = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_ik_auth' }) }); const auth = await authRes.json(); 
+                if(auth.status !== 'success') throw new Error(auth.message || "Pastikan Anda sudah menyimpan Private Key ImageKit di menu Pengaturan."); 
+                btn.innerText = 'UPLOADING...'; const fd = new FormData(); fd.append('file', fileIn.files[0]); fd.append('fileName', fileIn.files[0].name); fd.append('publicKey', IK_PUB); fd.append('signature', auth.signature); fd.append('expire', auth.expire); fd.append('token', auth.token); 
+                const ikRes = await fetch('https://upload.imagekit.io/api/v1/files/upload', { method: 'POST', body: fd }); const r = await ikRes.json(); 
+                if(r.url) { document.getElementById('media-res-box').classList.remove('hidden'); document.getElementById('media-url-res').value = r.url; showToast('Upload Sukses!', 'success'); } 
+            } catch (err) { showToast('Upload Gagal: ' + err.message, 'error'); } btn.disabled=false; btn.innerText='UPLOAD SEKARANG'; 
+        }
+
+        function copyLink() { const c = document.getElementById('media-url-res'); c.select(); document.execCommand('copy'); showToast('Berhasil dicopy!', 'success'); }
+        
+        function openLmsModal() {
+            document.getElementById('form-lms').reset(); document.getElementById('lms-result-box').classList.add('hidden');
+            const container = document.getElementById('video-list-container'); container.innerHTML = ''; addVideoInput(); 
+            document.getElementById('modal-lms').classList.remove('hidden');
+        }
+
+        function editLms(p_id) {
+            const lms = cachedLms.find(x => x[0] === p_id);
+            if (!lms) { showToast('Data kelas tidak ditemukan.', 'error'); return; }
+            document.getElementById('form-lms').reset(); document.getElementById('lms-result-box').classList.add('hidden');
+            document.getElementById('lms-product-id').value = lms[0]; document.getElementById('lms-desc').value = lms[2] || '';
+            const container = document.getElementById('video-list-container'); container.innerHTML = '';
+            try { const videos = JSON.parse(lms[1] || "[]"); if(videos.length > 0) { videos.forEach(v => addVideoInput(v.title, v.id)); } else { addVideoInput(); } } catch(e) { addVideoInput(); }
+            document.getElementById('modal-lms').classList.remove('hidden');
+        }
+
+        function addVideoInput(title = '', id = '') {
+            const container = document.getElementById('video-list-container'); const div = document.createElement('div');
+            div.style.cssText = 'background: white; border: 1px solid var(--slate-200); padding: 1rem; border-radius: 0.75rem; position: relative;';
+            div.className = 'video-item';
+            div.innerHTML = `<button type="button" onclick="this.parentElement.remove()" class="btn-icon rose" style="position: absolute; top: 0.5rem; right: 0.5rem;" title="Hapus Video"><i data-lucide="trash-2"></i></button><input type="text" placeholder="Judul Video (Misal: Bab 1 - Mindset)" class="form-input vid-title" style="margin-bottom: 0.5rem;" value="${title}" required><input type="text" placeholder="ID YouTube (Misal: dQw4w9WgXcQ)" class="form-input vid-id" style="background: var(--blue-50); color: var(--blue-700); font-family: monospace;" value="${id}" required>`;
+            container.appendChild(div); lucide.createIcons(); container.scrollTop = container.scrollHeight;
+        }
+
+        function copyLmsLink() {
+            const linkInput = document.getElementById('lms-generated-link'); linkInput.select(); document.execCommand('copy'); showToast('Link Sakti LMS Berhasil Disalin!', 'success');
+        }
+
+        document.getElementById('form-lms').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('#form-lms button[type="submit"]'); const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1rem; margin-right: 0.5rem;"></i> MENYIMPAN...'; btn.disabled = true; lucide.createIcons();
+            const videoItems = document.querySelectorAll('.video-item'); const videosArray = [];
+            videoItems.forEach(item => { const title = item.querySelector('.vid-title').value; const vidId = item.querySelector('.vid-id').value; if(title && vidId) videosArray.push({ title, id: vidId }); });
+            if (videosArray.length === 0) { showToast('Minimal harus ada 1 video!', 'warning'); btn.innerHTML = originalText; btn.disabled = false; return; }
+            const p_id = document.getElementById('lms-product-id').value; const descValue = document.getElementById('lms-desc').value;
+            const payload = { action: 'save_lms_materi', product_id: p_id, videos: JSON.stringify(videosArray), desc: descValue };
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }); const r = await res.json();
+                if(r.status === 'success') {
+                    showToast('Materi LMS Tersimpan di Backend!', 'success');
+                    document.getElementById('lms-generated-link').value = `/akses-lms.html?id=${p_id}`; document.getElementById('lms-result-box').classList.remove('hidden');
+                    const existingIdx = cachedLms.findIndex(x => x[0] === p_id);
+                    if(existingIdx > -1) { cachedLms[existingIdx][1] = JSON.stringify(videosArray); cachedLms[existingIdx][2] = descValue; } else { cachedLms.push([p_id, JSON.stringify(videosArray), descValue]); }
+                    renderLmsTable(); setTimeout(() => forceSync(true), 1000); 
+                } else { showToast(r.message || 'Gagal menyimpan LMS.', 'error'); }
+            } catch(err) { showToast('Koneksi backend LMS terputus.', 'error'); } finally { btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons(); }
+        };
+
+        function switchTab(t) { 
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
+            document.getElementById('tab-'+t).classList.add('active'); document.getElementById('nav-'+t).classList.add('active'); 
+            let titleText = t.charAt(0).toUpperCase() + t.slice(1);
+            if (t === 'orders') titleText = 'Dashboard';
+            if (t === 'lms') titleText = 'LMS Creator';
+            if (t === 'affiliate') titleText = 'Komisi Affiliate';
+            if (t === 'coupons') titleText = 'Manajemen Kupon';
+            document.getElementById('tab-title').innerText = titleText; 
+            lucide.createIcons(); if(window.innerWidth < 768) toggleSidebar(); 
+        }
+
+        async function setLunas(id) { 
+            const isConfirmed = await customConfirm('Aktifkan akses materi (Lunas) untuk user ini?', 'Aktivasi Order');
+            if(!isConfirmed) return; showToast('Memproses aktivasi...', 'warning');
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_order_status', id }) }); 
+                showToast('Akses produk berhasil diaktifkan!', 'success'); forceSync(); 
+            } catch(e) { showToast('Gagal menghubungi server.', 'error'); }
+        }
+
+        function openProdModal() { 
+            document.getElementById('form-prod').reset(); 
+            document.getElementById('p-is-edit').value = 'false'; 
+            document.getElementById('p-status').value = 'Active'; 
+            toggleBumpFields();
+            document.getElementById('modal-prod').classList.remove('hidden'); 
+        }
+        function openPageModal() { document.getElementById('form-page').reset(); document.getElementById('pg-is-edit').value = 'false'; document.getElementById('modal-page').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function logout() { sessionStorage.clear(); localStorage.removeItem(CACHE_KEY_ADMIN); location.reload(); }
+
+        document.getElementById('form-prod').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            const form = document.getElementById('form-prod'); const btn = form.querySelector('button[type="submit"]'); const oriText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1rem; margin-right: 0.5rem;"></i> PROSES...'; btn.disabled = true; lucide.createIcons();
+            
+            const p = { 
+                action: 'save_product', 
+                id: document.getElementById('p-id').value, 
+                title: document.getElementById('p-title').value, 
+                desc: document.getElementById('p-desc').value, 
+                url: document.getElementById('p-url').value, 
+                harga: document.getElementById('p-harga').value, 
+                lp_url: document.getElementById('p-lp').value, 
+                komisi: document.getElementById('p-komisi').value, 
+                status: document.getElementById('p-status').value, 
+                bump_status: document.getElementById('p-bump-status').value,
+                bump_title: document.getElementById('p-bump-title').value,
+                bump_price: document.getElementById('p-bump-price').value,
+                bump_desc: document.getElementById('p-bump-desc').value,
+                bump_url: document.getElementById('p-bump-url').value,
+                is_edit: document.getElementById('p-is-edit').value === 'true' 
+            }; 
+            
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p) }); const text = await res.text(); let data;
+                try { data = JSON.parse(text); } catch(err) { throw new Error('Format respon error'); }
+                if(data.status === 'success') { closeModal('modal-prod'); showToast('Produk berhasil disimpan!', 'success'); forceSync(); } else { showToast(data.message || 'Gagal menyimpan.', 'error'); }
+            } catch(err) { showToast('Koneksi terputus.', 'error'); } finally { btn.innerHTML = oriText; btn.disabled = false; }
+        };
+
+        document.getElementById('form-page').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            const btn = document.querySelector('#form-page button[type="submit"]'); const oriText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1rem; margin-right: 0.5rem;"></i> PROSES...'; btn.disabled = true; lucide.createIcons();
+            const id = document.getElementById('pg-id').value; const slug = document.getElementById('pg-slug').value; const title = document.getElementById('pg-title').value; const content = document.getElementById('pg-content').value; const isEdit = document.getElementById('pg-is-edit').value === 'true';
+            const p = { action: 'save_page', id, slug, title, content, is_edit: isEdit }; 
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p) }); const text = await res.text(); let data;
+                try { data = JSON.parse(text); } catch(err) { throw new Error('Format respon error'); }
+                if(data.status === 'success') {
+                    closeModal('modal-page'); showToast('Halaman CMS tersimpan!', 'success'); 
+                    if (isEdit) { const idx = cachedPages.findIndex(x => x[0] == id); if(idx > -1) { cachedPages[idx][1] = slug; cachedPages[idx][2] = title; cachedPages[idx][3] = content; } } else { const newId = 'PG-' + Math.floor(Math.random()*10000); cachedPages.unshift([newId, slug, title, content]); }
+                    renderPagesTable(); setTimeout(() => forceSync(true), 800);
+                } else { showToast(data.message || 'Gagal menyimpan.', 'error'); }
+            } catch(err) { showToast('Koneksi terputus.', 'error'); } finally { btn.innerHTML = oriText; btn.disabled = false; }
+        };
+
+        async function setAsHome(slug) {
+            const isConfirmed = await customConfirm(`Jadikan halaman (/${slug}) sebagai Beranda Utama?`, 'Ubah Beranda');
+            if(!isConfirmed) return; showToast('Memproses...', 'warning');
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: { home_page_slug: slug } }) }); const data = await res.json();
+                if(data.status === 'success') { showToast('Beranda berhasil diubah!', 'success'); forceSync(); } else { showToast('Gagal mengubah beranda', 'error'); }
+            } catch(e) { showToast('Koneksi terputus', 'error'); }
+        }
+
+        async function resetHome() {
+            const isConfirmed = await customConfirm('Kembalikan Beranda ke Katalog Produk Bawaan?', 'Reset Beranda');
+            if(!isConfirmed) return; showToast('Memproses...', 'warning');
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: { home_page_slug: '' } }) });
+                showToast('Beranda dikembalikan ke Katalog Asli!', 'success'); forceSync();
+            } catch(e) { showToast('Koneksi terputus', 'error'); }
+        }
+
+        document.getElementById('admin-settings-form').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            const btn = document.getElementById('btn-save-settings'); const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1.25rem; margin-right: 0.5rem;"></i> MENYIMPAN PENGATURAN...'; btn.disabled = true; lucide.createIcons();
+            const payload = {}; document.querySelectorAll('#admin-settings-form [data-key]').forEach(input => { payload[input.getAttribute('data-key')] = input.value; });
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: payload }) }); const data = await res.json();
+                if(data.status === 'success') { showToast('Semua Pengaturan Berhasil Disimpan!', 'success'); forceSync(true); } else { showToast(data.message || 'Gagal menyimpan', 'error'); }
+            } catch(err) { showToast('Koneksi terputus ke server', 'error'); } finally { btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons(); }
+        };
+
+        window.onload = () => { lucide.createIcons(); if(sessionStorage.getItem('adm_v10')) init(); };
+    </script>
+</body>
+</html>

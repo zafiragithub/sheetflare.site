@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source Code Aplikasi Kasir Modern - Whitelabel</title>
+    <style>
+        :root {
+            --primary: #10b981; /* Emerald */
+            --primary-dark: #059669;
+            --secondary: #3b82f6; /* Blue */
+            --dark: #0f172a; /* Navy */
+            --light: #f8fafc;
+            --text: #334155;
+            --danger: #ef4444;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0;
+            background-color: #fff;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        * { box-sizing: border-box; }
+        
+        /* HEADER / HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, var(--dark), #1e293b);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary);
+        }
+        .hero h1 { font-size: 42px; margin: 0 0 20px; line-height: 1.2; font-weight: 800; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 20px; color: #cbd5e1; max-width: 800px; margin: 0 auto 30px; }
+        .badge { background: var(--danger); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 20px; animation: pulse 2s infinite; }
+        
+        /* BUTTONS */
+        .btn { display: inline-block; padding: 15px 30px; font-size: 18px; font-weight: bold; color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s; cursor: pointer; border: none; }
+        .btn-primary { background: var(--primary); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-3px); }
+        .btn-outline { background: transparent; border: 2px solid white; margin-left: 10px; }
+        .btn-outline:hover { background: white; color: var(--dark); }
+
+        /* KONTEN UTAMA */
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+        .text-center { text-align: center; }
+        .section-title { font-size: 32px; color: var(--dark); margin-bottom: 40px; font-weight: 800; position: relative; display: inline-block; }
+        .section-title::after { content: ''; width: 60px; height: 4px; background: var(--primary); display: block; margin: 10px auto 0; border-radius: 2px; }
+
+        /* FITUR GRID */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: var(--light); padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; transition: transform 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--primary); }
+        .feature-icon { font-size: 40px; margin-bottom: 15px; display: block; }
+        .feature-card h3 { margin: 0 0 15px; color: var(--dark); font-size: 20px; }
+        .feature-card p { margin: 0; color: #64748b; }
+
+        /* DEMO SECTION */
+        .demo-section { background: #eff6ff; border: 2px dashed var(--secondary); padding: 40px; border-radius: 12px; margin: 60px 0; text-align: center; }
+        .demo-section h2 { color: var(--secondary); margin-top: 0; }
+        .demo-credentials { background: white; display: inline-block; padding: 20px 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 20px; font-size: 18px; }
+        .demo-credentials b { color: var(--dark); }
+
+        /* PRICING SECTION */
+        .pricing-section { text-align: center; padding: 60px 20px; background: var(--dark); color: white; border-radius: 20px; margin-top: 40px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
+        .price-strike { text-decoration: line-through; color: #94a3b8; font-size: 24px; }
+        .price-big { font-size: 60px; font-weight: 900; color: var(--primary); margin: 10px 0; line-height: 1; }
+        .lisensi-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; max-width: 600px; margin: 30px auto; border: 1px solid rgba(255,255,255,0.2); }
+        .lisensi-box ul { text-align: left; margin: 0; padding-left: 20px; }
+        .lisensi-box li { margin-bottom: 10px; font-size: 18px; }
+
+        /* UPSELL / JASA INSTALL */
+        .upsell { background: #fffbeb; border: 2px solid #fde68a; padding: 40px; border-radius: 12px; margin-top: 60px; text-align: center; }
+        .upsell h2 { color: #b45309; margin-top: 0; }
+        .upsell p { font-size: 18px; color: #92400e; max-width: 700px; margin: 0 auto 20px; }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 30px; color: #94a3b8; font-size: 14px; margin-top: 50px; border-top: 1px solid #e2e8f0; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .btn { display: block; margin: 10px 0; width: 100%; }
+            .price-big { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="badge">🔥 HARGA PERDANA TERBATAS 🔥</div>
+        <h1>STOP Bayar Langganan Kasir Bulanan!<br>Miliki <span>Source Code</span> Aplikasi Kasir Modern</h1>
+        <p>Solusi cerdas bisnis masa kini. Tanpa biaya server, tanpa langganan. Berbasis Google Sheets + Cloudflare. Lisensi Whitelabel, 100% milik Anda dan <strong>BISA DIJUAL ULANG TANPA BATAS!</strong></p>
+        <div>
+            <a href="#harga" class="btn btn-primary">AMBIL DISKON SEKARANG</a>
+            <a href="#demo" class="btn btn-outline">LIHAT DEMO LIVE</a>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="text-center">
+            <h2 class="section-title">Fitur Kelas Enterprise, Harga UMKM</h2>
+            <p style="font-size: 18px; color: #64748b; margin-bottom: 50px; max-width: 800px; margin-left: auto; margin-right: auto;">Dirancang khusus untuk kepraktisan. Mulai dari warung kopi, minimarket, hingga restoran. Semua fitur yang Anda butuhkan ada di sini.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">💸</span>
+                <h3>Nol Biaya Server</h3>
+                <p>Menggunakan Google Sheets sebagai Database & Cloudflare Pages untuk Hosting. Anda hemat jutaan rupiah per tahun karena 100% GRATIS biaya server.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📷</span>
+                <h3>Scanner Barcode Otomatis</h3>
+                <p>Mendukung penggunaan Scanner Barcode fisik (kabel/bluetooth) maupun Scanner Kamera HP/Laptop bawaan aplikasi secara langsung.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🖨️</span>
+                <h3>Cetak Thermal & PDF</h3>
+                <p>Terkoneksi langsung dengan Printer Thermal Bluetooth/USB menggunakan teknologi Web Serial API. Lengkap dengan opsi Download Laporan format PDF.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3>Dashboard Laporan Cerdas</h3>
+                <p>Pantau omzet Hari Ini, 7 Hari Terakhir, dan Bulan Ini secara Real-Time. Dilengkapi tabel rincian transaksi lengkap dan rapi.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Sistem Login Multi-Kasir</h3>
+                <p>Aplikasi dilengkapi "Gerbang Login". Anda (Admin) bisa bebas menambah, menghapus, atau mengganti password kasir langsung dari Google Sheets.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⭐</span>
+                <h3>Menu Cepat (Favorit) & Draft</h3>
+                <p>Fitur jalan pintas untuk barang tanpa barcode / terlaris. Serta fitur Tahan Transaksi (Open Draft) agar antrean tidak macet.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💲</span>
+                <h3>Diskon & Override Harga</h3>
+                <p>Sangat fleksibel! Kasir dapat memasukkan nominal diskon per item atau mengubah harga jual secara paksa (override) sesuai kondisi di lapangan.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3>Responsive Layout</h3>
+                <p>Tampilan akan otomatis menyesuaikan layar dengan sangat rapi, baik saat dibuka di PC/Laptop, Tablet, maupun Smartphone.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="container" style="padding-top: 0;">
+        <div class="demo-section">
+            <h2>👀 Buktikan Sendiri Kecanggihannya!</h2>
+            <p style="font-size: 18px; color: #475569;">Jangan beli kucing dalam karung. Silakan tes kelancaran aplikasinya secara langsung melalui link demo di bawah ini:</p>
+            
+            <a href="https://kasir-60m.pages.dev/" target="_blank" class="btn btn-primary" style="margin-top: 15px; font-size: 20px;">👉 BUKA HALAMAN DEMO 👈</a>
+            
+            <div class="demo-credentials">
+                <p style="margin: 0; color: #64748b; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Akses Login Kasir:</p>
+                Username: <b>kasirpagi</b> <br>
+                Password: <b>1234</b>
+            </div>
+        </div>
+    </section>
+
+    <section id="harga" class="container" style="padding-top: 0;">
+        <div class="pricing-section">
+            <h2 style="font-size: 32px; margin-top: 0;">Miliki Source Code-nya Sekarang!</h2>
+            <p style="font-size: 20px; color: #cbd5e1;">Penawaran Spesial Terbatas (Harga Perdana)</p>
+            
+            <div class="price-strike">Rp 499.000</div>
+            <div class="price-big">Rp 99.000</div>
+            
+            <div class="lisensi-box">
+                <h3 style="margin-top: 0; color: var(--primary);">💎 LISENSI WHITELABEL 💎</h3>
+                <ul>
+                    <li>✅ <b>100% Full Source Code</b> (HTML, CSS, JS, Code.gs).</li>
+                    <li>✅ Panduan Lengkap Instalasi & Setting.</li>
+                    <li>✅ Ganti Logo & Nama Toko Bebas.</li>
+                    <li>✅ <b>Bebas Dijual Ulang</b> ke toko/klien Anda tanpa batas! (100% Keuntungan milik Anda).</li>
+                </ul>
+            </div>
+            
+            <a href="https://sheetflare.net/checkout?id=AKM" target="_blank" class="btn btn-primary" style="font-size: 22px; padding: 20px 40px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);">🛒 BELI SOURCE CODE SEKARANG</a>
+        </div>
+
+        <div class="upsell">
+            <h2>🛠️ Tidak Paham Coding? Kami Bantu Sampai Beres!</h2>
+            <p>Sibuk urus toko dan tidak ada waktu untuk setting Google Sheets, Apps Script, atau Cloudflare? Tenang saja, kami sediakan layanan <strong>Terima Jadi (Done-For-You)</strong>.</p>
+            <p style="margin-bottom: 25px;">Anda cukup siapkan email Gmail, duduk manis, dan aplikasi kasir langsung siap dipakai di toko Anda beserta link cantiknya!</p>
+            <a href="https://wa.me/6282124984382?text=Halo%20Bos,%20saya%20mau%20pesan%20Jasa%20Install%20Aplikasi%20Kasir%20Terima%20Jadi" target="_blank" class="btn btn-primary" style="background-color: #b45309; box-shadow: 0 4px 15px rgba(180, 83, 9, 0.4);">💬 Pesan Jasa Install Terima Jadi</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Aplikasi Kasir Modern. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

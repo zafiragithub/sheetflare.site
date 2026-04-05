@@ -330,7 +330,7 @@
         .editor-textarea:focus { border-color: var(--emerald-500); background: white; }
 
         /* Toast */
-        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
         .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background-color: var(--emerald-500); }
@@ -701,6 +701,7 @@
                 </div>
                 
                 <div class="form-group"><input type="text" id="p-title" class="form-input font-bold" placeholder="Nama Produk" required></div>
+                <div class="form-group"><input type="url" id="p-gambar" class="form-input font-bold" placeholder="URL Gambar Produk (Copy dari Media Center / ImageKit)"></div>
                 <div class="form-group"><input type="text" id="p-lp" class="form-input font-bold" style="background: var(--emerald-50); color: var(--emerald-700); border-color: var(--emerald-200);" placeholder="Landing Page URL (Contoh: /promo)" required></div>
                 <div class="form-group"><input type="text" id="p-url" class="form-input font-bold" placeholder="Link Akses Materi" required></div>
                 <div class="form-group"><textarea id="p-desc" class="form-textarea" placeholder="Deskripsi Singkat"></textarea></div>
@@ -815,7 +816,6 @@
     </div>
 
     <script>
-        // Custom UI Functions
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -1164,7 +1164,7 @@
             const isConfirmed = await customConfirm(msg, 'Ubah Status Produk'); if(!isConfirmed) return;
             showToast('Memproses...', 'warning');
             
-            const payload = { action: 'save_product', id: p[0], title: p[1], desc: p[2], url: p[3], harga: p[4], status: newStatus, lp_url: p[6] || "", komisi: p[7] || "0", bump_status: p[8] || "Inactive", bump_title: p[9] || "", bump_price: p[10] || 0, bump_desc: p[11] || "", bump_url: p[12] || "", is_edit: true }; 
+            const payload = { action: 'save_product', id: p[0], title: p[1], desc: p[2], url: p[3], harga: p[4], status: newStatus, lp_url: p[6] || "", komisi: p[7] || "0", bump_status: p[8] || "Inactive", bump_title: p[9] || "", bump_price: p[10] || 0, bump_desc: p[11] || "", bump_url: p[12] || "", gambar: p[13] || "", is_edit: true }; 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
                 const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
@@ -1183,6 +1183,7 @@
             const p = cachedProducts.find(x => x[0] === id); if(!p) return; 
             document.getElementById('p-id').value = p[0]; document.getElementById('p-title').value = p[1]; document.getElementById('p-desc').value = p[2]; document.getElementById('p-url').value = p[3]; document.getElementById('p-harga').value = p[4]; document.getElementById('p-lp').value = p[6] || ""; document.getElementById('p-komisi').value = p[7] || "0"; document.getElementById('p-status').value = p[5] || "Active"; 
             document.getElementById('p-bump-status').value = p[8] || "Inactive"; document.getElementById('p-bump-title').value = p[9] || ""; document.getElementById('p-bump-price').value = p[10] || ""; document.getElementById('p-bump-desc').value = p[11] || ""; document.getElementById('p-bump-url').value = p[12] || ""; 
+            document.getElementById('p-gambar').value = p[13] || "";
             toggleBumpFields(); 
             document.getElementById('p-is-edit').value = 'true'; document.getElementById('modal-prod').classList.remove('hidden'); 
         }
@@ -1359,6 +1360,7 @@
             document.getElementById('form-prod').reset(); 
             document.getElementById('p-is-edit').value = 'false'; 
             document.getElementById('p-status').value = 'Active'; 
+            document.getElementById('p-gambar').value = '';
             toggleBumpFields();
             document.getElementById('modal-prod').classList.remove('hidden'); 
         }
@@ -1386,6 +1388,7 @@
                 bump_price: document.getElementById('p-bump-price').value,
                 bump_desc: document.getElementById('p-bump-desc').value,
                 bump_url: document.getElementById('p-bump-url').value,
+                gambar: document.getElementById('p-gambar').value,
                 is_edit: document.getElementById('p-is-edit').value === 'true' 
             }; 
             

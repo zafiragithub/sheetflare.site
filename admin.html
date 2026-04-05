@@ -293,6 +293,8 @@
         .form-label { display: block; font-size: 0.625rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
         .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem 1rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.5rem; font-size: 0.875rem; color: var(--slate-800); outline: none; transition: border-color 0.2s; }
         .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--emerald-500); }
+        .form-checkbox { width: 1rem; height: 1rem; accent-color: var(--emerald-600); cursor: pointer; }
+        .form-radio { width: 1rem; height: 1rem; accent-color: var(--emerald-600); cursor: pointer; }
         .form-textarea { min-height: 80px; resize: vertical; }
         
         /* Modals */
@@ -388,7 +390,7 @@
         
         <aside id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <span>SPOTADMIN</span>
+                <span class="sidebar-brand"><i data-lucide="layers"></i> <span class="dyn-site-name">SHEETFLARE</span></span>
                 <button onclick="toggleSidebar()" class="sidebar-close"><i data-lucide="x"></i></button>
             </div>
             
@@ -562,11 +564,6 @@
                             <div class="form-group"><label class="form-label">Tagline</label><input type="text" data-key="site_tagline" class="form-input"></div>
                             <div class="form-group"><label class="form-label">URL Website Utama</label><input type="url" data-key="site_url" class="form-input"></div>
                             
-                            <div class="form-group full" style="border-top: 1px solid var(--slate-100); padding-top: 1rem;">
-                                <label class="form-label" style="color: var(--emerald-600);">Pilih Halaman Beranda (Dari CMS)</label>
-                                <select data-key="home_page_slug" class="form-select" style="background: var(--emerald-50); border-color: var(--emerald-200); color: var(--emerald-700); font-weight: bold;"></select>
-                            </div>
-
                             <div class="form-group"><label class="form-label">URL Logo</label><input type="url" data-key="site_logo" class="form-input"></div>
                             <div class="form-group"><label class="form-label">URL Favicon</label><input type="url" data-key="site_favicon" class="form-input"></div>
                             <div class="form-group"><label class="form-label">Status Registrasi</label><select data-key="registration_open" class="form-select"><option value="true">Buka (True)</option><option value="false">Tutup (False)</option></select></div>
@@ -578,20 +575,72 @@
                         <h3 class="settings-title emerald"><i data-lucide="credit-card"></i> Gerbang Pembayaran</h3>
                         
                         <div style="background: var(--emerald-50); padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--emerald-100); margin-bottom: 1.5rem;">
-                            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--emerald-800); margin-bottom: 1rem;">Otomatis - Duitku API (Kosongkan jika pakai Manual Bank)</h4>
-                            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                                <div class="form-group"><label class="form-label" style="color: var(--emerald-700);">Merchant Code</label><input type="text" data-key="duitku_merchant_code" class="form-input" style="background: white;"></div>
-                                <div class="form-group"><label class="form-label" style="color: var(--emerald-700);">API Key</label><input type="password" autocomplete="new-password" data-key="duitku_api_key" class="form-input" style="background: white;"></div>
-                                <div class="form-group"><label class="form-label" style="color: var(--emerald-700);">Environment</label><select data-key="duitku_env" class="form-select" style="background: white;"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
+                            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--emerald-800); margin-bottom: 1rem;">Metode Pembayaran Aktif</h4>
+                            
+                            <div style="margin-bottom: 1.5rem;">
+                                <label class="form-label" style="color: var(--emerald-700);">Manual Transfer</label>
+                                <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 700; color: var(--slate-700);">
+                                    <input type="checkbox" data-key="is_manual_active" class="form-checkbox"> Aktifkan Transfer Bank Manual
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <label class="form-label" style="color: var(--emerald-700);">Payment Gateway Otomatis (Pilih Salah Satu)</label>
+                                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 700; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="duitku" class="form-radio"> Duitku
+                                    </label>
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 700; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="tripay" class="form-radio"> Tripay
+                                    </label>
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 700; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="xendit" class="form-radio"> Xendit
+                                    </label>
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 700; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="none" class="form-radio"> Nonaktifkan
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="form-grid">
-                            <div class="form-group"><label class="form-label">Nama Bank Lokal</label><input type="text" data-key="bank_name" class="form-input" placeholder="Contoh: BCA"></div>
-                            <div class="form-group"><label class="form-label">No Rekening</label><input type="text" data-key="bank_norek" class="form-input"></div>
-                            <div class="form-group"><label class="form-label">Atas Nama Bank</label><input type="text" data-key="bank_owner" class="form-input"></div>
-                            <div class="form-group"><label class="form-label">Token Moota</label><input type="text" data-key="moota_token" class="form-input" placeholder="*Opsional"></div>
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 1rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Transfer Manual</h4>
+                                <div class="form-grid">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Nama Bank Lokal</label><input type="text" data-key="bank_name" class="form-input" placeholder="Contoh: BCA"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">No Rekening</label><input type="text" data-key="bank_norek" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Atas Nama Bank</label><input type="text" data-key="bank_owner" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Token Moota</label><input type="text" data-key="moota_token" class="form-input" placeholder="*Opsional (Mutasi Otomatis)"></div>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 1rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Duitku</h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Merchant Code</label><input type="text" data-key="duitku_merchant_code" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="password" autocomplete="new-password" data-key="duitku_api_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Environment</label><select data-key="duitku_env" class="form-select"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 1rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Tripay</h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Merchant Code</label><input type="text" data-key="tripay_merchant_code" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="password" autocomplete="new-password" data-key="tripay_api_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Private Key</label><input type="password" autocomplete="new-password" data-key="tripay_private_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Environment</label><select data-key="tripay_env" class="form-select"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 1rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Xendit</h4>
+                                <div class="form-grid">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Secret API Key</label><input type="password" autocomplete="new-password" data-key="xendit_api_key" class="form-input"></div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
                     <div class="settings-card">
@@ -816,6 +865,7 @@
     </div>
 
     <script>
+        // Custom UI Functions
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -932,20 +982,13 @@
                 return;
             }
             tbody.innerHTML = cachedPages.map(p => {
-                const isHome = p[1] === currentHomeSlug;
-                const homeBtn = isHome 
-                    ? `<button class="btn-icon" style="background: var(--emerald-600); color: white; cursor: default;" title="Beranda Aktif"><i data-lucide="home"></i></button>`
-                    : `<button onclick="setAsHome('${p[1]}')" class="btn-icon" style="background: var(--slate-100); color: var(--slate-500);" title="Jadikan Beranda Utama"><i data-lucide="home"></i></button>`;
-                
+                // Not mapping to Home anymore, simple listing
                 return `
                 <tr>
-                    <td class="td-bold">
-                        ${p[2]} ${isHome ? '<span class="badge outline" style="margin-left: 0.5rem; color: var(--emerald-600);">Beranda</span>' : ''}
-                    </td>
+                    <td class="td-bold">${p[2]}</td>
                     <td style="font-family: monospace; color: var(--slate-500);">/${p[1]}</td>
                     <td>
                         <div class="action-btns">
-                            ${homeBtn}
                             <button onclick="window.open('/${p[1]}', '_blank')" class="btn-icon blue" title="Preview"><i data-lucide="external-link"></i></button>
                             <button onclick="editPage('${p[0]}')" class="btn-icon emerald" title="Edit"><i data-lucide="edit"></i></button>
                             <button onclick="deletePage('${p[0]}')" class="btn-icon rose" title="Hapus"><i data-lucide="trash-2"></i></button>
@@ -1018,8 +1061,6 @@
             cachedPages = r.pages || []; cachedProducts = r.products || []; cachedLms = r.lms || []; 
             cachedCoupons = r.coupons || []; 
             
-            currentHomeSlug = r.settings && r.settings.home_page_slug ? String(r.settings.home_page_slug).trim() : '';
-            
             populateLmsDropdown();
 
             document.getElementById('stat-orders').innerText = (r.stats.orders || 0) + ' Transaksi'; 
@@ -1069,17 +1110,26 @@
             renderPagesTable(); renderLmsTable(); renderCouponsTable(); 
             if(r.affiliates) { renderAffiliatesTable(r.affiliates); }
 
-            const homeSelect = document.querySelector('#admin-settings-form [data-key="home_page_slug"]');
-            if (homeSelect) {
-                let optHtml = '<option value="">-- Katalog Produk (Bawaan) --</option>';
-                cachedPages.forEach(p => { optHtml += `<option value="${p[1]}">${p[2]} (/${p[1]})</option>`; });
-                homeSelect.innerHTML = optHtml;
-            }
-
             const inputs = document.querySelectorAll('#admin-settings-form [data-key]');
             inputs.forEach(input => {
                 const key = input.getAttribute('data-key');
-                if (r.settings && r.settings[key] !== undefined) { input.value = r.settings[key]; } else { input.value = ''; }
+                if (r.settings && r.settings[key] !== undefined) { 
+                    if (input.type === 'radio') {
+                        input.checked = (input.value === String(r.settings[key]));
+                    } else if (input.type === 'checkbox') {
+                        input.checked = (String(r.settings[key]) === "true");
+                    } else {
+                        input.value = r.settings[key]; 
+                    }
+                } else { 
+                    if(input.type === 'radio') {
+                        if(input.value === 'none') input.checked = true;
+                    } else if (input.type === 'checkbox') {
+                        input.checked = false;
+                    } else {
+                        input.value = ''; 
+                    }
+                }
             });
 
             IK_PUB = r.settings.ik_public_key || ''; IK_END = r.settings.ik_endpoint || ''; 
@@ -1418,31 +1468,19 @@
             } catch(err) { showToast('Koneksi terputus.', 'error'); } finally { btn.innerHTML = oriText; btn.disabled = false; }
         };
 
-        async function setAsHome(slug) {
-            const isConfirmed = await customConfirm(`Jadikan halaman (/${slug}) sebagai Beranda Utama?`, 'Ubah Beranda');
-            if(!isConfirmed) return; showToast('Memproses...', 'warning');
-            try {
-                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
-                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: { home_page_slug: slug } }) }); const data = await res.json();
-                if(data.status === 'success') { showToast('Beranda berhasil diubah!', 'success'); forceSync(); } else { showToast('Gagal mengubah beranda', 'error'); }
-            } catch(e) { showToast('Koneksi terputus', 'error'); }
-        }
-
-        async function resetHome() {
-            const isConfirmed = await customConfirm('Kembalikan Beranda ke Katalog Produk Bawaan?', 'Reset Beranda');
-            if(!isConfirmed) return; showToast('Memproses...', 'warning');
-            try {
-                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
-                await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: { home_page_slug: '' } }) });
-                showToast('Beranda dikembalikan ke Katalog Asli!', 'success'); forceSync();
-            } catch(e) { showToast('Koneksi terputus', 'error'); }
-        }
-
         document.getElementById('admin-settings-form').onsubmit = async (e) => { 
             e.preventDefault(); 
             const btn = document.getElementById('btn-save-settings'); const originalText = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1.25rem; margin-right: 0.5rem;"></i> MENYIMPAN PENGATURAN...'; btn.disabled = true; lucide.createIcons();
-            const payload = {}; document.querySelectorAll('#admin-settings-form [data-key]').forEach(input => { payload[input.getAttribute('data-key')] = input.value; });
+            const payload = {}; document.querySelectorAll('#admin-settings-form [data-key]').forEach(input => { 
+                if(input.type === 'radio') {
+                    if(input.checked) payload[input.getAttribute('data-key')] = input.value;
+                } else if(input.type === 'checkbox') {
+                    payload[input.getAttribute('data-key')] = input.checked ? "true" : "false";
+                } else {
+                    payload[input.getAttribute('data-key')] = input.value; 
+                }
+            });
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
                 const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: payload }) }); const data = await res.json();

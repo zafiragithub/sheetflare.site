@@ -66,12 +66,7 @@
         .tracking-tighter { letter-spacing: -0.05em; }
         
         /* === LAYOUT === */
-        .container {
-            width: 100%;
-            max-width: 32rem; /* max-w-lg */
-            margin: 0 auto;
-            padding: 1rem;
-        }
+        .container { width: 100%; max-width: 32rem; margin: 0 auto; padding: 1rem; }
         @media (min-width: 640px) { .container { padding-top: 2.5rem; } }
 
         /* === TOAST NOTIFICATION === */
@@ -83,249 +78,113 @@
         /* === ANIMATIONS === */
         .fade-in-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
         .fade-in-up.show { opacity: 1; transform: translateY(0); }
-        
         @keyframes spin { to { transform: rotate(360deg); } }
         .animate-spin { animation: spin 1s linear infinite; }
-        
         @keyframes pulse { 50% { opacity: 0.5; } }
         .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
         /* === OVERLAYS === */
-        .overlay {
-            position: fixed; inset: 0;
-            background-color: white; z-index: 150;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: all 0.7s ease-in-out;
-        }
-        .overlay.dark {
-            background-color: rgba(15, 23, 42, 0.9); /* slate-900/90 */
-            z-index: 200; backdrop-filter: blur(4px);
-        }
+        .overlay { position: fixed; inset: 0; background-color: white; z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.7s ease-in-out; }
+        .overlay.dark { background-color: rgba(15, 23, 42, 0.9); z-index: 200; backdrop-filter: blur(4px); }
         .overlay.flex { display: flex !important; }
-
-        .loader-ring {
-            width: 4rem; height: 4rem;
-            border: 4px solid #d1fae5; /* emerald-100 */
-            border-top-color: #10b981; /* emerald-500 */
-            border-radius: 50%;
-        }
+        .loader-ring { width: 4rem; height: 4rem; border: 4px solid #d1fae5; border-top-color: #10b981; border-radius: 50%; }
 
         /* === MAIN CARD COMPONENT === */
-        .main-card {
-            background-color: white;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); /* shadow-xl */
-            border: 1px solid #e2e8f0; /* slate-200 */
-            border-radius: 1rem; /* rounded-2xl */
-            overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        
-        .card-header {
-            background-color: #10b981; /* emerald-500 */
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-        }
-        
+        .main-card { background-color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; border-radius: 1rem; overflow: hidden; display: flex; flex-direction: column; }
+        .card-header { background-color: #10b981; color: white; text-align: center; padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .card-body { padding: 1.25rem; }
         @media (min-width: 768px) { .card-body { padding: 2rem; } }
 
-        .btn-back {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            color: #94a3b8; /* slate-400 */
-            font-size: 0.625rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            margin-bottom: 1rem; transition: color 0.3s;
-        }
+        .btn-back { display: inline-flex; align-items: center; gap: 0.5rem; color: #94a3b8; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; transition: color 0.3s; }
         .btn-back:hover { color: #334155; }
 
         /* Box Sections */
-        .box {
-            background-color: #f8fafc; /* slate-50 */
-            border: 1px solid #e2e8f0; /* slate-200 */
-            border-radius: 0.75rem; /* rounded-xl */
-            padding: 1rem; margin-bottom: 1.5rem;
-        }
+        .box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; }
         @media (min-width: 768px) { .box { padding: 1.25rem; } }
-        
-        .box-title {
-            font-size: 0.625rem; color: #64748b; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.375rem;
-        }
+        .box-title { font-size: 0.625rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.375rem; }
         
         /* Order Summary With Image */
-        .order-summary-flex {
-            display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
-        }
-        .order-summary-img-wrap {
-            width: 4rem; height: 4rem; flex-shrink: 0;
-            border-radius: 0.5rem; overflow: hidden;
-            border: 1px solid #e2e8f0; background-color: white;
-        }
-        .order-summary-img {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-        .product-name {
-            font-size: 1.125rem; font-weight: 900; color: #1e293b;
-            line-height: 1.25; margin-bottom: 0;
-        }
+        .order-summary-flex { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .order-summary-img-wrap { width: 4rem; height: 4rem; flex-shrink: 0; border-radius: 0.5rem; overflow: hidden; border: 1px solid #e2e8f0; background-color: white; }
+        .order-summary-img { width: 100%; height: 100%; object-fit: cover; }
+        .product-name { font-size: 1.125rem; font-weight: 900; color: #1e293b; line-height: 1.25; margin-bottom: 0; }
         @media (min-width: 768px) { .product-name { font-size: 1.25rem; } }
         
-        .total-wrap {
-            display: flex; align-items: flex-end; justify-content: space-between;
-            border-top: 1px solid #e2e8f0; padding-top: 0.75rem;
-        }
-        .total-price {
-            font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; color: #10b981; /* emerald-500 */
-        }
+        .total-wrap { display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 0.75rem; }
+        .total-price { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; color: #10b981; }
 
         /* Forms & Inputs */
         .form-group { margin-bottom: 1rem; position: relative; }
-        .form-input {
-            width: 100%; background-color: white; border: 1px solid #cbd5e1; /* slate-300 */
-            border-radius: 0.5rem; padding: 0.75rem; font-size: 0.875rem;
-            font-weight: 700; color: #1e293b; outline: none; transition: all 0.3s;
-        }
+        .form-input { width: 100%; background-color: white; border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.75rem; font-size: 0.875rem; font-weight: 700; color: #1e293b; outline: none; transition: all 0.3s; }
         .form-input::placeholder { color: #94a3b8; font-weight: 500; }
         .form-input:focus { border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
-        
-        .wa-prefix {
-            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-            font-weight: 700; color: #94a3b8; border-right: 1px solid #e2e8f0;
-            padding-right: 0.75rem; font-size: 0.875rem;
-        }
+        .wa-prefix { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: #94a3b8; border-right: 1px solid #e2e8f0; padding-right: 0.75rem; font-size: 0.875rem; }
         .input-wa { padding-left: 4rem; }
 
         /* Coupon Section */
-        .coupon-box {
-            background-color: #ecfdf5; /* emerald-50 */
-            border: 1px solid #d1fae5; /* emerald-100 */
-            border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem;
-        }
-        .coupon-label {
-            display: flex; align-items: center; gap: 0.25rem;
-            font-size: 0.625rem; font-weight: 700; color: #065f46; /* emerald-800 */
-            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
-        }
+        .coupon-box { background-color: #ecfdf5; border: 1px solid #d1fae5; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; }
+        .coupon-label { display: flex; align-items: center; gap: 0.25rem; font-size: 0.625rem; font-weight: 700; color: #065f46; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
         .coupon-flex { display: flex; gap: 0.5rem; }
-        .btn-apply {
-            background-color: #10b981; color: white; padding: 0.5rem 1rem;
-            border-radius: 0.5rem; font-weight: 900; font-size: 0.625rem;
-            letter-spacing: 0.1em; text-transform: uppercase; transition: background-color 0.3s;
-        }
+        .btn-apply { background-color: #10b981; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 900; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; transition: background-color 0.3s; }
         .btn-apply:hover { background-color: #059669; }
 
         /* Order Bump */
-        .bump-box {
-            border: 2px dashed #cbd5e1; border-radius: 0.75rem;
-            padding: 1rem; cursor: pointer; transition: all 0.3s;
-        }
-        .bump-box.bump-checked {
-            border-color: #10b981; border-style: solid;
-            background-color: #ecfdf5; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1);
-        }
+        .bump-box { border: 2px dashed #cbd5e1; border-radius: 0.75rem; padding: 1rem; cursor: pointer; transition: all 0.3s; }
+        .bump-box.bump-checked { border-color: #10b981; border-style: solid; background-color: #ecfdf5; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1); }
         .bump-flex { display: flex; align-items: flex-start; gap: 0.75rem; }
         .bump-checkbox { width: 1rem; height: 1rem; accent-color: #10b981; border-radius: 0.25rem; cursor: pointer; margin-top: 0.125rem; }
-        
-        .bump-title {
-            font-weight: 900; color: #1e293b; font-size: 0.75rem; margin-bottom: 0.25rem;
-            text-decoration: underline; text-decoration-color: #fca5a5; /* rose-300 */ text-underline-offset: 2px;
-        }
-        .bump-desc { font-size: 0.6875rem; /* 11px */ color: #475569; margin-bottom: 0.5rem; line-height: 1.5; }
-        .bump-price-badge {
-            font-size: 0.75rem; font-weight: 900; color: #e11d48; /* rose-600 */
-            background-color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem;
-            border: 1px solid #fecdd3; /* rose-200 */ display: inline-block;
-        }
+        .bump-title { font-weight: 900; color: #1e293b; font-size: 0.75rem; margin-bottom: 0.25rem; text-decoration: underline; text-decoration-color: #fca5a5; text-underline-offset: 2px; }
+        .bump-desc { font-size: 0.6875rem; color: #475569; margin-bottom: 0.5rem; line-height: 1.5; }
+        .bump-price-badge { font-size: 0.75rem; font-weight: 900; color: #e11d48; background-color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: 1px solid #fecdd3; display: inline-block; }
 
         /* Payment Methods Grid */
-        .cat-title {
-            font-size: 0.625rem; font-weight: 900; color: #94a3b8;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            margin-bottom: 0.5rem; margin-top: 1rem;
-            display: flex; align-items: center; gap: 0.375rem;
-        }
+        .cat-title { font-size: 0.625rem; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-top: 1rem; display: flex; align-items: center; gap: 0.375rem; }
         .cat-title::after { content: ""; height: 1px; background-color: #e2e8f0; flex-grow: 1; }
         
         .pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
         .pay-card input[type="radio"] { display: none; }
-        .pay-card label {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 1rem 0.5rem; background-color: white; border: 2px solid #e2e8f0;
-            border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease;
-            position: relative; height: 5.5rem;
-        }
-        .pay-card label:hover { border-color: #6ee7b7; /* emerald-300 */ background-color: #f8fafc; }
-        .pay-card input[type="radio"]:checked + label {
-            border-color: #10b981; background-color: #ecfdf5;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-        }
+        .pay-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: white; border: 2px solid #e2e8f0; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease; position: relative; height: 5.5rem; }
+        .pay-card label:hover { border-color: #6ee7b7; background-color: #f8fafc; }
+        .pay-card input[type="radio"]:checked + label { border-color: #10b981; background-color: #ecfdf5; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
         
-        .check-icon {
-            position: absolute; top: 0.5rem; right: 0.5rem;
-            width: 1.25rem; height: 1.25rem; background-color: #10b981;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: scale(0); transition: all 0.2s ease; color: white;
-        }
+        .check-icon { position: absolute; top: 0.5rem; right: 0.5rem; width: 1.25rem; height: 1.25rem; background-color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0); transition: all 0.2s ease; color: white; }
         .pay-card input[type="radio"]:checked + label .check-icon { opacity: 1; transform: scale(1); }
         .check-icon svg { width: 0.75rem; height: 0.75rem; }
         
-        .pay-logo img {
-            max-height: 1.5rem; max-width: 3.75rem; object-fit: contain;
-            filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; margin-bottom: 0.5rem;
-        }
+        .pay-logo img { max-height: 1.5rem; max-width: 3.75rem; object-fit: contain; filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; margin-bottom: 0.5rem; }
         .pay-card input[type="radio"]:checked + label .pay-logo img { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
-        
         .pay-name { font-size: 0.625rem; font-weight: 700; color: #475569; text-align: center; line-height: 1.2; }
-        .pay-card input[type="radio"]:checked + label .pay-name { color: #065f46; /* emerald-800 */ }
+        .pay-card input[type="radio"]:checked + label .pay-name { color: #065f46; }
 
         /* Submit Button */
-        .btn-submit {
-            width: 100%; background-color: #10b981; color: white;
-            border-radius: 0.75rem; padding: 1rem 1.5rem;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem;
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); margin-top: 0.5rem;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-            transition: all 0.3s;
-        }
+        .btn-submit { width: 100%; background-color: #10b981; color: white; border-radius: 0.75rem; padding: 1rem 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; }
         .btn-submit:hover { background-color: #059669; transform: translateY(-2px); }
         .btn-submit svg { width: 1rem; height: 1rem; }
 
         /* Success State */
-        .success-card {
-            background-color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border: 1px solid #f1f5f9; padding: 2rem; text-align: center;
-            border-radius: 1rem; margin: 1.5rem auto 0;
-        }
-        .success-icon {
-            width: 4rem; height: 4rem; background-color: #ecfdf5; color: #10b981;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
+        .success-card { background-color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; padding: 2rem; text-align: center; border-radius: 1rem; margin: 1.5rem auto 0; }
+        .success-icon { width: 4rem; height: 4rem; background-color: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
         .success-icon svg { width: 2rem; height: 2rem; }
         .success-title { font-size: 1.5rem; font-weight: 900; color: #0f172a; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
         .success-desc { color: #64748b; font-size: 0.875rem; margin-bottom: 2rem; line-height: 1.625; }
         
-        .new-user-box {
-            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem;
-            padding: 1rem; margin-bottom: 1.5rem; text-align: left; display: flex; gap: 0.75rem;
-        }
+        .new-user-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; text-align: left; display: flex; gap: 0.75rem; }
         .new-user-icon { color: #10b981; flex-shrink: 0; margin-top: 0.25rem; }
         .new-user-icon svg { width: 1.25rem; height: 1.25rem; }
         
-        .btn-wa {
-            width: 100%; background-color: #25D366; color: white;
-            border-radius: 0.75rem; padding: 1rem 1.5rem;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.6875rem;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-            transition: background-color 0.3s; box-shadow: 0 10px 15px -3px rgba(37, 211, 102, 0.3);
-        }
+        .btn-wa { width: 100%; background-color: #25D366; color: white; border-radius: 0.75rem; padding: 1rem 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background-color 0.3s; box-shadow: 0 10px 15px -3px rgba(37, 211, 102, 0.3); }
         .btn-wa:hover { background-color: #16a34a; }
         .btn-wa svg { width: 1rem; height: 1rem; }
-
     </style>
+    
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '2189480848543217'); fbq('track', 'PageView'); 
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2189480848543217&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -355,19 +214,16 @@
             </div>
 
             <div class="card-body">
-                
                 <a href="/" class="btn-back"><i data-lucide="arrow-left"></i> Batal / Kembali</a>
 
                 <div class="box">
                     <p class="box-title"><i data-lucide="box"></i> Ringkasan Pesanan</p>
-                    
                     <div class="order-summary-flex">
                         <div class="order-summary-img-wrap">
                             <img id="display-img" src="" alt="Produk" class="order-summary-img">
                         </div>
                         <h2 id="display-title" class="product-name">...</h2>
                     </div>
-                    
                     <div class="total-wrap">
                         <p class="box-title" style="margin: 0;">Total Tagihan</p>
                         <div id="display-total-top" class="total-price">...</div>
@@ -390,7 +246,6 @@
                         <h2 style="font-size: 0.875rem; font-weight: 900; color: #1e293b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                             <i data-lucide="user" style="width: 1rem; height: 1rem; color: #10b981;"></i> Data Pembeli
                         </h2>
-                        
                         <div class="form-group">
                             <input type="text" id="cust-name" class="form-input" placeholder="Nama Lengkap" required>
                         </div>
@@ -423,35 +278,76 @@
                             <i data-lucide="wallet" style="width: 1rem; height: 1rem; color: #10b981;"></i> Metode Pembayaran
                         </h2>
                         
-                        <div class="cat-title">Virtual Account (Cek Otomatis)</div>
-                        <div class="pay-grid duitku-options">
+                        <div class="cat-title duitku-options hidden">Virtual Account (Otomatis)</div>
+                        <div class="pay-grid duitku-options hidden">
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-bni-va" data-type="duitku" value="I1"><label for="pay-bni-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bni-logo.svg" alt="BNI"></div><span class="pay-name">BNI VA</span></label></div>
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-bri-va" data-type="duitku" value="BR"><label for="pay-bri-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bri-logo.svg" alt="BRI"></div><span class="pay-name">BRI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-bsi-va" data-type="duitku" value="BV"><label for="pay-bsi-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-cimb-va" data-type="duitku" value="B1"><label for="pay-cimb-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/B1.png" alt="CIMB"></div><span class="pay-name">CIMB Niaga VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-mandiri-va" data-type="duitku" value="M2" checked><label for="pay-mandiri-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-maybank-va" data-type="duitku" value="VA"><label for="pay-maybank-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/VA.png" alt="Maybank"></div><span class="pay-name">Maybank VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-mandiri-va" data-type="duitku" value="M2"><label for="pay-mandiri-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-permata-va" data-type="duitku" value="BT"><label for="pay-permata-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/permata-logo.svg" alt="Permata"></div><span class="pay-name">Permata VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-bsi-va" data-type="duitku" value="BV"><label for="pay-bsi-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
                         </div>
 
-                        <div class="cat-title duitku-options">E-Wallet</div>
-                        <div class="pay-grid duitku-options">
+                        <div class="cat-title duitku-options hidden">E-Wallet & QRIS</div>
+                        <div class="pay-grid duitku-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-qris-spay" data-type="duitku" value="SP"><label for="pay-qris-spay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">QRIS (Semua Wallet)</span></label></div>
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-ovo" data-type="duitku" value="OV"><label for="pay-ovo"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg" alt="OVO"></div><span class="pay-name">OVO</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-shopeepay" data-type="duitku" value="SA"><label for="pay-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay App</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-shopeepay" data-type="duitku" value="SA"><label for="pay-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay</span></label></div>
                         </div>
 
-                        <div class="cat-title duitku-options">QRIS (Scan Barcode)</div>
-                        <div class="pay-grid duitku-options">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-qris-spay" data-type="duitku" value="SP"><label for="pay-qris-spay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">ShopeePay QRIS</span></label></div>
-                        </div>
-
-                        <div class="cat-title duitku-options">Minimarket</div>
-                        <div class="pay-grid duitku-options">
+                        <div class="cat-title duitku-options hidden">Minimarket</div>
+                        <div class="pay-grid duitku-options hidden">
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-alfamart" data-type="duitku" value="FT"><label for="pay-alfamart"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Alfamart / Indomaret</span></label></div>
                         </div>
 
-                        <div class="cat-title">Transfer Manual (Cek Admin)</div>
-                        <div class="pay-grid">
+                        <div class="cat-title tripay-options hidden">Virtual Account (Otomatis)</div>
+                        <div class="pay-grid tripay-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bca" data-type="tripay" value="BCAVA"><label for="tripay-bca"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="BCA"></div><span class="pay-name">BCA VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bni" data-type="tripay" value="BNIVA"><label for="tripay-bni"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bni-logo.svg" alt="BNI"></div><span class="pay-name">BNI VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bri" data-type="tripay" value="BRIVA"><label for="tripay-bri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bri-logo.svg" alt="BRI"></div><span class="pay-name">BRI VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-mandiri" data-type="tripay" value="MANDIRIVA"><label for="tripay-mandiri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-permata" data-type="tripay" value="PERMATAVA"><label for="tripay-permata"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/permata-logo.svg" alt="Permata"></div><span class="pay-name">Permata VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bsi" data-type="tripay" value="BSIVA"><label for="tripay-bsi"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
+                        </div>
+
+                        <div class="cat-title tripay-options hidden">E-Wallet & QRIS</div>
+                        <div class="pay-grid tripay-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-qris" data-type="tripay" value="QRIS"><label for="tripay-qris"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">QRIS (Semua E-Wallet)</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-ovo" data-type="tripay" value="OVO"><label for="tripay-ovo"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg" alt="OVO"></div><span class="pay-name">OVO</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-shopeepay" data-type="tripay" value="SHOPEEPAY"><label for="tripay-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay</span></label></div>
+                        </div>
+                        
+                        <div class="cat-title tripay-options hidden">Minimarket</div>
+                        <div class="pay-grid tripay-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-alfamart" data-type="tripay" value="ALFAMART"><label for="tripay-alfamart"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Alfamart</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-indomaret" data-type="tripay" value="INDOMARET"><label for="tripay-indomaret"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Indomaret</span></label></div>
+                        </div>
+
+                        <div class="cat-title xendit-options hidden">Virtual Account (Otomatis)</div>
+                        <div class="pay-grid xendit-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bca" data-type="xendit" value="BCA"><label for="xendit-bca"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="BCA"></div><span class="pay-name">BCA VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bni" data-type="xendit" value="BNI"><label for="xendit-bni"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bni-logo.svg" alt="BNI"></div><span class="pay-name">BNI VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bri" data-type="xendit" value="BRI"><label for="xendit-bri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bri-logo.svg" alt="BRI"></div><span class="pay-name">BRI VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-mandiri" data-type="xendit" value="MANDIRI"><label for="xendit-mandiri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-permata" data-type="xendit" value="PERMATA"><label for="xendit-permata"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/permata-logo.svg" alt="Permata"></div><span class="pay-name">Permata VA</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bsi" data-type="xendit" value="BSI"><label for="xendit-bsi"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
+                        </div>
+
+                        <div class="cat-title xendit-options hidden">E-Wallet & QRIS</div>
+                        <div class="pay-grid xendit-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-qris" data-type="xendit" value="QRIS"><label for="xendit-qris"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">QRIS (Semua E-Wallet)</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-ovo" data-type="xendit" value="OVO"><label for="xendit-ovo"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg" alt="OVO"></div><span class="pay-name">OVO</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-shopeepay" data-type="xendit" value="SHOPEEPAY"><label for="xendit-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay</span></label></div>
+                        </div>
+                        
+                        <div class="cat-title xendit-options hidden">Minimarket</div>
+                        <div class="pay-grid xendit-options hidden">
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-alfamart" data-type="xendit" value="ALFAMART"><label for="xendit-alfamart"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Alfamart</span></label></div>
+                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-indomaret" data-type="xendit" value="INDOMARET"><label for="xendit-indomaret"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Indomaret</span></label></div>
+                        </div>
+
+                        <div class="cat-title manual-options hidden">Transfer Manual (Cek Admin)</div>
+                        <div class="pay-grid manual-options hidden">
                             <div class="pay-card"><input type="radio" name="payment_method" id="pay-manual-bca" data-type="manual" value="manual-bca"><label for="pay-manual-bca"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="BCA"></div><span class="pay-name">Transfer Manual</span></label></div>
                         </div>
                     </div>
@@ -511,11 +407,45 @@
 
         let basePrice = 0; let activeBumpPrice = 0; let isBumpAvailable = false; let appliedCouponCode = ""; let discountAmount = 0;
 
+        // FUNGSI CERDAS TAMPILKAN PAYMENT METHOD
         function applyPaymentMethods() {
-            if (sysPayment && sysPayment.has_duitku === false) {
-                document.querySelectorAll('.duitku-options').forEach(el => el.style.display = 'none');
-                const radioManual = document.getElementById('pay-manual-bca');
-                if(radioManual) radioManual.checked = true;
+            // Sembunyikan semua opsi terlebih dahulu
+            document.querySelectorAll('.duitku-options, .tripay-options, .xendit-options, .manual-options').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            if (!sysPayment) return;
+
+            let autoGateway = sysPayment.auto_gateway || 'duitku';
+            let manualActive = sysPayment.is_manual_active === 'true';
+            let hasAuto = false;
+
+            // Logika Gateway Otomatis
+            if (autoGateway === 'duitku') {
+                document.querySelectorAll('.duitku-options').forEach(el => el.classList.remove('hidden'));
+                const defaultRadio = document.getElementById('pay-mandiri-va');
+                if(defaultRadio) defaultRadio.checked = true;
+                hasAuto = true;
+            } else if (autoGateway === 'tripay') {
+                document.querySelectorAll('.tripay-options').forEach(el => el.classList.remove('hidden'));
+                const defaultRadio = document.getElementById('tripay-qris');
+                if(defaultRadio) defaultRadio.checked = true;
+                hasAuto = true;
+            } else if (autoGateway === 'xendit') {
+                document.querySelectorAll('.xendit-options').forEach(el => el.classList.remove('hidden'));
+                const defaultRadio = document.getElementById('xendit-qris');
+                if(defaultRadio) defaultRadio.checked = true;
+                hasAuto = true;
+            }
+
+            // Logika Manual Transfer
+            if (manualActive) {
+                document.querySelectorAll('.manual-options').forEach(el => el.classList.remove('hidden'));
+                // Jika tidak ada gateway otomatis yg aktif, otomatis pilih manual
+                if (!hasAuto) {
+                    const manualRadio = document.getElementById('pay-manual-bca');
+                    if(manualRadio) manualRadio.checked = true;
+                }
             }
         }
 
@@ -533,11 +463,11 @@
                 if(r.status === 'success') {
                     appliedCouponCode = r.code; discountAmount = r.discount;
                     msgEl.innerText = `${r.message} (-Rp ${discountAmount.toLocaleString('id-ID')})`; 
-                    msgEl.style.color = '#10b981'; // emerald-500
+                    msgEl.style.color = '#10b981'; 
                     document.getElementById('coupon-code').disabled = true; btn.innerHTML = '✓'; calculateTotalDisplay();
                 } else {
                     appliedCouponCode = ""; discountAmount = 0; msgEl.innerText = r.message; 
-                    msgEl.style.color = '#ef4444'; // rose-500
+                    msgEl.style.color = '#ef4444'; 
                     btn.innerHTML = 'Pakai'; btn.disabled = false; calculateTotalDisplay();
                 }
             } catch(e) { msgEl.innerText = 'Gagal cek kupon'; msgEl.classList.remove('hidden'); msgEl.style.color = '#ef4444'; btn.innerHTML = 'Pakai'; btn.disabled = false; }
@@ -570,7 +500,7 @@
             document.getElementById('prod-id').value = p.id; document.getElementById('prod-title').value = p.nama || p.title; document.getElementById('prod-price').value = p.harga;
             basePrice = Number(p.harga) || 0;
 
-            // Tampilkan Gambar Produk
+            // Render Gambar Produk
             document.getElementById('display-img').src = p.gambar || 'https://ik.imagekit.io/maihfdgfn5/download.png';
             
             if (p.bump_status === 'Active') {

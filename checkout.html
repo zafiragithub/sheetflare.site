@@ -335,7 +335,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const rawId = urlParams.get('id') || '';
         const productId = rawId.toUpperCase();
-        const PRODUCT_CACHE_KEY = 'melimpah_product_' + productId;
 
         let basePrice = 0; let activeBumpPrice = 0; let isBumpAvailable = false; let appliedCouponCode = ""; let discountAmount = 0;
 
@@ -399,20 +398,21 @@
             ]
         };
 
-        // FUNGSI CERDAS RENDER PAYMENT METHOD (TANPA HARDCODE)
+        // FUNGSI CERDAS RENDER PAYMENT METHOD (TANPA HARDCODE & ANTI BOOLEAN TRAP)
         function applyPaymentMethods() {
             const container = document.getElementById('dynamic-payment-methods');
             container.innerHTML = ''; 
 
             if (!sysPayment) return;
 
-            let autoGateway = sysPayment.auto_gateway || 'duitku';
-            let manualActive = sysPayment.is_manual_active === 'true';
+            // FIX: Parsing ke String lalu ke Lowercase agar kebal dari tipe data Boolean True/False
+            let autoGateway = String(sysPayment.auto_gateway || 'duitku').trim().toLowerCase();
+            let manualActive = String(sysPayment.is_manual_active).trim().toLowerCase() === 'true';
 
             let html = '';
             let isFirstRendered = false; 
 
-            // Render Gateway Otomatis (Jika tidak 'none')
+            // Render Gateway Otomatis
             if (autoGateway !== 'none' && paymentChannels[autoGateway]) {
                 paymentChannels[autoGateway].forEach(cat => {
                     html += `<div class="cat-title">${cat.category}</div><div class="pay-grid">`;
@@ -464,7 +464,7 @@
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
                         <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">No. Rekening</span>
-                        <strong style="font-size: 1rem; font-family: monospace; color: #10b981;">${sysPayment.bank_norek || '-'}</strong>
+                        <strong style="font-size: 1rem; font-family: monospace; color: #10b981; user-select: all;">${sysPayment.bank_norek || '-'}</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Atas Nama</span>
@@ -474,8 +474,16 @@
                 `;
             }
 
+            // Jika tidak ada satu pun yang aktif
+            if(html === '') {
+                html = `<div style="text-align: center; padding: 2rem; background: white; border: 1px dashed #cbd5e1; border-radius: 1rem;">
+                    <p style="font-size: 0.875rem; color: #ef4444; font-weight: 700;">Admin belum mengaktifkan metode pembayaran apapun.</p>
+                </div>`;
+            }
+
             container.innerHTML = html;
             
+            // Logic interaktif ketika Radio Button diklik
             setTimeout(() => {
                 const radios = document.querySelectorAll('input[name="payment_method"]');
                 const manualBox = document.getElementById('manual-info-box');
@@ -559,8 +567,16 @@
             if(!productId) { window.location.href = '/'; return; }
             const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
             
-            const cachedData = localStorage.getItem(PRODUCT_CACHE_KEY);
-            if (cachedData) { try { const r = JSON.parse(cachedData); showFormInstant(r.data); sysPayment = r.payment; applyPaymentMethods(); isFormVisible = true; } catch(e){} }
+            // Bypass Cache khusus ketika ngetes ubah gateway: tambahkan ?refresh=1 di URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const forceRefresh = urlParams.get('refresh');
+
+            if (forceRefresh) {
+                // Jangan tarik dari Cache Local, langsung sikat ke API
+            } else {
+                const cachedData = localStorage.getItem('melimpah_product_' + productId);
+                if (cachedData) { try { const r = JSON.parse(cachedData); showFormInstant(r.data); sysPayment = r.payment; applyPaymentMethods(); isFormVisible = true; } catch(e){} }
+            }
 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null); if(!targetUrl) return;
@@ -569,7 +585,7 @@
                 if(r.status === 'success') {
                     sysPayment = r.payment; 
                     if(r.aff_name && r.aff_name !== "") { document.getElementById('affiliate-id-display').innerText = r.aff_name; document.getElementById('affiliate-badge').classList.remove('hidden'); }
-                    showFormInstant(r.data); applyPaymentMethods(); localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(r));
+                    showFormInstant(r.data); applyPaymentMethods(); localStorage.setItem('melimpah_product_' + productId, JSON.stringify(r));
                 } else { if(!isFormVisible) { showToast(r.message, 'error'); setTimeout(() => window.location.href = '/', 1500); } }
             } catch (e) { if(!isFormVisible) showToast('Gagal memuat produk.', 'error'); }
         }

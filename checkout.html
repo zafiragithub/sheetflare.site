@@ -143,7 +143,7 @@
         
         .pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
         .pay-card input[type="radio"] { display: none; }
-        .pay-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: white; border: 2px solid #e2e8f0; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease; position: relative; height: 5.5rem; }
+        .pay-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: white; border: 2px solid #e2e8f0; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease; position: relative; height: 5.5rem; text-align: center; }
         .pay-card label:hover { border-color: #6ee7b7; background-color: #f8fafc; }
         .pay-card input[type="radio"]:checked + label { border-color: #10b981; background-color: #ecfdf5; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
         
@@ -278,78 +278,8 @@
                             <i data-lucide="wallet" style="width: 1rem; height: 1rem; color: #10b981;"></i> Metode Pembayaran
                         </h2>
                         
-                        <div class="cat-title duitku-options hidden">Virtual Account (Otomatis)</div>
-                        <div class="pay-grid duitku-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-bni-va" data-type="duitku" value="I1"><label for="pay-bni-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bni-logo.svg" alt="BNI"></div><span class="pay-name">BNI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-bri-va" data-type="duitku" value="BR"><label for="pay-bri-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bri-logo.svg" alt="BRI"></div><span class="pay-name">BRI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-cimb-va" data-type="duitku" value="B1"><label for="pay-cimb-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/B1.png" alt="CIMB"></div><span class="pay-name">CIMB Niaga VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-mandiri-va" data-type="duitku" value="M2"><label for="pay-mandiri-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-permata-va" data-type="duitku" value="BT"><label for="pay-permata-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/permata-logo.svg" alt="Permata"></div><span class="pay-name">Permata VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-bsi-va" data-type="duitku" value="BV"><label for="pay-bsi-va"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
-                        </div>
-
-                        <div class="cat-title duitku-options hidden">E-Wallet & QRIS</div>
-                        <div class="pay-grid duitku-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-qris-spay" data-type="duitku" value="SP"><label for="pay-qris-spay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">QRIS (Semua Wallet)</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-ovo" data-type="duitku" value="OV"><label for="pay-ovo"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg" alt="OVO"></div><span class="pay-name">OVO</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-shopeepay" data-type="duitku" value="SA"><label for="pay-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay</span></label></div>
-                        </div>
-
-                        <div class="cat-title duitku-options hidden">Minimarket</div>
-                        <div class="pay-grid duitku-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-alfamart" data-type="duitku" value="FT"><label for="pay-alfamart"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Alfamart / Indomaret</span></label></div>
-                        </div>
-
-                        <div class="cat-title tripay-options hidden">Virtual Account (Otomatis)</div>
-                        <div class="pay-grid tripay-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bca" data-type="tripay" value="BCAVA"><label for="tripay-bca"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="BCA"></div><span class="pay-name">BCA VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bni" data-type="tripay" value="BNIVA"><label for="tripay-bni"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bni-logo.svg" alt="BNI"></div><span class="pay-name">BNI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bri" data-type="tripay" value="BRIVA"><label for="tripay-bri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bri-logo.svg" alt="BRI"></div><span class="pay-name">BRI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-mandiri" data-type="tripay" value="MANDIRIVA"><label for="tripay-mandiri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-permata" data-type="tripay" value="PERMATAVA"><label for="tripay-permata"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/permata-logo.svg" alt="Permata"></div><span class="pay-name">Permata VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-bsi" data-type="tripay" value="BSIVA"><label for="tripay-bsi"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
-                        </div>
-
-                        <div class="cat-title tripay-options hidden">E-Wallet & QRIS</div>
-                        <div class="pay-grid tripay-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-qris" data-type="tripay" value="QRIS"><label for="tripay-qris"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">QRIS (Semua E-Wallet)</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-ovo" data-type="tripay" value="OVO"><label for="tripay-ovo"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg" alt="OVO"></div><span class="pay-name">OVO</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-shopeepay" data-type="tripay" value="SHOPEEPAY"><label for="tripay-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay</span></label></div>
-                        </div>
+                        <div id="dynamic-payment-methods"></div>
                         
-                        <div class="cat-title tripay-options hidden">Minimarket</div>
-                        <div class="pay-grid tripay-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-alfamart" data-type="tripay" value="ALFAMART"><label for="tripay-alfamart"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Alfamart</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="tripay-indomaret" data-type="tripay" value="INDOMARET"><label for="tripay-indomaret"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Indomaret</span></label></div>
-                        </div>
-
-                        <div class="cat-title xendit-options hidden">Virtual Account (Otomatis)</div>
-                        <div class="pay-grid xendit-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bca" data-type="xendit" value="BCA"><label for="xendit-bca"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="BCA"></div><span class="pay-name">BCA VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bni" data-type="xendit" value="BNI"><label for="xendit-bni"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bni-logo.svg" alt="BNI"></div><span class="pay-name">BNI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bri" data-type="xendit" value="BRI"><label for="xendit-bri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/bri-logo.svg" alt="BRI"></div><span class="pay-name">BRI VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-mandiri" data-type="xendit" value="MANDIRI"><label for="xendit-mandiri"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg" alt="Mandiri"></div><span class="pay-name">Mandiri VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-permata" data-type="xendit" value="PERMATA"><label for="xendit-permata"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/permata-logo.svg" alt="Permata"></div><span class="pay-name">Permata VA</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-bsi" data-type="xendit" value="BSI"><label for="xendit-bsi"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/BSI.webp" alt="BSI"></div><span class="pay-name">BSI VA</span></label></div>
-                        </div>
-
-                        <div class="cat-title xendit-options hidden">E-Wallet & QRIS</div>
-                        <div class="pay-grid xendit-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-qris" data-type="xendit" value="QRIS"><label for="xendit-qris"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/QR.png" alt="QRIS"></div><span class="pay-name">QRIS (Semua E-Wallet)</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-ovo" data-type="xendit" value="OVO"><label for="xendit-ovo"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg" alt="OVO"></div><span class="pay-name">OVO</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-shopeepay" data-type="xendit" value="SHOPEEPAY"><label for="xendit-shopeepay"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png" alt="ShopeePay"></div><span class="pay-name">ShopeePay</span></label></div>
-                        </div>
-                        
-                        <div class="cat-title xendit-options hidden">Minimarket</div>
-                        <div class="pay-grid xendit-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-alfamart" data-type="xendit" value="ALFAMART"><label for="xendit-alfamart"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Alfamart</span></label></div>
-                            <div class="pay-card"><input type="radio" name="payment_method" id="xendit-indomaret" data-type="xendit" value="INDOMARET"><label for="xendit-indomaret"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/RETAIL.png" alt="Retail"></div><span class="pay-name">Indomaret</span></label></div>
-                        </div>
-
-                        <div class="cat-title manual-options hidden">Transfer Manual (Cek Admin)</div>
-                        <div class="pay-grid manual-options hidden">
-                            <div class="pay-card"><input type="radio" name="payment_method" id="pay-manual-bca" data-type="manual" value="manual-bca"><label for="pay-manual-bca"><div class="check-icon"><i data-lucide="check"></i></div><div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="BCA"></div><span class="pay-name">Transfer Manual</span></label></div>
-                        </div>
                     </div>
 
                     <button type="submit" id="btn-submit" class="btn-submit">
@@ -407,12 +337,70 @@
 
         let basePrice = 0; let activeBumpPrice = 0; let isBumpAvailable = false; let appliedCouponCode = ""; let discountAmount = 0;
 
-        // FUNGSI CERDAS TAMPILKAN PAYMENT METHOD
+        // DATABASE PAYMENT GATEWAYS CHANNELS
+        const paymentChannels = {
+            duitku: [
+                { category: 'Virtual Account (Otomatis)', channels: [
+                    { id: 'pay-bni-va', value: 'I1', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
+                    { id: 'pay-bri-va', value: 'BR', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
+                    { id: 'pay-mandiri-va', value: 'M2', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
+                    { id: 'pay-cimb-va', value: 'B1', logo: 'https://ik.imagekit.io/maihfdgfn5/B1.png', name: 'CIMB Niaga VA' },
+                    { id: 'pay-permata-va', value: 'BT', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
+                    { id: 'pay-bsi-va', value: 'BV', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
+                ]},
+                { category: 'E-Wallet & QRIS', channels: [
+                    { id: 'pay-qris-spay', value: 'SP', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua Wallet)' },
+                    { id: 'pay-ovo', value: 'OV', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
+                    { id: 'pay-shopeepay', value: 'SA', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
+                ]},
+                { category: 'Minimarket', channels: [
+                    { id: 'pay-alfamart', value: 'FT', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart / Indomaret' }
+                ]}
+            ],
+            tripay: [
+                 { category: 'Virtual Account (Otomatis)', channels: [
+                    { id: 'tripay-bca', value: 'BCAVA', logo: 'https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg', name: 'BCA VA' },
+                    { id: 'tripay-bni', value: 'BNIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
+                    { id: 'tripay-bri', value: 'BRIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
+                    { id: 'tripay-mandiri', value: 'MANDIRIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
+                    { id: 'tripay-permata', value: 'PERMATAVA', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
+                    { id: 'tripay-bsi', value: 'BSIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
+                ]},
+                { category: 'E-Wallet & QRIS', channels: [
+                    { id: 'tripay-qris', value: 'QRIS', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua E-Wallet)' },
+                    { id: 'tripay-ovo', value: 'OVO', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
+                    { id: 'tripay-shopeepay', value: 'SHOPEEPAY', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
+                ]},
+                { category: 'Minimarket', channels: [
+                    { id: 'tripay-alfamart', value: 'ALFAMART', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart' },
+                    { id: 'tripay-indomaret', value: 'INDOMARET', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Indomaret' }
+                ]}
+            ],
+            xendit: [
+                { category: 'Virtual Account (Otomatis)', channels: [
+                    { id: 'xendit-bca', value: 'BCA', logo: 'https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg', name: 'BCA VA' },
+                    { id: 'xendit-bni', value: 'BNI', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
+                    { id: 'xendit-bri', value: 'BRI', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
+                    { id: 'xendit-mandiri', value: 'MANDIRI', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
+                    { id: 'xendit-permata', value: 'PERMATA', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
+                    { id: 'xendit-bsi', value: 'BSI', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
+                ]},
+                { category: 'E-Wallet & QRIS', channels: [
+                    { id: 'xendit-qris', value: 'QRIS', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua E-Wallet)' },
+                    { id: 'xendit-ovo', value: 'OVO', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
+                    { id: 'xendit-shopeepay', value: 'SHOPEEPAY', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
+                ]},
+                { category: 'Minimarket', channels: [
+                    { id: 'xendit-alfamart', value: 'ALFAMART', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart' },
+                    { id: 'xendit-indomaret', value: 'INDOMARET', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Indomaret' }
+                ]}
+            ]
+        };
+
+        // FUNGSI CERDAS RENDER PAYMENT METHOD (TANPA HARDCODE)
         function applyPaymentMethods() {
-            // Sembunyikan semua opsi terlebih dahulu
-            document.querySelectorAll('.duitku-options, .tripay-options, .xendit-options, .manual-options').forEach(el => {
-                el.classList.add('hidden');
-            });
+            const container = document.getElementById('dynamic-payment-methods');
+            container.innerHTML = ''; // Bersihkan HTML lama
 
             if (!sysPayment) return;
 
@@ -420,33 +408,52 @@
             let manualActive = sysPayment.is_manual_active === 'true';
             let hasAuto = false;
 
-            // Logika Gateway Otomatis
-            if (autoGateway === 'duitku') {
-                document.querySelectorAll('.duitku-options').forEach(el => el.classList.remove('hidden'));
-                const defaultRadio = document.getElementById('pay-mandiri-va');
-                if(defaultRadio) defaultRadio.checked = true;
+            let html = '';
+            let isFirstRendered = false; // Untuk auto check (pilih) radio button pertama
+
+            // Render Gateway Otomatis (Jika tidak 'none')
+            if (autoGateway !== 'none' && paymentChannels[autoGateway]) {
                 hasAuto = true;
-            } else if (autoGateway === 'tripay') {
-                document.querySelectorAll('.tripay-options').forEach(el => el.classList.remove('hidden'));
-                const defaultRadio = document.getElementById('tripay-qris');
-                if(defaultRadio) defaultRadio.checked = true;
-                hasAuto = true;
-            } else if (autoGateway === 'xendit') {
-                document.querySelectorAll('.xendit-options').forEach(el => el.classList.remove('hidden'));
-                const defaultRadio = document.getElementById('xendit-qris');
-                if(defaultRadio) defaultRadio.checked = true;
-                hasAuto = true;
+                paymentChannels[autoGateway].forEach(cat => {
+                    html += `<div class="cat-title">${cat.category}</div><div class="pay-grid">`;
+                    cat.channels.forEach(ch => {
+                        const isChecked = !isFirstRendered ? 'checked' : '';
+                        if(!isFirstRendered) isFirstRendered = true;
+                        
+                        html += `
+                        <div class="pay-card">
+                            <input type="radio" name="payment_method" id="${ch.id}" data-type="${autoGateway}" value="${ch.value}" ${isChecked}>
+                            <label for="${ch.id}">
+                                <div class="check-icon"><i data-lucide="check"></i></div>
+                                <div class="pay-logo"><img src="${ch.logo}" alt="${ch.name}"></div>
+                                <span class="pay-name">${ch.name}</span>
+                            </label>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                });
             }
 
-            // Logika Manual Transfer
+            // Render Manual Transfer (Jika diaktifkan)
             if (manualActive) {
-                document.querySelectorAll('.manual-options').forEach(el => el.classList.remove('hidden'));
-                // Jika tidak ada gateway otomatis yg aktif, otomatis pilih manual
-                if (!hasAuto) {
-                    const manualRadio = document.getElementById('pay-manual-bca');
-                    if(manualRadio) manualRadio.checked = true;
-                }
+                html += `<div class="cat-title">Transfer Manual (Cek Admin)</div><div class="pay-grid">`;
+                const isChecked = !isFirstRendered ? 'checked' : '';
+                html += `
+                <div class="pay-card">
+                    <input type="radio" name="payment_method" id="pay-manual-bca" data-type="manual" value="manual-bca" ${isChecked}>
+                    <label for="pay-manual-bca">
+                        <div class="check-icon"><i data-lucide="check"></i></div>
+                        <div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="Transfer Manual"></div>
+                        <span class="pay-name">Transfer Manual</span>
+                    </label>
+                </div></div>`;
             }
+
+            // Inject HTML
+            container.innerHTML = html;
+            
+            // Re-render Icons
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         async function applyCoupon() {

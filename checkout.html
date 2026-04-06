@@ -151,8 +151,10 @@
         .pay-card input[type="radio"]:checked + label .check-icon { opacity: 1; transform: scale(1); }
         .check-icon svg { width: 0.75rem; height: 0.75rem; }
         
-        .pay-logo img { max-height: 1.5rem; max-width: 3.75rem; object-fit: contain; filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; margin-bottom: 0.5rem; }
+        .pay-logo { display: flex; justify-content: center; align-items: center; height: 1.5rem; margin-bottom: 0.5rem; color: #94a3b8; }
+        .pay-logo img { max-height: 100%; max-width: 3.75rem; object-fit: contain; filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; }
         .pay-card input[type="radio"]:checked + label .pay-logo img { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
+        .pay-card input[type="radio"]:checked + label .pay-logo { color: #10b981; }
         .pay-name { font-size: 0.625rem; font-weight: 700; color: #475569; text-align: center; line-height: 1.2; }
         .pay-card input[type="radio"]:checked + label .pay-name { color: #065f46; }
 
@@ -400,20 +402,18 @@
         // FUNGSI CERDAS RENDER PAYMENT METHOD (TANPA HARDCODE)
         function applyPaymentMethods() {
             const container = document.getElementById('dynamic-payment-methods');
-            container.innerHTML = ''; // Bersihkan HTML lama
+            container.innerHTML = ''; 
 
             if (!sysPayment) return;
 
             let autoGateway = sysPayment.auto_gateway || 'duitku';
             let manualActive = sysPayment.is_manual_active === 'true';
-            let hasAuto = false;
 
             let html = '';
-            let isFirstRendered = false; // Untuk auto check (pilih) radio button pertama
+            let isFirstRendered = false; 
 
             // Render Gateway Otomatis (Jika tidak 'none')
             if (autoGateway !== 'none' && paymentChannels[autoGateway]) {
-                hasAuto = true;
                 paymentChannels[autoGateway].forEach(cat => {
                     html += `<div class="cat-title">${cat.category}</div><div class="pay-grid">`;
                     cat.channels.forEach(ch => {
@@ -434,26 +434,64 @@
                 });
             }
 
-            // Render Manual Transfer (Jika diaktifkan)
+            // Render Manual Transfer
             if (manualActive) {
-                html += `<div class="cat-title">Transfer Manual (Cek Admin)</div><div class="pay-grid">`;
                 const isChecked = !isFirstRendered ? 'checked' : '';
+                if(!isFirstRendered) isFirstRendered = true;
+
+                html += `<div class="cat-title">Transfer Manual (Cek Admin)</div><div class="pay-grid">`;
                 html += `
                 <div class="pay-card">
-                    <input type="radio" name="payment_method" id="pay-manual-bca" data-type="manual" value="manual-bca" ${isChecked}>
-                    <label for="pay-manual-bca">
+                    <input type="radio" name="payment_method" id="pay-manual" data-type="manual" value="manual" ${isChecked}>
+                    <label for="pay-manual">
                         <div class="check-icon"><i data-lucide="check"></i></div>
-                        <div class="pay-logo"><img src="https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg" alt="Transfer Manual"></div>
-                        <span class="pay-name">Transfer Manual</span>
+                        <div class="pay-logo" style="display:flex; align-items:center; justify-content:center; color:#94a3b8; margin-bottom: 0.5rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        </div>
+                        <span class="pay-name">Transfer ${sysPayment.bank_name || 'Bank'}</span>
                     </label>
                 </div></div>`;
+
+                html += `
+                <div id="manual-info-box" style="display: ${isChecked ? 'block' : 'none'}; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem;">
+                    <p style="font-size: 0.625rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.375rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                        Info Rekening Tujuan
+                    </p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
+                        <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Bank</span>
+                        <strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_name || '-'}</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
+                        <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">No. Rekening</span>
+                        <strong style="font-size: 1rem; font-family: monospace; color: #10b981;">${sysPayment.bank_norek || '-'}</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Atas Nama</span>
+                        <strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_owner || '-'}</strong>
+                    </div>
+                </div>
+                `;
             }
 
-            // Inject HTML
             container.innerHTML = html;
             
-            // Re-render Icons
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            setTimeout(() => {
+                const radios = document.querySelectorAll('input[name="payment_method"]');
+                const manualBox = document.getElementById('manual-info-box');
+                radios.forEach(r => {
+                    r.addEventListener('change', (e) => {
+                        if(manualBox) {
+                            if(e.target.getAttribute('data-type') === 'manual') {
+                                manualBox.style.display = 'block';
+                            } else {
+                                manualBox.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }, 100);
         }
 
         async function applyCoupon() {

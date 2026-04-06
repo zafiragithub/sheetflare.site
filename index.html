@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Katalog Produk Digital SheetFlare - Temukan source code web membership, sistem CMS serverless berbasis Google Sheets, dan jasa pembuatan website terima beres.">
+    <title>SheetFlare - Selamat Datang!</title>
+    
     <script>
         const path = window.location.pathname;
         const cleanSlug = path.replace(/^\/|\/$/g, '');
@@ -19,11 +24,6 @@
         }
     </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Platform penyedia produk digital dan kursus online terpercaya di Indonesia.">
-    <title>SheetFlare - Solusi Web Bisnis Anda</title>
-    
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="dns-prefetch" href="https://docs.google.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -98,80 +98,59 @@
         .btn-login:hover { background-color: #059669; transform: scale(1.05); }
         .btn-login svg { width: 1rem; height: 1rem; margin-left: 0.25rem; }
 
-        /* === PAGE TITLE === */
-        .page-header { max-width: 80rem; margin: 0 auto; padding: 4rem 1.5rem 2rem; text-align: center; }
-        .page-badge { display: inline-flex; align-items: center; justify-content: center; width: 4rem; height: 4rem; background-color: #ecfdf5; color: #10b981; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1); }
-        .page-badge svg { width: 2rem; height: 2rem; }
+        /* === PAGE TITLE (HERO SECTION) === */
+        .page-header { max-width: 80rem; margin: 0 auto; padding: 5rem 1.5rem 3rem; text-align: center; }
+        .page-badge { display: inline-flex; align-items: center; gap: 0.5rem; background-color: #ecfdf5; color: #10b981; padding: 0.5rem 1.25rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1); }
+        .page-badge svg { width: 1rem; height: 1rem; }
         .page-title { font-size: 2.25rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 1rem; color: #0f172a; line-height: 1.2; }
-        @media (min-width: 768px) { .page-title { font-size: 3rem; } }
+        @media (min-width: 768px) { .page-title { font-size: 3.5rem; } }
+        .page-title-highlight { color: #10b981; }
         .page-subtitle { font-size: 1.125rem; color: #64748b; max-width: 42rem; margin: 0 auto; line-height: 1.625; }
 
         /* === CATALOG SECTION === */
         .catalog-section { max-width: 80rem; margin: 0 auto; padding: 2rem 1.5rem 5rem; flex-grow: 1; width: 100%; }
 
-        .grid-products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        @media (min-width: 768px) { .grid-products { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
-        @media (min-width: 1024px) { .grid-products { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+        .grid-products { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 768px) { .grid-products { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .grid-products { grid-template-columns: repeat(3, 1fr); } }
 
         /* Product Card */
         .prod-card { background-color: white; border-radius: 1.5rem; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.3s; overflow: hidden; }
         .prod-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-0.5rem); }
         
-        .prod-img-wrap { width: 100%; height: 8rem; background-color: #f8fafc; position: relative; overflow: hidden; border-bottom: 1px solid #f1f5f9; }
-        @media (min-width: 768px) { .prod-img-wrap { height: 12rem; } }
+        .prod-img-wrap { width: 100%; height: 12rem; background-color: #f8fafc; position: relative; overflow: hidden; border-bottom: 1px solid #f1f5f9; }
         .prod-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .prod-card:hover .prod-img { transform: scale(1.05); }
         
-        .prod-badge-abs { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 10; background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: #10b981; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        @media (min-width: 768px) { .prod-badge-abs { top: 1rem; left: 1rem; padding: 0.375rem 1rem; font-size: 0.625rem; } }
+        .prod-badge-abs { position: absolute; top: 1rem; left: 1rem; z-index: 10; background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: #10b981; padding: 0.375rem 1rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         
-        .prod-body { padding: 1rem; display: flex; flex-direction: column; flex-grow: 1; }
-        @media (min-width: 768px) { .prod-body { padding: 1.5rem; } }
+        .prod-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .prod-title { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; line-height: 1.2; }
+        .prod-desc { font-size: 0.875rem; color: #64748b; margin-bottom: 2rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
         
-        .prod-title { font-size: 0.875rem; font-weight: 800; color: #1e293b; margin-bottom: 0.5rem; line-height: 1.3; }
-        @media (min-width: 768px) { .prod-title { font-size: 1.125rem; line-height: 1.2; } }
-        
-        .prod-desc { font-size: 0.6875rem; color: #64748b; margin-bottom: 1rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
-        @media (min-width: 768px) { .prod-desc { font-size: 0.875rem; margin-bottom: 2rem; } }
-        
-        .prod-footer { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f8fafc; gap: 0.75rem; }
-        @media (min-width: 768px) { .prod-footer { flex-direction: row; align-items: center; padding-top: 1.5rem; gap: 0.5rem; } }
-        
-        .prod-price { font-size: 0.875rem; font-weight: 900; color: #1e293b; }
-        @media (min-width: 768px) { .prod-price { font-size: 1.125rem; } }
-        
-        .btn-detail { background-color: #0f172a; color: white; padding: 0.5rem 0; border-radius: 0.5rem; font-weight: 700; font-size: 0.625rem; transition: background-color 0.3s; box-shadow: 0 10px 15px -3px rgba(226, 232, 240, 0.5); width: 100%; text-align: center; }
-        @media (min-width: 768px) { .btn-detail { width: auto; padding: 0.75rem 1.25rem; border-radius: 0.75rem; font-size: 0.75rem; } }
+        .prod-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #f8fafc; }
+        .prod-price { font-size: 1.125rem; font-weight: 900; color: #1e293b; }
+        .btn-detail { background-color: #0f172a; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.75rem; transition: background-color 0.3s; box-shadow: 0 10px 15px -3px rgba(226, 232, 240, 0.5); }
         .btn-detail:hover { background-color: #10b981; }
 
         /* Skeleton Loading */
+        @keyframes pulse { 50% { opacity: 0.5; } }
         .skel-loader { text-align: center; grid-column: 1 / -1; padding: 1rem 0; margin-bottom: 0.5rem; }
         .skel-loader-text { color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         
         .skeleton { background-color: #f1f5f9; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         .skel-card { background-color: white; border-radius: 1.5rem; border: 1px solid #f1f5f9; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        .skel-card.hidden-md { display: none; } @media (min-width: 768px) { .skel-card.hidden-md { display: flex; } }
+        .skel-card.hidden-lg { display: none; } @media (min-width: 1024px) { .skel-card.hidden-lg { display: flex; } }
         
-        .skel-card.hidden-sm { display: none; } @media (min-width: 768px) { .skel-card.hidden-sm { display: flex; } }
-        .skel-card.hidden-md { display: none; } @media (min-width: 1024px) { .skel-card.hidden-md { display: flex; } }
-        
-        .skel-img { height: 8rem; width: 100%; border-bottom: 1px solid #f1f5f9; }
-        @media (min-width: 768px) { .skel-img { height: 12rem; } }
-        
-        .skel-body { padding: 1rem; display: flex; flex-direction: column; flex-grow: 1; }
-        @media (min-width: 768px) { .skel-body { padding: 1.5rem; } }
-        
+        .skel-img { height: 12rem; width: 100%; border-bottom: 1px solid #f1f5f9; }
+        .skel-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
         .skel-title { height: 1.5rem; border-radius: 0.25rem; width: 75%; margin-bottom: 1rem; }
         .skel-line { height: 1rem; border-radius: 0.25rem; width: 100%; margin-bottom: 0.5rem; }
         .skel-line.short { width: 83.333333%; margin-bottom: 2rem; flex: 1; }
-        
-        .skel-footer { display: flex; flex-direction: column; padding-top: 1rem; border-top: 1px solid #f8fafc; gap: 0.75rem; }
-        @media (min-width: 768px) { .skel-footer { flex-direction: row; justify-content: space-between; align-items: center; padding-top: 1.5rem; gap: 0.5rem; } }
-        
-        .skel-price { height: 1.5rem; border-radius: 0.25rem; width: 60%; }
-        @media (min-width: 768px) { .skel-price { width: 6rem; } }
-        
-        .skel-btn { height: 2rem; border-radius: 0.5rem; width: 100%; }
-        @media (min-width: 768px) { .skel-btn { height: 2.5rem; border-radius: 0.75rem; width: 6rem; } }
+        .skel-footer { display: flex; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid #f8fafc; }
+        .skel-price { height: 1.5rem; border-radius: 0.25rem; width: 6rem; }
+        .skel-btn { height: 2.5rem; border-radius: 0.75rem; width: 7rem; }
 
         /* Empty State */
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: white; border: 2px dashed #e2e8f0; border-radius: 1.5rem; }
@@ -301,10 +280,10 @@
 
         <section class="page-header">
             <div class="page-badge">
-                <i data-lucide="shopping-bag"></i>
+                <i data-lucide="sparkles"></i> Selamat Datang
             </div>
-            <h1 class="page-title">Katalog Produk</h1>
-            <p class="page-subtitle dyn-site-tagline">Temukan berbagai produk digital, template, dan materi premium untuk meningkatkan kualitas karya dan bisnis Anda.</p>
+            <h1 class="page-title">Halo, Senang Berjumpa <br><span class="page-title-highlight">Dengan Anda! 👋</span></h1>
+            <p class="page-subtitle dyn-site-tagline">Temukan berbagai solusi dan inovasi digital yang dirancang khusus untuk mendukung produktivitas dan pertumbuhan bisnis Anda.</p>
         </section>
 
         <section class="catalog-section">
@@ -414,17 +393,6 @@
             }
         }
 
-        // FUNGSI TRANSISI MULUS 
-        const executeTransition = (callback) => {
-            if (window.completeLoadingAnimation) { 
-                callback(); 
-                window.completeLoadingAnimation(); 
-            } 
-            else { 
-                callback(); 
-            }
-        };
-
         // 2. Fungsi Render HTML Katalog
         function renderCatalog(products) {
             const container = document.getElementById('public-products');
@@ -435,7 +403,7 @@
                     <h3 class="empty-title">Katalog Kosong</h3>
                     <p class="empty-desc">Belum ada produk yang diterbitkan. Silakan cek kembali nanti.</p>
                 </div>`;
-                if(typeof lucide !== 'undefined') lucide.createIcons();
+                lucide.createIcons();
                 return;
             }
             
@@ -463,181 +431,68 @@
         }
 
         // 3. Fungsi Eksekusi Utama (Tarik Data G-Sheets via Gviz)
-        async function fetchPageDataFast() {
-            if (isRedirecting) return; 
-            
-            if (isCorePage) {
-                document.body.innerHTML = `<div style="text-align:center;padding-top:20vh;font-family:sans-serif;color:#1e293b;">
-                    <h2 style="font-size:32px;font-weight:900;">Sistem Terhenti</h2>
-                    <p style="color:#64748b;">Halaman <b>${baseSlug}.html</b> tidak ditemukan di Server/Cloudflare Anda.<br>Pastikan Anda telah mengupload seluruh file sistem dengan lengkap.</p>
-                </div>`;
-                return;
-            }
+        async function fetchCatalogData() {
+            // Cek Cache Settings
+            const cachedSetStr = localStorage.getItem(CACHE_KEY);
+            if (cachedSetStr) { try { applyGlobalSettings(JSON.parse(cachedSetStr).data); } catch(e){} }
 
+            // Cek Cache Katalog
+            const cachedCatStr = localStorage.getItem(CACHE_KEY_CATALOG);
+            if (cachedCatStr) { try { renderCatalog(JSON.parse(cachedCatStr)); } catch(e){} }
+
+            // Fallback Sheet ID jika config.js gagal termuat
             const activeSheetId = (typeof SHEET_ID !== 'undefined' && SHEET_ID !== '') ? SHEET_ID : '1QHPTp3m7MSUvw4bAbDarAUG_DbPSpKHB10epncRBoEo';
 
             try {
-                let targetSlug = cleanSlug;
-
-                // 1. CEK SETTINGAN BERANDA CMS
-                if (targetSlug === '') {
-                    const setRes = await fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Settings`);
-                    const setText = await setRes.text();
-                    const setJson = JSON.parse(setText.substring(47).slice(0, -2));
-                    
-                    if(setJson.table && setJson.table.rows) {
-                        const dataSet = {};
-                        setJson.table.rows.forEach(r => {
-                            if(r.c && r.c[0]) {
-                                dataSet[r.c[0].v] = r.c[1] ? r.c[1].v : '';
-                                if(r.c[0].v === 'home_page_slug') {
-                                    targetSlug = r.c[1] ? r.c[1].v : '';
-                                }
-                            }
-                        });
+                // Tarik Settings Terbaru (Latar Belakang)
+                fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Settings`)
+                .then(res => res.text())
+                .then(text => {
+                    const json = JSON.parse(text.substring(47).slice(0, -2));
+                    const dataSet = {};
+                    if(json.table && json.table.rows) {
+                        json.table.rows.forEach(r => { if(r.c && r.c[0]) { dataSet[r.c[0].v] = r.c[1] ? r.c[1].v : ''; } });
                         localStorage.setItem(CACHE_KEY, JSON.stringify({ data: dataSet, time: Date.now() }));
                         applyGlobalSettings(dataSet);
                     }
-                }
+                }).catch(e => console.log('Gagal sync settings'));
 
-                // 2. RENDER HALAMAN CMS
-                if (targetSlug !== '') {
-                    const query = encodeURIComponent(`SELECT * WHERE B = '${targetSlug}' LIMIT 1`);
-                    const pageRes = await fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Pages&tq=${query}`);
-                    const pageText = await pageRes.text();
-                    const pageJson = JSON.parse(pageText.substring(47).slice(0, -2));
+                // Tarik Data Produk Terbaru
+                const queryCat = encodeURIComponent(`SELECT * WHERE F = 'Active'`);
+                const catRes = await fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Access_Rules&tq=${queryCat}`);
+                const catText = await catRes.text();
+                
+                if(!catText.includes('<html')) {
+                    const json = JSON.parse(catText.substring(47).slice(0, -2));
+                    const katalogData = [];
+                    json.table.rows.forEach(row => {
+                        const c = row.c;
+                        katalogData.push({ 
+                            id: c[0]?c[0].v:'', 
+                            nama: c[1]?c[1].v:'', 
+                            deskripsi: c[2]?c[2].v:'', 
+                            harga: c[4]?(c[4].f||c[4].v):0, 
+                            lp_url: c[6]?c[6].v:'',
+                            gambar: c[13]?c[13].v:''
+                        });
+                    });
                     
-                    if (pageJson.table && pageJson.table.rows && pageJson.table.rows.length > 0) {
-                        const row = pageJson.table.rows[0].c;
-                        const rData = { title: row[2]?row[2].v:'Halaman', html: row[3]?row[3].v:'', css: '' };
-                        const freshDataStr = JSON.stringify(rData);
-                        
-                        if (cleanSlug === '') {
-                            localStorage.setItem(USE_CUSTOM_HOME_FLAG, 'true');
-                            if (cachedHomeStrGlobal !== freshDataStr) localStorage.setItem(CACHE_KEY_HOME, freshDataStr);
-                        }
-
-                        executeTransition(() => {
-                            document.documentElement.className = 'mode-cms';
-                            const cmsContainer = document.getElementById('cms-home-container');
-                            cmsContainer.innerHTML = rData.html;
-                            
-                            let styleTag = document.getElementById('cms-custom-style');
-                            if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'cms-custom-style'; document.head.appendChild(styleTag); }
-                            styleTag.innerHTML = rData.css || '';
-                            if(rData.title) document.title = rData.title;
-                            
-                            setTimeout(() => {
-                                const scripts = Array.from(cmsContainer.getElementsByTagName('script'));
-                                scripts.forEach(oldScript => {
-                                    const newScript = document.createElement('script');
-                                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                                    if (oldScript.src) newScript.src = oldScript.src; else newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                                });
-                                if(typeof lucide !== 'undefined') lucide.createIcons();
-                            }, 10);
-                        });
-                        return; 
-                    } else if (cleanSlug !== '') {
-                        executeTransition(() => {
-                            document.body.innerHTML = `
-                            <div style="font-family:sans-serif;text-align:center;padding-top:15vh;background:#f8f9fa;height:100vh;display:flex;flex-direction:column;align-items:center;">
-                                <h1 style="font-size:100px;margin:0;color:#1e293b;line-height:1;font-weight:900;">404</h1>
-                                <p style="color:#64748b;margin-bottom:30px;font-size:16px;">Halaman "<b>/${cleanSlug}</b>" belum Anda buat di Google Sheets (Sheet Pages).</p>
-                                <a href="/" style="background:#10b981;color:#fff;padding:15px 30px;text-decoration:none;border-radius:12px;font-weight:bold;box-shadow:0 10px 15px -3px rgba(16,185,129,0.3);">Kembali ke Beranda</a>
-                            </div>`;
-                        });
-                        return;
+                    const freshCatStr = JSON.stringify(katalogData);
+                    if (cachedCatStr !== freshCatStr) {
+                        localStorage.setItem(CACHE_KEY_CATALOG, freshCatStr);
+                        renderCatalog(katalogData);
                     }
                 }
-
-                // 3. RENDER KATALOG BAWAAN (JIKA TIDAK ADA CMS)
-                if (cleanSlug === '') {
-                    localStorage.setItem(USE_CUSTOM_HOME_FLAG, 'false');
-                    localStorage.removeItem(CACHE_KEY_HOME);
-
-                    const cachedCatStr = localStorage.getItem(CACHE_KEY_CATALOG);
-                    if (cachedCatStr) {
-                        executeTransition(() => {
-                            document.documentElement.className = 'mode-default';
-                            renderCatalog(JSON.parse(cachedCatStr));
-                        });
-                    }
-
-                    const queryCat = encodeURIComponent(`SELECT * WHERE F = 'Active'`);
-                    fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Access_Rules&tq=${queryCat}`)
-                    .then(res => res.text())
-                    .then(text => {
-                        if(!text.includes('<html')) {
-                            const json = JSON.parse(text.substring(47).slice(0, -2));
-                            const katalogData = [];
-                            json.table.rows.forEach(row => {
-                                const c = row.c;
-                                katalogData.push({ 
-                                    id: c[0]?c[0].v:'', 
-                                    nama: c[1]?c[1].v:'', 
-                                    deskripsi: c[2]?c[2].v:'', 
-                                    harga: c[4]?(c[4].f||c[4].v):0, 
-                                    lp_url: c[6]?c[6].v:'',
-                                    gambar: c[13]?c[13].v:''
-                                });
-                            });
-                            const freshCatStr = JSON.stringify(katalogData);
-                            if (cachedCatStr !== freshCatStr) {
-                                localStorage.setItem(CACHE_KEY_CATALOG, freshCatStr);
-                                if (!cachedCatStr) {
-                                    executeTransition(() => {
-                                        document.documentElement.className = 'mode-default';
-                                        renderCatalog(katalogData);
-                                    });
-                                } else {
-                                    renderCatalog(katalogData);
-                                }
-                            } else if (!cachedCatStr) {
-                                executeTransition(() => {
-                                    document.documentElement.className = 'mode-default';
-                                    renderCatalog(katalogData);
-                                });
-                            }
-                        }
-                    }).catch(e => {
-                        if (!cachedCatStr) {
-                            executeTransition(() => {
-                                document.documentElement.className = 'mode-default';
-                                document.getElementById('public-products').innerHTML = `
-                                <div class="empty-state">
-                                    <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
-                                    <h3 class="empty-title">Koneksi Terputus</h3>
-                                    <p class="empty-desc">Gagal terhubung ke database Google Sheets. Pastikan ID Sheet Anda sudah benar.</p>
-                                </div>`;
-                                if(typeof lucide !== 'undefined') lucide.createIcons();
-                            });
-                        }
-                    });
-                }
-
             } catch (err) {
-                if (cleanSlug === '') {
-                    executeTransition(() => {
-                        document.documentElement.className = 'mode-default';
-                        const cachedCatStr = localStorage.getItem(CACHE_KEY_CATALOG);
-                        if (cachedCatStr) {
-                            renderCatalog(JSON.parse(cachedCatStr));
-                        } else {
-                            document.getElementById('public-products').innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
-                                <h3 class="empty-title">Error Koneksi</h3>
-                                <p class="empty-desc">Gagal memuat katalog produk.</p>
-                            </div>`;
-                            if(typeof lucide !== 'undefined') lucide.createIcons();
-                        }
-                    });
-                } else {
-                    executeTransition(() => {
-                        document.body.innerHTML = '<div style="font-family:sans-serif;text-align:center;padding-top:100px;background:#f8f9fa;height:100vh;"><h1 style="font-size:80px;margin:0;color:#1e293b;">Error</h1><p style="color:#64748b;margin-bottom:30px;">Gagal terhubung ke Google Sheets.</p><a href="/" style="background:#10b981;color:#fff;padding:15px 30px;text-decoration:none;border-radius:10px;font-weight:bold;">Kembali ke Beranda</a></div>';
-                    });
+                console.error("Gagal menarik data katalog:", err);
+                if (!cachedCatStr) {
+                    document.getElementById('public-products').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
+                        <h3 class="empty-title">Koneksi Terputus</h3>
+                        <p class="empty-desc">Gagal terhubung ke database Google Sheets. Pastikan ID Sheet Anda sudah benar.</p>
+                    </div>`;
+                    lucide.createIcons();
                 }
             }
         }
@@ -647,7 +502,7 @@
             const yearEl = document.getElementById('current-year');
             if(yearEl) yearEl.textContent = new Date().getFullYear();
             
-            fetchPageDataFast();
+            fetchCatalogData();
         });
     </script>
 </body>

@@ -1,8 +1,3 @@
-/**
- * SHEETFLARE ULTIMATE WORKER v13.6 (God Mode - Multi Gateway Ready)
- * Menyatukan: Clean URL, CMS Sheet Engine, & API Bridge dengan Header Forwarding.
- */
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -26,24 +21,22 @@ export default {
         const targetUrl = new URL(scriptUrl);
         url.searchParams.forEach((v, k) => targetUrl.searchParams.append(k, v));
 
-        // 🔥 PERBAIKAN KRUSIAL: Meneruskan Header Keamanan (Signature) ke Google Script 🔥
-        const headersToForward = { 'Content-Type': 'text/plain' }; // GAS menerima text/plain
-        
+        // 🔥 PERBAIKAN: Pindahkan Signature dari Header ke URL Parameter 🔥
+        // Karena Google Apps Script tidak bisa membaca HTTP Headers!
         if (request.headers.get('x-callback-signature')) {
-            headersToForward['x-callback-signature'] = request.headers.get('x-callback-signature'); // Tripay
+            targetUrl.searchParams.append('tripay_signature', request.headers.get('x-callback-signature'));
         }
         if (request.headers.get('x-callback-token')) {
-            headersToForward['x-callback-token'] = request.headers.get('x-callback-token'); // Xendit
+            targetUrl.searchParams.append('xendit_token', request.headers.get('x-callback-token'));
         }
 
         const bodyText = await request.text();
         const response = await fetch(targetUrl.toString(), {
           method: 'POST',
-          headers: headersToForward,
+          headers: { 'Content-Type': 'text/plain' },
           body: bodyText
         });
 
-        // Kembalikan response JSON dari GAS ke Admin Panel / Payment Gateway
         return new Response(await response.text(), { 
             status: 200, 
             headers: { 'Content-Type': 'application/json' } 
@@ -125,7 +118,6 @@ export default {
         
         if (!pageData) return response; 
         
-        // Render menggunakan HTML murni tanpa Tailwind
         const htmlString = generateHTML(pageData.title, pageData.content);
         
         const finalResponse = new Response(htmlString, { 
@@ -142,8 +134,6 @@ export default {
   }
 };
 
-// --- HELPER FUNCTIONS ---
 function parseCSV(s){const a=[];let q=!1;for(let r=0,l=0,c=0;c<s.length;c++){let x=s[c],y=s[c+1];a[r]=a[r]||[],a[r][l]=a[r][l]||"";if(x=='"'&&q&&y=='"'){a[r][l]+=x;++c;continue}if(x=='"'){q=!q;continue}if(x==','&&!q){++l;continue}if(x=='\r'&&y=='\n'&&!q){++r;l=0;++c;continue}if(x=='\n'&&!q){++r;l=0;continue}if(x=='\r'&&!q){++r;l=0;continue}a[r][l]+=x}return a}
 
-// 🔥 PERBAIKAN: Hapus Tailwind CDN & Ganti ke Vanilla CSS Murni
 function generateHTML(t,c){return`<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${t}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><script src="https://unpkg.com/lucide@latest" defer></script><script>(function(){const cachedStr=localStorage.getItem('melimpah_global_settings');if(cachedStr){try{const data=JSON.parse(cachedStr).data;if(data.site_favicon){let link=document.querySelector("link[rel~='icon']");if(!link){link=document.createElement('link');link.rel='icon';document.head.appendChild(link);}link.href=data.site_favicon;}if(data.site_name){document.title=data.site_name+' - '+document.title;}}catch(e){}}})();<\/script><style>body{font-family:'Plus Jakarta Sans',sans-serif;margin:0;padding:0;background-color:#ffffff;color:#334155;min-height:100vh;display:flex;flex-direction:column;line-height:1.625;}#page-content{width:100%;max-width:56rem;margin:0 auto;padding:3rem 1.5rem;}#page-content h1, #page-content h2, #page-content h3{color:#0f172a;margin-top:2rem;margin-bottom:1rem;font-weight:800;line-height:1.2;letter-spacing:-0.025em;}#page-content p{margin-bottom:1.25rem;}#page-content a{color:#10b981;text-decoration:none;font-weight:600;}#page-content a:hover{text-decoration:underline;}#page-content img{max-width:100%;height:auto;border-radius:1rem;margin:1.5rem 0;}#page-content ul, #page-content ol{margin-bottom:1.25rem;padding-left:1.5rem;}</style></head><body><div id="page-content">${c}</div><script>document.addEventListener("DOMContentLoaded",function(){if(typeof lucide!=='undefined'&&lucide.createIcons)lucide.createIcons();});<\/script></body></html>`}

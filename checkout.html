@@ -218,7 +218,8 @@
             <div class="flex-1 overflow-y-auto pb-8 bg-slate-50/30">
                 <div class="p-5">
                     <div class="flex flex-col items-center justify-center mb-6 py-3 bg-rose-50 rounded-xl border border-rose-100">
-                        <span class="text-xs text-center text-rose-600 font-bold">Selesaikan pembayaran sebelum batas waktu</span>
+                        <span class="text-xs text-center text-rose-600 font-bold mb-1">Selesaikan pembayaran sebelum batas waktu</span>
+                        <strong id="inst-exp" class="text-sm text-rose-700 font-black tracking-wide">...</strong>
                     </div>
 
                     <div class="text-left w-full mb-4">
@@ -651,7 +652,6 @@
                 if(r.status === 'success') {
                     if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
 
-                    // HIDE CHECKOUT FORM
                     processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
                     document.getElementById('main-card').classList.remove('show');
                     
@@ -661,7 +661,6 @@
                         // 🔥 JIKA MENDAPATKAN NOMOR VA DARI TRIPAY/XENDIT (FULL WHITE-LABEL) 🔥
                         if (r.pay_code && r.pay_code !== "") {
                             
-                            // Tarik Logo & Nama Bank dari form yang tadi dipilih
                             const checkedLabel = document.querySelector('input[name="payment_method"]:checked + label');
                             let bankLogoSrc = ""; let bankNameText = "Bank Transfer";
                             if (checkedLabel) {
@@ -671,7 +670,6 @@
                                 if (nameEl) bankNameText = nameEl.innerText;
                             }
 
-                            // Inject data ke UI AmalSholeh
                             document.getElementById('inst-va').innerText = r.pay_code;
                             document.getElementById('inst-amount').innerText = 'Rp ' + Number(r.tagihan).toLocaleString('id-ID');
                             document.getElementById('inst-amount-raw').innerText = r.tagihan;
@@ -680,13 +678,15 @@
                             document.getElementById('inst-inv').innerText = r.invoice;
                             document.getElementById('inst-guide-btn').href = r.payment_url || "#";
 
-                            // Generate batas waktu palsu (24 jam dari sekarang)
-                            let expDate = new Date();
-                            expDate.setHours(expDate.getHours() + 24);
-                            const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-                            document.getElementById('inst-exp').innerText = expDate.toLocaleDateString('id-ID', options).replace(',', ' -') + ' WIB';
+                            // Cek dan isi Exp Date jika elemennya ada
+                            const expEl = document.getElementById('inst-exp');
+                            if(expEl) {
+                                let expDate = new Date();
+                                expDate.setHours(expDate.getHours() + 24);
+                                const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                                expEl.innerText = expDate.toLocaleDateString('id-ID', options).replace(',', ' -') + ' WIB';
+                            }
 
-                            // Tampilkan UI Instruksi
                             const instState = document.getElementById('instruction-state');
                             instState.classList.remove('hidden');
                             setTimeout(() => instState.classList.add('show'), 50);
@@ -718,6 +718,7 @@
                             if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
                             setTimeout(() => succ.classList.add('show'), 50);
                         }
+                        lucide.createIcons();
                     }, 300);
 
                 } else { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }

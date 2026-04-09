@@ -2,651 +2,195 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - SheetFlare</title>
-
-    <link rel="preconnect" href="https://script.google.com">
-    <link rel="dns-prefetch" href="https://script.google.com">
-    <script src="config.js?v=2026"></script>
-
-    <script>
-        (function() {
-            const CACHE_KEY = 'melimpah_global_settings';
-            const CACHE_AGE = 60 * 60 * 1000; 
-            let cachedFav = localStorage.getItem('site_favicon');
-            function applyFavicon(url) { if(!url) return; let link = document.querySelector("link[rel~='icon']"); if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); } link.href = url; }
-            function applyGlobalSettings(data) { if(data.site_name) { document.title = `Checkout - ${data.site_name}`; } }
-            if(cachedFav) applyFavicon(cachedFav);
-            const cachedStr = localStorage.getItem(CACHE_KEY); let cached = null; try { cached = JSON.parse(cachedStr); } catch(e){}
-            if (cached && cached.data) { applyGlobalSettings(cached.data); }
-            if (!cached || !cached.time || (Date.now() - cached.time > CACHE_AGE)) {
-                if(typeof window.SCRIPT_URL !== 'undefined' || typeof SCRIPT_URL !== 'undefined') {
-                    const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
-                    fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) }).then(res => res.json()).then(r => {
-                        if(r.status === 'success' && r.data) { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: r.data, time: Date.now() })); applyGlobalSettings(r.data); if(r.data.site_favicon && cachedFav !== r.data.site_favicon) { localStorage.setItem('site_favicon', r.data.site_favicon); applyFavicon(r.data.site_favicon); } }
-                    }).catch(e => {});
-                }
-            }
-        })();
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
+    <title>Instruksi Pembayaran - SheetFlare</title>
     
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <style>
-        /* === CSS RESET & GLOBAL === */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            -webkit-font-smoothing: antialiased; 
-            background-color: #f1f5f9; /* slate-100 */
-            color: #0f172a; /* slate-900 */
-            padding-bottom: 2.5rem;
-        }
-        
-        a { text-decoration: none; color: inherit; }
-        button { cursor: pointer; border: none; background: none; font-family: inherit; }
-        input, textarea, select { font-family: inherit; }
-        img { max-width: 100%; height: auto; display: block; }
-        
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        
-        .hidden { display: none !important; }
-
-        /* === UTILITY CLASSES === */
-        .text-center { text-align: center; }
-        .font-black { font-weight: 900; }
-        .font-bold { font-weight: 700; }
-        .font-medium { font-weight: 500; }
-        .font-mono { font-family: monospace; }
-        .uppercase { text-transform: uppercase; }
-        .tracking-widest { letter-spacing: 0.1em; }
-        .tracking-wide { letter-spacing: 0.025em; }
-        .tracking-tighter { letter-spacing: -0.05em; }
-        
-        /* === LAYOUT === */
-        .container { width: 100%; max-width: 32rem; margin: 0 auto; padding: 1rem; }
-        @media (min-width: 640px) { .container { padding-top: 2.5rem; } }
-
-        /* === TOAST NOTIFICATION === */
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;}
-        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); pointer-events: auto;}
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { background-color: #10b981; } .toast.error { background-color: #ef4444; } .toast.warning { background-color: #f59e0b; }
-        
-        /* === ANIMATIONS === */
-        .fade-in-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
-        .fade-in-up.show { opacity: 1; transform: translateY(0); }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .animate-spin { animation: spin 1s linear infinite; }
-        @keyframes pulse { 50% { opacity: 0.5; } }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-
-        /* === OVERLAYS === */
-        .overlay { position: fixed; inset: 0; background-color: white; z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.7s ease-in-out; }
-        .overlay.dark { background-color: rgba(15, 23, 42, 0.9); z-index: 200; backdrop-filter: blur(4px); }
-        .overlay.flex { display: flex !important; }
-        .loader-ring { width: 4rem; height: 4rem; border: 4px solid #d1fae5; border-top-color: #10b981; border-radius: 50%; }
-
-        /* === MAIN CARD COMPONENT === */
-        .main-card { background-color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; border-radius: 1rem; overflow: hidden; display: flex; flex-direction: column; }
-        .card-header { background-color: #10b981; color: white; text-align: center; padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .card-body { padding: 1.25rem; }
-        @media (min-width: 768px) { .card-body { padding: 2rem; } }
-
-        .btn-back { display: inline-flex; align-items: center; gap: 0.5rem; color: #94a3b8; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; transition: color 0.3s; }
-        .btn-back:hover { color: #334155; }
-
-        /* Box Sections */
-        .box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; }
-        @media (min-width: 768px) { .box { padding: 1.25rem; } }
-        .box-title { font-size: 0.625rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.375rem; }
-        
-        /* Order Summary With Image */
-        .order-summary-flex { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .order-summary-img-wrap { width: 4rem; height: 4rem; flex-shrink: 0; border-radius: 0.5rem; overflow: hidden; border: 1px solid #e2e8f0; background-color: white; }
-        .order-summary-img { width: 100%; height: 100%; object-fit: cover; }
-        .product-name { font-size: 1.125rem; font-weight: 900; color: #1e293b; line-height: 1.25; margin-bottom: 0; }
-        @media (min-width: 768px) { .product-name { font-size: 1.25rem; } }
-        
-        .total-wrap { display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 0.75rem; }
-        .total-price { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; color: #10b981; }
-
-        /* Forms & Inputs */
-        .form-group { margin-bottom: 1rem; position: relative; }
-        .form-input { width: 100%; background-color: white; border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.75rem; font-size: 0.875rem; font-weight: 700; color: #1e293b; outline: none; transition: all 0.3s; }
-        .form-input::placeholder { color: #94a3b8; font-weight: 500; }
-        .form-input:focus { border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
-        .wa-prefix { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: #94a3b8; border-right: 1px solid #e2e8f0; padding-right: 0.75rem; font-size: 0.875rem; }
-        .input-wa { padding-left: 4rem; }
-
-        /* Coupon Section */
-        .coupon-box { background-color: #ecfdf5; border: 1px solid #d1fae5; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; }
-        .coupon-label { display: flex; align-items: center; gap: 0.25rem; font-size: 0.625rem; font-weight: 700; color: #065f46; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-        .coupon-flex { display: flex; gap: 0.5rem; }
-        .btn-apply { background-color: #10b981; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 900; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; transition: background-color 0.3s; }
-        .btn-apply:hover { background-color: #059669; }
-
-        /* Order Bump */
-        .bump-box { border: 2px dashed #cbd5e1; border-radius: 0.75rem; padding: 1rem; cursor: pointer; transition: all 0.3s; }
-        .bump-box.bump-checked { border-color: #10b981; border-style: solid; background-color: #ecfdf5; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1); }
-        .bump-flex { display: flex; align-items: flex-start; gap: 0.75rem; }
-        .bump-checkbox { width: 1rem; height: 1rem; accent-color: #10b981; border-radius: 0.25rem; cursor: pointer; margin-top: 0.125rem; }
-        .bump-title { font-weight: 900; color: #1e293b; font-size: 0.75rem; margin-bottom: 0.25rem; text-decoration: underline; text-decoration-color: #fca5a5; text-underline-offset: 2px; }
-        .bump-desc { font-size: 0.6875rem; color: #475569; margin-bottom: 0.5rem; line-height: 1.5; }
-        .bump-price-badge { font-size: 0.75rem; font-weight: 900; color: #e11d48; background-color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: 1px solid #fecdd3; display: inline-block; }
-
-        /* Payment Methods Grid */
-        .cat-title { font-size: 0.625rem; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-top: 1rem; display: flex; align-items: center; gap: 0.375rem; }
-        .cat-title::after { content: ""; height: 1px; background-color: #e2e8f0; flex-grow: 1; }
-        
-        .pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
-        .pay-card input[type="radio"] { display: none; }
-        .pay-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: white; border: 2px solid #e2e8f0; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease; position: relative; height: 5.5rem; text-align: center; }
-        .pay-card label:hover { border-color: #6ee7b7; background-color: #f8fafc; }
-        .pay-card input[type="radio"]:checked + label { border-color: #10b981; background-color: #ecfdf5; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
-        
-        .check-icon { position: absolute; top: 0.5rem; right: 0.5rem; width: 1.25rem; height: 1.25rem; background-color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0); transition: all 0.2s ease; color: white; }
-        .pay-card input[type="radio"]:checked + label .check-icon { opacity: 1; transform: scale(1); }
-        .check-icon svg { width: 0.75rem; height: 0.75rem; }
-        
-        .pay-logo { display: flex; justify-content: center; align-items: center; height: 1.5rem; margin-bottom: 0.5rem; color: #94a3b8; }
-        .pay-logo img { max-height: 100%; max-width: 3.75rem; object-fit: contain; filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; }
-        .pay-card input[type="radio"]:checked + label .pay-logo img { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
-        .pay-card input[type="radio"]:checked + label .pay-logo { color: #10b981; }
-        .pay-name { font-size: 0.625rem; font-weight: 700; color: #475569; text-align: center; line-height: 1.2; }
-        .pay-card input[type="radio"]:checked + label .pay-name { color: #065f46; }
-
-        /* Submit Button */
-        .btn-submit { width: 100%; background-color: #10b981; color: white; border-radius: 0.75rem; padding: 1rem 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s; }
-        .btn-submit:hover { background-color: #059669; transform: translateY(-2px); }
-        .btn-submit svg { width: 1rem; height: 1rem; }
-
-        /* Success State */
-        .success-card { background-color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; padding: 2rem; text-align: center; border-radius: 1rem; margin: 1.5rem auto 0; }
-        .success-icon { width: 4rem; height: 4rem; background-color: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
-        .success-icon svg { width: 2rem; height: 2rem; }
-        .success-title { font-size: 1.5rem; font-weight: 900; color: #0f172a; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
-        .success-desc { color: #64748b; font-size: 0.875rem; margin-bottom: 2rem; line-height: 1.625; }
-        
-        .new-user-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; text-align: left; display: flex; gap: 0.75rem; }
-        .new-user-icon { color: #10b981; flex-shrink: 0; margin-top: 0.25rem; }
-        .new-user-icon svg { width: 1.25rem; height: 1.25rem; }
-        
-        .btn-wa { width: 100%; background-color: #25D366; color: white; border-radius: 0.75rem; padding: 1rem 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.6875rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background-color 0.3s; box-shadow: 0 10px 15px -3px rgba(37, 211, 102, 0.3); }
-        .btn-wa:hover { background-color: #16a34a; }
-        .btn-wa svg { width: 1rem; height: 1rem; }
-    </style>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '2189480848543217'); fbq('track', 'PageView'); 
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        emerald: { 500: '#10b981', 600: '#059669' },
+                        slate: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 500: '#64748b', 600: '#475569', 800: '#1e293b', 900: '#0f172a' }
+                    }
+                }
+            }
+        }
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2189480848543217&ev=PageView&noscript=1"/></noscript>
-</head>
-<body>
 
-    <div id="toast-container"></div>
-
-    <div id="global-init-loader" class="overlay">
-        <div style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-            <i data-lucide="shield-check" class="animate-pulse" style="width: 3rem; height: 3rem; color: #10b981; position: absolute;"></i>
-            <div class="loader-ring animate-spin"></div>
-        </div>
-        <p class="font-black uppercase tracking-widest text-center" style="font-size: 0.75rem; color: #1e293b; margin-bottom: 0.25rem;">Mengamankan Sesi</p>
-        <p class="font-bold uppercase tracking-widest text-center animate-pulse" style="font-size: 0.625rem; color: #94a3b8;">Enkripsi 256-bit Aktif...</p>
-    </div>
-
-    <div id="processing-overlay" class="overlay dark hidden">
-        <i data-lucide="loader-2" class="animate-spin" style="width: 2.5rem; height: 2.5rem; color: white; margin-bottom: 1rem;"></i>
-        <p class="font-bold tracking-widest uppercase text-center" style="color: white; font-size: 0.75rem;" id="processing-text">Memproses Pesanan...</p>
-    </div>
-
-    <main class="container">
+    <style>
+        body { background-color: #f1f5f9; }
+        /* Hilangkan scrollbar bawaan untuk tampilan mobile-app like */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
         
-        <div id="main-card" class="main-card hidden fade-in-up">
-            
-            <div class="card-header">
-                <i data-lucide="shopping-cart"></i>
-                <h1 style="font-size: 1.125rem; font-weight: 700; letter-spacing: 0.025em;">Checkout</h1>
+        /* Animasi Toast */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #1e293b; color: #fff;
+            text-align: center; border-radius: 8px; padding: 12px; position: fixed;
+            z-index: 50; left: 50%; bottom: 30px; transform: translateX(-50%);
+            font-size: 14px; font-weight: 600; transition: opacity 0.3s, visibility 0.3s, bottom 0.3s;
+            opacity: 0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    </style>
+</head>
+<body class="antialiased text-slate-800 selection:bg-emerald-100 selection:text-emerald-900">
+
+    <div id="toast">Berhasil disalin ke clipboard!</div>
+
+    <main class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative overflow-hidden flex flex-col">
+        
+        <header class="px-4 py-4 z-40 sticky top-0 bg-white border-b border-slate-100">
+            <div class="flex items-center">
+                <button onclick="history.back()" class="mr-4 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <h2 class="flex-1 truncate font-bold text-lg text-slate-900">Instruksi Pembayaran</h2>
             </div>
+        </header>
 
-            <div class="card-body">
-                <a href="/" class="btn-back"><i data-lucide="arrow-left"></i> Batal / Kembali</a>
-
-                <div class="box">
-                    <p class="box-title"><i data-lucide="box"></i> Ringkasan Pesanan</p>
-                    <div class="order-summary-flex">
-                        <div class="order-summary-img-wrap">
-                            <img id="display-img" src="" alt="Produk" class="order-summary-img">
-                        </div>
-                        <h2 id="display-title" class="product-name">...</h2>
-                    </div>
-                    <div class="total-wrap">
-                        <p class="box-title" style="margin: 0;">Total Tagihan</p>
-                        <div id="display-total-top" class="total-price">...</div>
-                    </div>
+        <div class="flex-1 overflow-y-auto pb-8">
+            
+            <div class="p-5">
+                <div class="flex flex-col items-center mb-6 py-2 bg-rose-50 rounded-xl border border-rose-100">
+                    <span class="text-sm text-center text-rose-600 font-medium">Selesaikan pembayaran sebelum</span>
+                    <strong class="text-rose-700 font-bold mt-1">10 Apr 2026 - 14:56 WIB</strong>
                 </div>
 
-                <div id="coupon-section" class="coupon-box hidden">
-                    <label class="coupon-label"><i data-lucide="tag"></i> Punya Kode Diskon?</label>
-                    <div class="coupon-flex">
-                        <input type="text" id="coupon-code" class="form-input uppercase font-bold" placeholder="Ketik kupon di sini">
-                        <button type="button" onclick="applyCoupon()" id="btn-apply-coupon" class="btn-apply">Pakai</button>
-                    </div>
-                    <p id="coupon-msg" class="hidden" style="font-size: 0.75rem; font-weight: 700; margin-top: 0.5rem;"></p>
-                </div>
+                <p class="text-sm text-slate-500 font-medium mb-2">Metode Pembayaran</p>
+                <h3 class="text-lg font-bold text-slate-900 mb-4">Transfer Virtual Account (VA)</h3>
 
-                <form id="form-checkout">
-                    <input type="hidden" id="prod-id"><input type="hidden" id="prod-title"><input type="hidden" id="prod-price">
-                    
-                    <div class="box">
-                        <h2 style="font-size: 0.875rem; font-weight: 900; color: #1e293b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="user" style="width: 1rem; height: 1rem; color: #10b981;"></i> Data Pembeli
-                        </h2>
-                        <div class="form-group">
-                            <input type="text" id="cust-name" class="form-input" placeholder="Nama Lengkap" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="cust-email" class="form-input" placeholder="Alamat Email (Untuk Akses)" required>
-                        </div>
-                        <div class="form-group">
-                            <span class="wa-prefix">+62</span>
-                            <input type="number" id="cust-wa" class="form-input input-wa" placeholder="Nomor WhatsApp" required>
-                        </div>
-                    </div>
+                <button onclick="copyText('9887888451595006')" class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center mb-4 rounded-2xl bg-slate-50 group">
+                    <img src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-BNI_logo.svg.png" class="h-6 w-auto object-contain" alt="BNI">
+                    <div class="flex-1 font-bold text-left pl-4 text-lg tracking-wide text-slate-800">9887 8884 5159 5006</div>
+                    <span class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all">Salin</span>
+                </button>
 
-                    <div id="bump-container" class="hidden" style="margin-bottom: 1.5rem;">
-                        <div id="bump-box" class="bump-box" onclick="toggleBumpCheckbox()">
-                            <div class="bump-flex">
-                                <div style="flex-shrink: 0;">
-                                    <input type="checkbox" id="bump-checkbox" class="bump-checkbox" onclick="event.stopPropagation(); calculateTotalDisplay()">
-                                </div>
-                                <div>
-                                    <h4 id="bump-title-display" class="bump-title">...</h4>
-                                    <p id="bump-desc-display" class="bump-desc">...</p>
-                                    <span class="bump-price-badge">+ Rp <span id="bump-price-display">0</span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="payment-method-container" class="hidden" style="margin-bottom: 2rem;">
-                        <h2 style="font-size: 0.875rem; font-weight: 900; color: #1e293b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="wallet" style="width: 1rem; height: 1rem; color: #10b981;"></i> Metode Pembayaran
-                        </h2>
-                        
-                        <div id="dynamic-payment-methods"></div>
-                        
-                    </div>
-
-                    <button type="submit" id="btn-submit" class="btn-submit">
-                        <i data-lucide="lock"></i> Lanjutkan Pembayaran
+                <div class="text-left mt-2">
+                    <p class="text-sm text-slate-500 font-medium mb-2">Total Tagihan</p>
+                    <button onclick="copyText('147000')" class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex justify-between items-center rounded-2xl bg-slate-50 group">
+                        <strong class="text-2xl font-black text-slate-900">Rp 147.000</strong>
+                        <span class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all">Salin</span>
                     </button>
-                    
-                    <div id="affiliate-badge" class="hidden" style="margin-top: 1.5rem; text-align: center; font-size: 0.5625rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">
-                        Ref: <span id="affiliate-id-display" style="color: #10b981;">...</span>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div id="success-state" class="success-card hidden fade-in-up">
-            <div class="success-icon"><i data-lucide="check-circle"></i></div>
-            <h2 id="success-title" class="success-title">Akses Terbuka!</h2>
-            <p id="success-desc" class="success-desc">Pesanan Anda berhasil diproses. Silakan cek WhatsApp atau Email Anda untuk info lebih lanjut.</p>
-            
-            <div id="new-user-info" class="new-user-box hidden">
-                <div class="new-user-icon"><i data-lucide="key"></i></div>
-                <div>
-                    <p style="font-size: 0.625rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Akun Member Dibuat</p>
-                    <p style="font-size: 0.875rem; color: #1e293b; font-weight: 500;">Password Login Anda: <span id="temp-pass" style="font-family: monospace; font-weight: 900; color: #10b981; background-color: #ecfdf5; padding: 0.125rem 0.5rem; border-radius: 0.25rem; margin-left: 0.25rem; border: 1px solid #d1fae5;"></span></p>
+                    <p class="text-xs text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> Bayar persis hingga digit terakhir</p>
                 </div>
             </div>
-            
-            <a href="#" id="wa-btn" target="_blank" class="btn-wa">
-                <i data-lucide="message-circle"></i> Hubungi Admin
-            </a>
-        </div>
 
+            <div class="h-2 w-full bg-slate-100"></div>
+
+            <div class="p-5">
+                <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-5 h-5 text-emerald-500"></i> Panduan Pembayaran
+                </h3>
+                
+                <div class="border border-slate-200 overflow-hidden rounded-xl bg-white">
+                    
+                    <div class="border-b border-slate-100 last:border-0">
+                        <button onclick="toggleAccordion('acc-1', 'icon-1')" class="w-full py-4 px-4 font-bold text-sm text-slate-700 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                            BNI Mobile Banking
+                            <i id="icon-1" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="acc-1" class="hidden px-4 pb-4 text-sm text-slate-600 leading-relaxed bg-slate-50">
+                            <ol class="list-decimal pl-4 space-y-2 mt-2 font-medium">
+                                <li>Buka aplikasi BNI Mobile Banking dan login.</li>
+                                <li>Pilih menu <strong>Transfer</strong>.</li>
+                                <li>Pilih menu <strong>Virtual Account Billing</strong> lalu masukkan nomor Virtual Account di atas.</li>
+                                <li>Cek detail tagihan. Pastikan nama merchant adalah <strong>SheetFlare</strong>.</li>
+                                <li>Masukkan PIN BNI Mobile Anda dan klik OK.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-slate-100 last:border-0">
+                        <button onclick="toggleAccordion('acc-2', 'icon-2')" class="w-full py-4 px-4 font-bold text-sm text-slate-700 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                            ATM BNI
+                            <i id="icon-2" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="acc-2" class="hidden px-4 pb-4 text-sm text-slate-600 leading-relaxed bg-slate-50">
+                            <ol class="list-decimal pl-4 space-y-2 mt-2 font-medium">
+                                <li>Masukkan kartu ATM dan PIN Anda.</li>
+                                <li>Pilih <strong>Menu Lainnya</strong> > <strong>Transfer</strong>.</li>
+                                <li>Pilih <strong>Virtual Account Billing</strong>.</li>
+                                <li>Masukkan nomor VA di atas lalu tekan Benar.</li>
+                                <li>Konfirmasi detail dan selesaikan pembayaran.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="h-2 w-full bg-slate-100"></div>
+
+            <div class="p-5">
+                <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4">
+                    <div class="flex justify-between items-center text-sm mb-3">
+                        <span class="text-slate-500 font-medium">No. Invoice</span>
+                        <span class="font-bold text-slate-800 font-mono">INV-2604098600</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm mb-4">
+                        <span class="text-slate-500 font-medium">Status</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 font-bold text-xs">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Menunggu Pembayaran
+                        </span>
+                    </div>
+                    <button class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-200">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Cek Status Pembayaran
+                    </button>
+                </div>
+
+                <a href="#" class="flex items-center p-4 border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 transition-colors rounded-xl text-slate-700 mt-6">
+                    <i data-lucide="message-circle" class="w-6 h-6 text-emerald-500 mr-3 shrink-0"></i>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900">Ada kendala transaksi?</h4>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Hubungi Admin via WhatsApp</p>
+                    </div>
+                </a>
+
+                <button type="button" class="text-rose-500 hover:text-rose-700 text-center mt-6 px-4 py-2 block w-full font-bold text-sm transition-colors">
+                    Batalkan Pesanan Ini
+                </button>
+            </div>
+
+        </div>
     </main>
 
     <script>
-        (function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('ref');
-            if(ref) { localStorage.setItem('melimpah_affiliate', ref); }
-        })();
+        // Inisialisasi icon lucide
+        lucide.createIcons();
 
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
-            let icon = type === 'error' ? 'x-circle' : (type === 'warning' ? 'alert-triangle' : 'check-circle');
-            toast.innerHTML = `<i data-lucide="${icon}" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i> <span>${message}</span>`;
-            container.appendChild(toast); lucide.createIcons({ root: toast });
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 200); }, 3000);
+        // Fungsi Copy Text
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById("toast");
+                toast.classList.add("show");
+                setTimeout(function(){ toast.classList.remove("show"); }, 3000);
+            }).catch(err => {
+                console.error('Gagal copy teks: ', err);
+            });
         }
 
-        let sysPayment = {};
-        const urlParams = new URLSearchParams(window.location.search);
-        const rawId = urlParams.get('id') || '';
-        const productId = rawId.toUpperCase();
-
-        let basePrice = 0; let activeBumpPrice = 0; let isBumpAvailable = false; let appliedCouponCode = ""; let discountAmount = 0;
-
-        // DATABASE PAYMENT GATEWAYS CHANNELS
-        const paymentChannels = {
-            duitku: [
-                { category: 'Virtual Account (Otomatis)', channels: [
-                    { id: 'pay-bni-va', value: 'I1', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
-                    { id: 'pay-bri-va', value: 'BR', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
-                    { id: 'pay-mandiri-va', value: 'M2', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
-                    { id: 'pay-cimb-va', value: 'B1', logo: 'https://ik.imagekit.io/maihfdgfn5/B1.png', name: 'CIMB Niaga VA' },
-                    { id: 'pay-permata-va', value: 'BT', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
-                    { id: 'pay-bsi-va', value: 'BV', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
-                ]},
-                { category: 'E-Wallet & QRIS', channels: [
-                    { id: 'pay-qris-spay', value: 'SP', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua Wallet)' },
-                    { id: 'pay-ovo', value: 'OV', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
-                    { id: 'pay-shopeepay', value: 'SA', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
-                ]},
-                { category: 'Minimarket', channels: [
-                    { id: 'pay-alfamart', value: 'FT', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart / Indomaret' }
-                ]}
-            ],
-            tripay: [
-                 { category: 'Virtual Account (Otomatis)', channels: [
-                    { id: 'tripay-bca', value: 'BCAVA', logo: 'https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg', name: 'BCA VA' },
-                    { id: 'tripay-bni', value: 'BNIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
-                    { id: 'tripay-bri', value: 'BRIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
-                    { id: 'tripay-mandiri', value: 'MANDIRIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
-                    { id: 'tripay-permata', value: 'PERMATAVA', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
-                    { id: 'tripay-bsi', value: 'BSIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
-                ]},
-                { category: 'E-Wallet & QRIS', channels: [
-                    { id: 'tripay-qris', value: 'QRIS', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua E-Wallet)' },
-                    { id: 'tripay-ovo', value: 'OVO', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
-                    { id: 'tripay-shopeepay', value: 'SHOPEEPAY', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
-                ]},
-                { category: 'Minimarket', channels: [
-                    { id: 'tripay-alfamart', value: 'ALFAMART', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart' },
-                    { id: 'tripay-indomaret', value: 'INDOMARET', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Indomaret' }
-                ]}
-            ],
-            xendit: [
-                { category: 'Virtual Account (Otomatis)', channels: [
-                    { id: 'xendit-bca', value: 'BCA', logo: 'https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg', name: 'BCA VA' },
-                    { id: 'xendit-bni', value: 'BNI', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
-                    { id: 'xendit-bri', value: 'BRI', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
-                    { id: 'xendit-mandiri', value: 'MANDIRI', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
-                    { id: 'xendit-permata', value: 'PERMATA', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
-                    { id: 'xendit-bsi', value: 'BSI', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
-                ]},
-                { category: 'E-Wallet & QRIS', channels: [
-                    { id: 'xendit-qris', value: 'QRIS', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua E-Wallet)' },
-                    { id: 'xendit-ovo', value: 'OVO', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
-                    { id: 'xendit-shopeepay', value: 'SHOPEEPAY', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
-                ]},
-                { category: 'Minimarket', channels: [
-                    { id: 'xendit-alfamart', value: 'ALFAMART', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart' },
-                    { id: 'xendit-indomaret', value: 'INDOMARET', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Indomaret' }
-                ]}
-            ]
-        };
-
-        // FUNGSI CERDAS RENDER PAYMENT METHOD (TANPA HARDCODE & ANTI BOOLEAN TRAP)
-        function applyPaymentMethods() {
-            const container = document.getElementById('dynamic-payment-methods');
-            container.innerHTML = ''; 
-
-            if (!sysPayment) return;
-
-            // FIX: Parsing ke String lalu ke Lowercase agar kebal dari tipe data Boolean True/False
-            let autoGateway = String(sysPayment.auto_gateway || 'duitku').trim().toLowerCase();
-            let manualActive = String(sysPayment.is_manual_active).trim().toLowerCase() === 'true';
-
-            let html = '';
-            let isFirstRendered = false; 
-
-            // Render Gateway Otomatis
-            if (autoGateway !== 'none' && paymentChannels[autoGateway]) {
-                paymentChannels[autoGateway].forEach(cat => {
-                    html += `<div class="cat-title">${cat.category}</div><div class="pay-grid">`;
-                    cat.channels.forEach(ch => {
-                        const isChecked = !isFirstRendered ? 'checked' : '';
-                        if(!isFirstRendered) isFirstRendered = true;
-                        
-                        html += `
-                        <div class="pay-card">
-                            <input type="radio" name="payment_method" id="${ch.id}" data-type="${autoGateway}" value="${ch.value}" ${isChecked}>
-                            <label for="${ch.id}">
-                                <div class="check-icon"><i data-lucide="check"></i></div>
-                                <div class="pay-logo"><img src="${ch.logo}" alt="${ch.name}"></div>
-                                <span class="pay-name">${ch.name}</span>
-                            </label>
-                        </div>`;
-                    });
-                    html += `</div>`;
-                });
-            }
-
-            // Render Manual Transfer
-            if (manualActive) {
-                const isChecked = !isFirstRendered ? 'checked' : '';
-                if(!isFirstRendered) isFirstRendered = true;
-
-                html += `<div class="cat-title">Transfer Manual (Cek Admin)</div><div class="pay-grid">`;
-                html += `
-                <div class="pay-card">
-                    <input type="radio" name="payment_method" id="pay-manual" data-type="manual" value="manual" ${isChecked}>
-                    <label for="pay-manual">
-                        <div class="check-icon"><i data-lucide="check"></i></div>
-                        <div class="pay-logo" style="display:flex; align-items:center; justify-content:center; color:#94a3b8; margin-bottom: 0.5rem;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-                        </div>
-                        <span class="pay-name">Transfer ${sysPayment.bank_name || 'Bank'}</span>
-                    </label>
-                </div></div>`;
-
-                html += `
-                <div id="manual-info-box" style="display: ${isChecked ? 'block' : 'none'}; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem;">
-                    <p style="font-size: 0.625rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.375rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-                        Info Rekening Tujuan
-                    </p>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
-                        <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Bank</span>
-                        <strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_name || '-'}</strong>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
-                        <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">No. Rekening</span>
-                        <strong style="font-size: 1rem; font-family: monospace; color: #10b981; user-select: all;">${sysPayment.bank_norek || '-'}</strong>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Atas Nama</span>
-                        <strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_owner || '-'}</strong>
-                    </div>
-                </div>
-                `;
-            }
-
-            // Jika tidak ada satu pun yang aktif
-            if(html === '') {
-                html = `<div style="text-align: center; padding: 2rem; background: white; border: 1px dashed #cbd5e1; border-radius: 1rem;">
-                    <p style="font-size: 0.875rem; color: #ef4444; font-weight: 700;">Admin belum mengaktifkan metode pembayaran apapun.</p>
-                </div>`;
-            }
-
-            container.innerHTML = html;
+        // Fungsi Accordion (Buka/Tutup Panduan)
+        function toggleAccordion(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
             
-            // Logic interaktif ketika Radio Button diklik
-            setTimeout(() => {
-                const radios = document.querySelectorAll('input[name="payment_method"]');
-                const manualBox = document.getElementById('manual-info-box');
-                radios.forEach(r => {
-                    r.addEventListener('change', (e) => {
-                        if(manualBox) {
-                            if(e.target.getAttribute('data-type') === 'manual') {
-                                manualBox.style.display = 'block';
-                            } else {
-                                manualBox.style.display = 'none';
-                            }
-                        }
-                    });
-                });
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-            }, 100);
-        }
-
-        async function applyCoupon() {
-            const codeInput = document.getElementById('coupon-code').value.trim();
-            const msgEl = document.getElementById('coupon-msg'); const btn = document.getElementById('btn-apply-coupon');
-            if(!codeInput) { showToast('Masukkan kode', 'warning'); return; }
-            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 0.75rem; height: 0.75rem;"></i>'; btn.disabled = true; lucide.createIcons();
-
-            try {
-                const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
-                const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'validate_coupon', code: codeInput, harga: basePrice, id_produk: productId }) });
-                const r = await res.json();
-                msgEl.classList.remove('hidden');
-                if(r.status === 'success') {
-                    appliedCouponCode = r.code; discountAmount = r.discount;
-                    msgEl.innerText = `${r.message} (-Rp ${discountAmount.toLocaleString('id-ID')})`; 
-                    msgEl.style.color = '#10b981'; 
-                    document.getElementById('coupon-code').disabled = true; btn.innerHTML = '✓'; calculateTotalDisplay();
-                } else {
-                    appliedCouponCode = ""; discountAmount = 0; msgEl.innerText = r.message; 
-                    msgEl.style.color = '#ef4444'; 
-                    btn.innerHTML = 'Pakai'; btn.disabled = false; calculateTotalDisplay();
-                }
-            } catch(e) { msgEl.innerText = 'Gagal cek kupon'; msgEl.classList.remove('hidden'); msgEl.style.color = '#ef4444'; btn.innerHTML = 'Pakai'; btn.disabled = false; }
-        }
-
-        function calculateTotalDisplay() {
-            const checkbox = document.getElementById('bump-checkbox'); const box = document.getElementById('bump-box');
-            let currentTotal = basePrice - discountAmount; if(currentTotal < 0) currentTotal = 0; 
-            if (isBumpAvailable && checkbox.checked) { currentTotal += activeBumpPrice; box.classList.add('bump-checked'); } else { box.classList.remove('bump-checked'); }
-            
-            if (discountAmount > 0) {
-                const originalTotal = (basePrice + (isBumpAvailable && checkbox.checked ? activeBumpPrice : 0)).toLocaleString('id-ID');
-                document.getElementById('display-total-top').innerHTML = `<span style="font-size: 0.875rem; color: #94a3b8; text-decoration: line-through; margin-right: 0.5rem; font-weight: 400;">Rp ${originalTotal}</span>Rp ${currentTotal.toLocaleString('id-ID')}`;
-            } else { document.getElementById('display-total-top').innerText = 'Rp ' + currentTotal.toLocaleString('id-ID'); }
-
-            if (currentTotal > 0) { document.getElementById('payment-method-container').classList.remove('hidden'); } else { document.getElementById('payment-method-container').classList.add('hidden'); }
-        }
-
-        function toggleBumpCheckbox() { if (!isBumpAvailable) return; const checkbox = document.getElementById('bump-checkbox'); checkbox.checked = !checkbox.checked; calculateTotalDisplay(); }
-
-        function showFormInstant(p) {
-            const initLoader = document.getElementById('global-init-loader');
-            if (initLoader) { initLoader.style.opacity = '0'; setTimeout(() => { initLoader.classList.add('hidden'); }, 500); }
-
-            document.getElementById('main-card').classList.remove('hidden');
-            document.getElementById('coupon-section').classList.remove('hidden');
-            setTimeout(() => { document.getElementById('main-card').classList.add('show'); }, 100);
-
-            document.getElementById('display-title').innerText = p.nama || p.title; 
-            document.getElementById('prod-id').value = p.id; document.getElementById('prod-title').value = p.nama || p.title; document.getElementById('prod-price').value = p.harga;
-            basePrice = Number(p.harga) || 0;
-
-            // Render Gambar Produk
-            document.getElementById('display-img').src = p.gambar || 'https://ik.imagekit.io/maihfdgfn5/download.png';
-            
-            if (p.bump_status === 'Active') {
-                isBumpAvailable = true; activeBumpPrice = Number(p.bump_price) || 0;
-                document.getElementById('bump-container').classList.remove('hidden'); document.getElementById('bump-title-display').innerText = p.bump_title || 'Penawaran Spesial'; document.getElementById('bump-desc-display').innerText = p.bump_desc || 'Ambil penawaran terbatas ini!'; document.getElementById('bump-price-display').innerText = activeBumpPrice.toLocaleString('id-ID');
-            } else { isBumpAvailable = false; activeBumpPrice = 0; document.getElementById('bump-checkbox').checked = false; document.getElementById('bump-container').classList.add('hidden'); }
-            calculateTotalDisplay(); lucide.createIcons();
-        }
-
-        async function loadProduct() {
-            if(!productId) { window.location.href = '/'; return; }
-            const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
-            
-            // Bypass Cache khusus ketika ngetes ubah gateway: tambahkan ?refresh=1 di URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const forceRefresh = urlParams.get('refresh');
-
-            if (forceRefresh) {
-                // Jangan tarik dari Cache Local, langsung sikat ke API
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
             } else {
-                const cachedData = localStorage.getItem('melimpah_product_' + productId);
-                if (cachedData) { try { const r = JSON.parse(cachedData); showFormInstant(r.data); sysPayment = r.payment; applyPaymentMethods(); isFormVisible = true; } catch(e){} }
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
             }
-
-            try {
-                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null); if(!targetUrl) return;
-                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'get_product', id: productId, aff_id: affId }) });
-                const r = await res.json();
-                if(r.status === 'success') {
-                    sysPayment = r.payment; 
-                    if(r.aff_name && r.aff_name !== "") { document.getElementById('affiliate-id-display').innerText = r.aff_name; document.getElementById('affiliate-badge').classList.remove('hidden'); }
-                    showFormInstant(r.data); applyPaymentMethods(); localStorage.setItem('melimpah_product_' + productId, JSON.stringify(r));
-                } else { if(!isFormVisible) { showToast(r.message, 'error'); setTimeout(() => window.location.href = '/', 1500); } }
-            } catch (e) { if(!isFormVisible) showToast('Gagal memuat produk.', 'error'); }
         }
-
-        document.getElementById('form-checkout').onsubmit = async (e) => {
-            e.preventDefault();
-            const processingOverlay = document.getElementById('processing-overlay'); const processingText = document.getElementById('processing-text');
-            processingText.innerText = 'Membuka Jalur Pembayaran...'; processingOverlay.classList.remove('hidden'); processingOverlay.classList.add('flex');
-            
-            const bumpChecked = isBumpAvailable ? document.getElementById('bump-checkbox').checked : false;
-
-            if(typeof fbq === 'function') {
-                let finalPriceVal = basePrice - discountAmount; if (finalPriceVal < 0) finalPriceVal = 0; if (bumpChecked) finalPriceVal += activeBumpPrice;
-                fbq('track', 'InitiateCheckout', { content_name: document.getElementById('prod-title').value, content_ids: [document.getElementById('prod-id').value], value: finalPriceVal, currency: 'IDR' });
-            }
-
-            const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
-            const paymentTypeSelected = checkedRadio ? checkedRadio.getAttribute('data-type') : 'duitku';
-            const paymentChannelSelected = checkedRadio ? checkedRadio.value : '';
-
-            const pData = { action: 'create_order', nama: document.getElementById('cust-name').value, email: document.getElementById('cust-email').value, whatsapp: document.getElementById('cust-wa').value, id_produk: document.getElementById('prod-id').value, nama_produk: document.getElementById('prod-title').value, harga: document.getElementById('prod-price').value, take_bump: bumpChecked, kupon: appliedCouponCode, affiliate: localStorage.getItem('melimpah_affiliate') || "-", metode_pembayaran: paymentTypeSelected, payment_channel: paymentChannelSelected };
-
-            try {
-                const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
-                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(pData) });
-                const r = await res.json();
-
-                if(r.status === 'success') {
-                    if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
-                    fetch('/api/payment-success', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pData.email, whatsapp: pData.whatsapp, harga: r.tagihan }) }).catch(err => console.log('CAPI fail'));
-
-                    if(r.payment_url) {
-                        setTimeout(() => { window.location.href = r.payment_url; }, 800); 
-                    } else {
-                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
-                        
-                        document.getElementById('main-card').classList.remove('show');
-                        setTimeout(() => {
-                            document.getElementById('main-card').classList.add('hidden'); 
-                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
-                        }, 300);
-
-                        if (Number(r.tagihan) > 0) {
-                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                            document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b>Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div style="background: #f8fafc; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; display: inline-block; text-align: left; margin-bottom: 0.75rem; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"><p style="font-size: 0.625rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Bank ${r.bank_name || sysPayment.bank_name}</p><p style="font-size: 1.25rem; font-weight: 900; color: #10b981; font-family: monospace; letter-spacing: 0.1em; line-height: 1; margin-bottom: 0.25rem; user-select: all;">${r.bank_norek || sysPayment.bank_norek}</p><p style="font-size: 0.75rem; font-weight: 700; color: #334155;">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span style="font-size: 0.625rem; color: #e11d48; font-weight: 700;">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
-                            const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
-                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" style="width:1rem;height:1rem;"></i> Konfirmasi Transfer`;
-                        } else {
-                            document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
-                            const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
-                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" style="width:1rem;height:1rem;"></i> Hubungi Admin`;
-                        }
-
-                        if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
-                        showToast('Pesanan berhasil diproses!', 'success'); lucide.createIcons();
-                    }
-                } else { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }
-            } catch (err) { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast('Gagal memproses pesanan.', 'error'); }
-        };
-
-        window.onload = () => { lucide.createIcons(); loadProduct(); };
     </script>
 </body>
 </html>

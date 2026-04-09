@@ -2,15 +2,35 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
-    <title>Instruksi Pembayaran - SheetFlare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Checkout - SheetFlare</title>
+
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <script src="config.js?v=2026"></script>
+
+    <script>
+        (function() {
+            const CACHE_KEY = 'melimpah_global_settings';
+            const CACHE_AGE = 60 * 60 * 1000; 
+            let cachedFav = localStorage.getItem('site_favicon');
+            function applyFavicon(url) { if(!url) return; let link = document.querySelector("link[rel~='icon']"); if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); } link.href = url; }
+            function applyGlobalSettings(data) { if(data.site_name) { document.title = `Checkout - ${data.site_name}`; } }
+            if(cachedFav) applyFavicon(cachedFav);
+            const cachedStr = localStorage.getItem(CACHE_KEY); let cached = null; try { cached = JSON.parse(cachedStr); } catch(e){}
+            if (cached && cached.data) { applyGlobalSettings(cached.data); }
+            if (!cached || !cached.time || (Date.now() - cached.time > CACHE_AGE)) {
+                if(typeof window.SCRIPT_URL !== 'undefined' || typeof SCRIPT_URL !== 'undefined') {
+                    const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
+                    fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) }).then(res => res.json()).then(r => {
+                        if(r.status === 'success' && r.data) { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: r.data, time: Date.now() })); applyGlobalSettings(r.data); if(r.data.site_favicon && cachedFav !== r.data.site_favicon) { localStorage.setItem('site_favicon', r.data.site_favicon); applyFavicon(r.data.site_favicon); } }
+                    }).catch(e => {});
+                }
+            }
+        })();
+    </script>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script src="https://unpkg.com/lucide@latest" defer></script>
-    
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,179 +38,527 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        emerald: { 500: '#10b981', 600: '#059669' },
-                        slate: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 500: '#64748b', 600: '#475569', 800: '#1e293b', 900: '#0f172a' }
+                        emerald: { 500: '#10b981', 600: '#059669', 700: '#047857' },
+                        slate: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 500: '#64748b', 800: '#1e293b', 900: '#0f172a' }
                     }
                 }
             }
         }
     </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-        body { background-color: #f1f5f9; }
-        /* Hilangkan scrollbar bawaan untuk tampilan mobile-app like */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* Hide Number Input Arrows */
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
-        /* Animasi Toast */
-        #toast {
-            visibility: hidden; min-width: 250px; background-color: #1e293b; color: #fff;
-            text-align: center; border-radius: 8px; padding: 12px; position: fixed;
-            z-index: 50; left: 50%; bottom: 30px; transform: translateX(-50%);
-            font-size: 14px; font-weight: 600; transition: opacity 0.3s, visibility 0.3s, bottom 0.3s;
-            opacity: 0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-        }
-        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        /* Animations */
+        .fade-in-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+        .fade-in-up.show { opacity: 1; transform: translateY(0); }
+        .loader-ring { width: 4rem; height: 4rem; border: 4px solid #d1fae5; border-top-color: #10b981; border-radius: 50%; }
+
+        /* Toast Notification */
+        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;}
+        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); pointer-events: auto;}
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background-color: #10b981; } .toast.error { background-color: #ef4444; } .toast.warning { background-color: #f59e0b; }
+
+        /* Custom Radio Button for Payment Methods */
+        .pay-card input[type="radio"] { display: none; }
+        .pay-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: white; border: 1px solid #cbd5e1; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease; position: relative; height: 5.5rem; text-align: center; }
+        .pay-card label:hover { border-color: #94a3b8; background-color: #f8fafc; }
+        .pay-card input[type="radio"]:checked + label { border-color: #10b981; background-color: #ecfdf5; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); border-width: 2px; }
+        .check-icon { position: absolute; top: 0.5rem; right: 0.5rem; width: 1.25rem; height: 1.25rem; background-color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0); transition: all 0.2s ease; color: white; }
+        .pay-card input[type="radio"]:checked + label .check-icon { opacity: 1; transform: scale(1); }
+        .pay-logo img { max-height: 1.5rem; max-width: 3.75rem; object-fit: contain; filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; }
+        .pay-card input[type="radio"]:checked + label .pay-logo img { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
+
+        /* Order Bump Custom Styling */
+        .bump-box { border: 2px dashed #cbd5e1; transition: all 0.3s; }
+        .bump-box.bump-checked { border-color: #10b981; border-style: solid; background-color: #ecfdf5; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1); }
     </style>
+    
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '2189480848543217'); fbq('track', 'PageView'); 
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2189480848543217&ev=PageView&noscript=1"/></noscript>
 </head>
 <body class="antialiased text-slate-800 selection:bg-emerald-100 selection:text-emerald-900">
 
-    <div id="toast">Berhasil disalin ke clipboard!</div>
+    <div id="toast-container"></div>
 
-    <main class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative overflow-hidden flex flex-col">
+    <div id="global-init-loader" class="fixed inset-0 bg-white z-[150] flex flex-col items-center justify-center transition-all duration-700 ease-in-out">
+        <div class="relative flex items-center justify-center mb-4">
+            <i data-lucide="shield-check" class="animate-pulse absolute text-emerald-500 w-12 h-12"></i>
+            <div class="loader-ring animate-spin"></div>
+        </div>
+        <p class="font-black uppercase tracking-widest text-center text-xs text-slate-800 mb-1">Mengamankan Sesi</p>
+        <p class="font-bold uppercase tracking-widest text-center animate-pulse text-[10px] text-slate-400">Enkripsi 256-bit Aktif...</p>
+    </div>
+
+    <div id="processing-overlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[200] hidden flex-col items-center justify-center">
+        <i data-lucide="loader-2" class="animate-spin text-white w-10 h-10 mb-4"></i>
+        <p class="font-bold tracking-widest uppercase text-center text-white text-xs" id="processing-text">Memproses Pesanan...</p>
+    </div>
+
+    <main class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative flex flex-col">
         
-        <header class="px-4 py-4 z-40 sticky top-0 bg-white border-b border-slate-100">
-            <div class="flex items-center">
-                <button onclick="history.back()" class="mr-4 text-slate-600 hover:text-slate-900 transition-colors">
+        <div id="main-card" class="hidden fade-in-up flex-1 flex flex-col">
+            
+            <header class="px-4 py-4 z-40 sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 flex items-center">
+                <button onclick="history.back()" class="mr-4 text-slate-500 hover:text-slate-900 transition-colors">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
                 </button>
-                <h2 class="flex-1 truncate font-bold text-lg text-slate-900">Instruksi Pembayaran</h2>
-            </div>
-        </header>
+                <h2 class="flex-1 truncate font-bold text-lg text-slate-900">Selesaikan Pembayaran</h2>
+            </header>
 
-        <div class="flex-1 overflow-y-auto pb-8">
-            
-            <div class="p-5">
-                <div class="flex flex-col items-center mb-6 py-2 bg-rose-50 rounded-xl border border-rose-100">
-                    <span class="text-sm text-center text-rose-600 font-medium">Selesaikan pembayaran sebelum</span>
-                    <strong class="text-rose-700 font-bold mt-1">10 Apr 2026 - 14:56 WIB</strong>
-                </div>
-
-                <p class="text-sm text-slate-500 font-medium mb-2">Metode Pembayaran</p>
-                <h3 class="text-lg font-bold text-slate-900 mb-4">Transfer Virtual Account (VA)</h3>
-
-                <button onclick="copyText('9887888451595006')" class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center mb-4 rounded-2xl bg-slate-50 group">
-                    <img src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-BNI_logo.svg.png" class="h-6 w-auto object-contain" alt="BNI">
-                    <div class="flex-1 font-bold text-left pl-4 text-lg tracking-wide text-slate-800">9887 8884 5159 5006</div>
-                    <span class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all">Salin</span>
-                </button>
-
-                <div class="text-left mt-2">
-                    <p class="text-sm text-slate-500 font-medium mb-2">Total Tagihan</p>
-                    <button onclick="copyText('147000')" class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex justify-between items-center rounded-2xl bg-slate-50 group">
-                        <strong class="text-2xl font-black text-slate-900">Rp 147.000</strong>
-                        <span class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all">Salin</span>
-                    </button>
-                    <p class="text-xs text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> Bayar persis hingga digit terakhir</p>
-                </div>
-            </div>
-
-            <div class="h-2 w-full bg-slate-100"></div>
-
-            <div class="p-5">
-                <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <i data-lucide="book-open" class="w-5 h-5 text-emerald-500"></i> Panduan Pembayaran
-                </h3>
+            <div class="flex-1 pb-8">
                 
-                <div class="border border-slate-200 overflow-hidden rounded-xl bg-white">
+                <div class="p-5">
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+                            <img id="display-img" src="" alt="Produk" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col justify-between py-1">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ringkasan Order</p>
+                                <h2 id="display-title" class="text-base font-black text-slate-900 leading-tight line-clamp-2">...</h2>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="border-b border-slate-100 last:border-0">
-                        <button onclick="toggleAccordion('acc-1', 'icon-1')" class="w-full py-4 px-4 font-bold text-sm text-slate-700 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                            BNI Mobile Banking
-                            <i id="icon-1" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
-                        </button>
-                        <div id="acc-1" class="hidden px-4 pb-4 text-sm text-slate-600 leading-relaxed bg-slate-50">
-                            <ol class="list-decimal pl-4 space-y-2 mt-2 font-medium">
-                                <li>Buka aplikasi BNI Mobile Banking dan login.</li>
-                                <li>Pilih menu <strong>Transfer</strong>.</li>
-                                <li>Pilih menu <strong>Virtual Account Billing</strong> lalu masukkan nomor Virtual Account di atas.</li>
-                                <li>Cek detail tagihan. Pastikan nama merchant adalah <strong>SheetFlare</strong>.</li>
-                                <li>Masukkan PIN BNI Mobile Anda dan klik OK.</li>
-                            </ol>
-                        </div>
+                    <div class="flex items-end justify-between pt-4 border-t border-dashed border-slate-200">
+                        <p class="text-sm font-bold text-slate-500">Total Tagihan</p>
+                        <div id="display-total-top" class="text-2xl font-black tracking-tight text-emerald-500">...</div>
                     </div>
-
-                    <div class="border-b border-slate-100 last:border-0">
-                        <button onclick="toggleAccordion('acc-2', 'icon-2')" class="w-full py-4 px-4 font-bold text-sm text-slate-700 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                            ATM BNI
-                            <i id="icon-2" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
-                        </button>
-                        <div id="acc-2" class="hidden px-4 pb-4 text-sm text-slate-600 leading-relaxed bg-slate-50">
-                            <ol class="list-decimal pl-4 space-y-2 mt-2 font-medium">
-                                <li>Masukkan kartu ATM dan PIN Anda.</li>
-                                <li>Pilih <strong>Menu Lainnya</strong> > <strong>Transfer</strong>.</li>
-                                <li>Pilih <strong>Virtual Account Billing</strong>.</li>
-                                <li>Masukkan nomor VA di atas lalu tekan Benar.</li>
-                                <li>Konfirmasi detail dan selesaikan pembayaran.</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="h-2 w-full bg-slate-100"></div>
-
-            <div class="p-5">
-                <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4">
-                    <div class="flex justify-between items-center text-sm mb-3">
-                        <span class="text-slate-500 font-medium">No. Invoice</span>
-                        <span class="font-bold text-slate-800 font-mono">INV-2604098600</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm mb-4">
-                        <span class="text-slate-500 font-medium">Status</span>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 font-bold text-xs">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Menunggu Pembayaran
-                        </span>
-                    </div>
-                    <button class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-200">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Cek Status Pembayaran
-                    </button>
                 </div>
 
-                <a href="#" class="flex items-center p-4 border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 transition-colors rounded-xl text-slate-700 mt-6">
-                    <i data-lucide="message-circle" class="w-6 h-6 text-emerald-500 mr-3 shrink-0"></i>
-                    <div>
-                        <h4 class="font-bold text-sm text-slate-900">Ada kendala transaksi?</h4>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Hubungi Admin via WhatsApp</p>
-                    </div>
-                </a>
+                <div class="h-2 w-full bg-slate-50 border-y border-slate-100"></div>
 
-                <button type="button" class="text-rose-500 hover:text-rose-700 text-center mt-6 px-4 py-2 block w-full font-bold text-sm transition-colors">
-                    Batalkan Pesanan Ini
-                </button>
+                <div class="p-5">
+                    <form id="form-checkout">
+                        <input type="hidden" id="prod-id"><input type="hidden" id="prod-title"><input type="hidden" id="prod-price">
+
+                        <div id="coupon-section" class="mb-8 hidden">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                                <i data-lucide="tag" class="w-4 h-4"></i> Kode Promo / Diskon
+                            </label>
+                            <div class="flex gap-2">
+                                <input type="text" id="coupon-code" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 uppercase placeholder:normal-case placeholder:font-medium placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="Masukkan kode promo">
+                                <button type="button" onclick="applyCoupon()" id="btn-apply-coupon" class="bg-slate-800 hover:bg-slate-900 text-white px-5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors shrink-0 flex items-center justify-center">Pakai</button>
+                            </div>
+                            <p id="coupon-msg" class="hidden text-xs font-bold mt-2"></p>
+                        </div>
+                        
+                        <h2 class="text-sm font-black text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="user" class="w-5 h-5 text-emerald-500"></i> Data Lengkap
+                        </h2>
+                        
+                        <div class="space-y-4 mb-8">
+                            <div class="relative">
+                                <input type="text" id="cust-name" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-slate-800 placeholder:font-medium placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="Nama Lengkap Sesuai Identitas" required>
+                            </div>
+                            <div class="relative">
+                                <input type="email" id="cust-email" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-slate-800 placeholder:font-medium placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="Alamat Email Aktif" required>
+                            </div>
+                            <div class="relative flex items-center">
+                                <span class="absolute left-4 font-bold text-slate-400 border-r border-slate-200 pr-3 text-sm">+62</span>
+                                <input type="number" id="cust-wa" class="w-full bg-white border border-slate-200 rounded-xl pl-[4.5rem] pr-4 py-3.5 text-sm font-bold text-slate-800 placeholder:font-medium placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="Nomor WhatsApp" required>
+                            </div>
+                        </div>
+
+                        <div id="bump-container" class="hidden mb-8">
+                            <div id="bump-box" class="bump-box rounded-xl p-4 cursor-pointer" onclick="toggleBumpCheckbox()">
+                                <div class="flex items-start gap-3">
+                                    <div class="shrink-0 mt-0.5">
+                                        <input type="checkbox" id="bump-checkbox" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer" onclick="event.stopPropagation(); calculateTotalDisplay()">
+                                    </div>
+                                    <div>
+                                        <h4 id="bump-title-display" class="font-black text-slate-900 text-sm mb-1 underline decoration-rose-300 underline-offset-2">...</h4>
+                                        <p id="bump-desc-display" class="text-xs text-slate-500 mb-2 leading-relaxed">...</p>
+                                        <span class="text-xs font-black text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-100">+ Rp <span id="bump-price-display">0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="payment-method-container" class="hidden mb-8">
+                            <h2 class="text-sm font-black text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i data-lucide="wallet" class="w-5 h-5 text-emerald-500"></i> Pilih Pembayaran
+                            </h2>
+                            <div id="dynamic-payment-methods"></div>
+                        </div>
+
+                        <div class="sticky bottom-4 z-30 px-2">
+                            <button type="submit" id="btn-submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-4 font-black uppercase tracking-widest text-sm shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5">
+                                <i data-lucide="lock" class="w-4 h-4"></i> Bayar Sekarang
+                            </button>
+                        </div>
+                        
+                        <div id="affiliate-badge" class="hidden mt-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            Ref: <span id="affiliate-id-display" class="text-emerald-500">...</span>
+                        </div>
+
+                    </form>
+                </div>
             </div>
-
         </div>
+
+        <div id="success-state" class="hidden fade-in-up flex-1 flex flex-col items-center justify-center p-6 bg-white text-center">
+            <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-6">
+                <i data-lucide="check-circle" class="w-10 h-10"></i>
+            </div>
+            <h2 id="success-title" class="text-2xl font-black text-slate-900 tracking-tight mb-2">Akses Terbuka!</h2>
+            <p id="success-desc" class="text-slate-500 text-sm mb-8 leading-relaxed max-w-xs">Pesanan Anda berhasil diproses. Silakan cek WhatsApp atau Email Anda untuk info lebih lanjut.</p>
+            
+            <div id="new-user-info" class="hidden w-full max-w-sm bg-slate-50 border border-slate-200 rounded-xl p-4 mb-8 text-left flex gap-4">
+                <div class="text-emerald-500 shrink-0 mt-1"><i data-lucide="key" class="w-6 h-6"></i></div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Akun Member Dibuat</p>
+                    <p class="text-sm font-medium text-slate-800">Password Anda: <span id="temp-pass" class="font-mono font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-1"></span></p>
+                </div>
+            </div>
+            
+            <a href="#" id="wa-btn" target="_blank" class="w-full max-w-sm bg-[#25D366] hover:bg-[#16a34a] text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-[#25D366]/30 flex items-center justify-center gap-2 transition-colors">
+                <i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin
+            </a>
+        </div>
+
     </main>
 
     <script>
-        // Inisialisasi icon lucide
-        lucide.createIcons();
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            if(ref) { localStorage.setItem('melimpah_affiliate', ref); }
+        })();
 
-        // Fungsi Copy Text
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById("toast");
-                toast.classList.add("show");
-                setTimeout(function(){ toast.classList.remove("show"); }, 3000);
-            }).catch(err => {
-                console.error('Gagal copy teks: ', err);
-            });
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
+            let icon = type === 'error' ? 'x-circle' : (type === 'warning' ? 'alert-triangle' : 'check-circle');
+            toast.innerHTML = `<i data-lucide="${icon}" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i> <span>${message}</span>`;
+            container.appendChild(toast); lucide.createIcons({ root: toast });
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 200); }, 3000);
         }
 
-        // Fungsi Accordion (Buka/Tutup Panduan)
-        function toggleAccordion(contentId, iconId) {
-            const content = document.getElementById(contentId);
-            const icon = document.getElementById(iconId);
-            
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                content.classList.add('hidden');
-                icon.style.transform = 'rotate(0deg)';
+        let sysPayment = {};
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawId = urlParams.get('id') || '';
+        const productId = rawId.toUpperCase();
+
+        let basePrice = 0; let activeBumpPrice = 0; let isBumpAvailable = false; let appliedCouponCode = ""; let discountAmount = 0;
+
+        // DATABASE PAYMENT GATEWAYS CHANNELS
+        const paymentChannels = {
+            duitku: [
+                { category: 'Virtual Account (Otomatis)', channels: [
+                    { id: 'pay-bni-va', value: 'I1', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
+                    { id: 'pay-bri-va', value: 'BR', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
+                    { id: 'pay-mandiri-va', value: 'M2', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
+                    { id: 'pay-cimb-va', value: 'B1', logo: 'https://ik.imagekit.io/maihfdgfn5/B1.png', name: 'CIMB Niaga VA' },
+                    { id: 'pay-permata-va', value: 'BT', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
+                    { id: 'pay-bsi-va', value: 'BV', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
+                ]},
+                { category: 'E-Wallet & QRIS', channels: [
+                    { id: 'pay-qris-spay', value: 'SP', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua)' },
+                    { id: 'pay-ovo', value: 'OV', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
+                    { id: 'pay-shopeepay', value: 'SA', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
+                ]},
+                { category: 'Minimarket', channels: [
+                    { id: 'pay-alfamart', value: 'FT', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart / Indomaret' }
+                ]}
+            ],
+            tripay: [
+                 { category: 'Virtual Account (Otomatis)', channels: [
+                    { id: 'tripay-bca', value: 'BCAVA', logo: 'https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg', name: 'BCA VA' },
+                    { id: 'tripay-bni', value: 'BNIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
+                    { id: 'tripay-bri', value: 'BRIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
+                    { id: 'tripay-mandiri', value: 'MANDIRIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
+                    { id: 'tripay-permata', value: 'PERMATAVA', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
+                    { id: 'tripay-bsi', value: 'BSIVA', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
+                ]},
+                { category: 'E-Wallet & QRIS', channels: [
+                    { id: 'tripay-qris', value: 'QRIS', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua)' },
+                    { id: 'tripay-ovo', value: 'OVO', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
+                    { id: 'tripay-shopeepay', value: 'SHOPEEPAY', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
+                ]},
+                { category: 'Minimarket', channels: [
+                    { id: 'tripay-alfamart', value: 'ALFAMART', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart' },
+                    { id: 'tripay-indomaret', value: 'INDOMARET', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Indomaret' }
+                ]}
+            ],
+            xendit: [
+                { category: 'Virtual Account (Otomatis)', channels: [
+                    { id: 'xendit-bca', value: 'BCA', logo: 'https://ik.imagekit.io/maihfdgfn5/Bank_Central_Asia.svg', name: 'BCA VA' },
+                    { id: 'xendit-bni', value: 'BNI', logo: 'https://ik.imagekit.io/maihfdgfn5/bni-logo.svg', name: 'BNI VA' },
+                    { id: 'xendit-bri', value: 'BRI', logo: 'https://ik.imagekit.io/maihfdgfn5/bri-logo.svg', name: 'BRI VA' },
+                    { id: 'xendit-mandiri', value: 'MANDIRI', logo: 'https://ik.imagekit.io/maihfdgfn5/mandiri-logo.svg', name: 'Mandiri VA' },
+                    { id: 'xendit-permata', value: 'PERMATA', logo: 'https://ik.imagekit.io/maihfdgfn5/permata-logo.svg', name: 'Permata VA' },
+                    { id: 'xendit-bsi', value: 'BSI', logo: 'https://ik.imagekit.io/maihfdgfn5/BSI.webp', name: 'BSI VA' }
+                ]},
+                { category: 'E-Wallet & QRIS', channels: [
+                    { id: 'xendit-qris', value: 'QRIS', logo: 'https://ik.imagekit.io/maihfdgfn5/QR.png', name: 'QRIS (Semua)' },
+                    { id: 'xendit-ovo', value: 'OVO', logo: 'https://ik.imagekit.io/maihfdgfn5/ovo-logo.svg', name: 'OVO' },
+                    { id: 'xendit-shopeepay', value: 'SHOPEEPAY', logo: 'https://ik.imagekit.io/maihfdgfn5/SHOPEEPAY.png', name: 'ShopeePay' }
+                ]},
+                { category: 'Minimarket', channels: [
+                    { id: 'xendit-alfamart', value: 'ALFAMART', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Alfamart' },
+                    { id: 'xendit-indomaret', value: 'INDOMARET', logo: 'https://ik.imagekit.io/maihfdgfn5/RETAIL.png', name: 'Indomaret' }
+                ]}
+            ]
+        };
+
+        // RENDER PAYMENT METHOD
+        function applyPaymentMethods() {
+            const container = document.getElementById('dynamic-payment-methods');
+            container.innerHTML = ''; 
+
+            if (!sysPayment) return;
+
+            let autoGateway = String(sysPayment.auto_gateway || 'duitku').trim().toLowerCase();
+            let manualActive = String(sysPayment.is_manual_active).trim().toLowerCase() === 'true';
+
+            let html = '';
+            let isFirstRendered = false; 
+
+            // Render Gateway Otomatis
+            if (autoGateway !== 'none' && paymentChannels[autoGateway]) {
+                paymentChannels[autoGateway].forEach(cat => {
+                    html += `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 mt-4 flex items-center gap-2">${cat.category}<div class="flex-1 h-px bg-slate-200"></div></div><div class="grid grid-cols-2 gap-3 mb-4">`;
+                    cat.channels.forEach(ch => {
+                        const isChecked = !isFirstRendered ? 'checked' : '';
+                        if(!isFirstRendered) isFirstRendered = true;
+                        
+                        html += `
+                        <div class="pay-card">
+                            <input type="radio" name="payment_method" id="${ch.id}" data-type="${autoGateway}" value="${ch.value}" ${isChecked}>
+                            <label for="${ch.id}">
+                                <div class="check-icon"><i data-lucide="check" class="w-3 h-3"></i></div>
+                                <div class="pay-logo mb-2 flex items-center justify-center h-6"><img src="${ch.logo}" alt="${ch.name}"></div>
+                                <span class="text-[10px] font-bold text-slate-500 leading-tight">${ch.name}</span>
+                            </label>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                });
             }
+
+            // Render Manual Transfer
+            if (manualActive) {
+                const isChecked = !isFirstRendered ? 'checked' : '';
+                if(!isFirstRendered) isFirstRendered = true;
+
+                html += `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 mt-4 flex items-center gap-2">Transfer Manual (Cek Admin)<div class="flex-1 h-px bg-slate-200"></div></div><div class="grid grid-cols-2 gap-3">`;
+                html += `
+                <div class="pay-card">
+                    <input type="radio" name="payment_method" id="pay-manual" data-type="manual" value="manual" ${isChecked}>
+                    <label for="pay-manual">
+                        <div class="check-icon"><i data-lucide="check" class="w-3 h-3"></i></div>
+                        <div class="mb-2 flex items-center justify-center h-6 text-slate-400">
+                            <i data-lucide="landmark" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500 leading-tight">Transfer ${sysPayment.bank_name || 'Bank'}</span>
+                    </label>
+                </div></div>`;
+
+                html += `
+                <div id="manual-info-box" style="display: ${isChecked ? 'block' : 'none'};" class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-4 mb-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                        <i data-lucide="info" class="w-3.5 h-3.5"></i> Info Rekening Tujuan
+                    </p>
+                    <div class="flex justify-between items-center mb-2 pb-2 border-b border-dashed border-slate-200">
+                        <span class="text-xs text-slate-500 font-medium">Bank</span>
+                        <strong class="text-xs text-slate-900 font-bold">${sysPayment.bank_name || '-'}</strong>
+                    </div>
+                    <div class="flex justify-between items-center mb-2 pb-2 border-b border-dashed border-slate-200">
+                        <span class="text-xs text-slate-500 font-medium">No. Rekening</span>
+                        <strong class="text-sm font-mono text-emerald-600 font-bold select-all">${sysPayment.bank_norek || '-'}</strong>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500 font-medium">Atas Nama</span>
+                        <strong class="text-xs text-slate-900 font-bold">${sysPayment.bank_owner || '-'}</strong>
+                    </div>
+                </div>
+                `;
+            }
+
+            if(html === '') {
+                html = `<div class="text-center p-6 bg-white border border-dashed border-slate-300 rounded-xl">
+                    <p class="text-sm color-rose-500 font-bold">Admin belum mengaktifkan metode pembayaran apapun.</p>
+                </div>`;
+            }
+
+            container.innerHTML = html;
+            
+            setTimeout(() => {
+                const radios = document.querySelectorAll('input[name="payment_method"]');
+                const manualBox = document.getElementById('manual-info-box');
+                radios.forEach(r => {
+                    r.addEventListener('change', (e) => {
+                        if(manualBox) {
+                            if(e.target.getAttribute('data-type') === 'manual') {
+                                manualBox.style.display = 'block';
+                            } else {
+                                manualBox.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }, 100);
         }
+
+        async function applyCoupon() {
+            const codeInput = document.getElementById('coupon-code').value.trim();
+            const msgEl = document.getElementById('coupon-msg'); const btn = document.getElementById('btn-apply-coupon');
+            if(!codeInput) { showToast('Masukkan kode promo', 'warning'); return; }
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin w-4 h-4"></i>'; btn.disabled = true; lucide.createIcons();
+
+            try {
+                const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
+                const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'validate_coupon', code: codeInput, harga: basePrice, id_produk: productId }) });
+                const r = await res.json();
+                msgEl.classList.remove('hidden');
+                if(r.status === 'success') {
+                    appliedCouponCode = r.code; discountAmount = r.discount;
+                    msgEl.innerText = `${r.message} (-Rp ${discountAmount.toLocaleString('id-ID')})`; 
+                    msgEl.className = 'hidden text-xs font-bold mt-2 text-emerald-500'; msgEl.classList.remove('hidden');
+                    document.getElementById('coupon-code').disabled = true; btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>'; btn.classList.replace('bg-slate-800', 'bg-emerald-500'); calculateTotalDisplay();
+                } else {
+                    appliedCouponCode = ""; discountAmount = 0; msgEl.innerText = r.message; 
+                    msgEl.className = 'hidden text-xs font-bold mt-2 text-rose-500'; msgEl.classList.remove('hidden');
+                    btn.innerHTML = 'Pakai'; btn.disabled = false; calculateTotalDisplay();
+                }
+                lucide.createIcons();
+            } catch(e) { msgEl.innerText = 'Gagal cek kupon'; msgEl.className = 'hidden text-xs font-bold mt-2 text-rose-500'; msgEl.classList.remove('hidden'); btn.innerHTML = 'Pakai'; btn.disabled = false; }
+        }
+
+        function calculateTotalDisplay() {
+            const checkbox = document.getElementById('bump-checkbox'); const box = document.getElementById('bump-box');
+            let currentTotal = basePrice - discountAmount; if(currentTotal < 0) currentTotal = 0; 
+            if (isBumpAvailable && checkbox.checked) { currentTotal += activeBumpPrice; box.classList.add('bump-checked'); } else { box.classList.remove('bump-checked'); }
+            
+            if (discountAmount > 0) {
+                const originalTotal = (basePrice + (isBumpAvailable && checkbox.checked ? activeBumpPrice : 0)).toLocaleString('id-ID');
+                document.getElementById('display-total-top').innerHTML = `<span class="text-sm text-slate-300 line-through mr-2 font-medium tracking-normal">Rp ${originalTotal}</span>Rp ${currentTotal.toLocaleString('id-ID')}`;
+            } else { document.getElementById('display-total-top').innerText = 'Rp ' + currentTotal.toLocaleString('id-ID'); }
+
+            if (currentTotal > 0) { document.getElementById('payment-method-container').classList.remove('hidden'); } else { document.getElementById('payment-method-container').classList.add('hidden'); }
+        }
+
+        function toggleBumpCheckbox() { if (!isBumpAvailable) return; const checkbox = document.getElementById('bump-checkbox'); checkbox.checked = !checkbox.checked; calculateTotalDisplay(); }
+
+        function showFormInstant(p) {
+            const initLoader = document.getElementById('global-init-loader');
+            if (initLoader) { initLoader.style.opacity = '0'; setTimeout(() => { initLoader.classList.add('hidden'); }, 500); }
+
+            document.getElementById('main-card').classList.remove('hidden');
+            document.getElementById('coupon-section').classList.remove('hidden');
+            setTimeout(() => { document.getElementById('main-card').classList.add('show'); }, 100);
+
+            document.getElementById('display-title').innerText = p.nama || p.title; 
+            document.getElementById('prod-id').value = p.id; document.getElementById('prod-title').value = p.nama || p.title; document.getElementById('prod-price').value = p.harga;
+            basePrice = Number(p.harga) || 0;
+
+            document.getElementById('display-img').src = p.gambar || 'https://ik.imagekit.io/maihfdgfn5/download.png';
+            
+            if (p.bump_status === 'Active') {
+                isBumpAvailable = true; activeBumpPrice = Number(p.bump_price) || 0;
+                document.getElementById('bump-container').classList.remove('hidden'); document.getElementById('bump-title-display').innerText = p.bump_title || 'Penawaran Spesial'; document.getElementById('bump-desc-display').innerText = p.bump_desc || 'Ambil penawaran terbatas ini!'; document.getElementById('bump-price-display').innerText = activeBumpPrice.toLocaleString('id-ID');
+            } else { isBumpAvailable = false; activeBumpPrice = 0; document.getElementById('bump-checkbox').checked = false; document.getElementById('bump-container').classList.add('hidden'); }
+            calculateTotalDisplay(); lucide.createIcons();
+        }
+
+        async function loadProduct() {
+            if(!productId) { window.location.href = '/'; return; }
+            const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const forceRefresh = urlParams.get('refresh');
+
+            if (!forceRefresh) {
+                const cachedData = localStorage.getItem('melimpah_product_' + productId);
+                if (cachedData) { try { const r = JSON.parse(cachedData); showFormInstant(r.data); sysPayment = r.payment; applyPaymentMethods(); isFormVisible = true; } catch(e){} }
+            }
+
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null); if(!targetUrl) return;
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'get_product', id: productId, aff_id: affId }) });
+                const r = await res.json();
+                if(r.status === 'success') {
+                    sysPayment = r.payment; 
+                    if(r.aff_name && r.aff_name !== "") { document.getElementById('affiliate-id-display').innerText = r.aff_name; document.getElementById('affiliate-badge').classList.remove('hidden'); }
+                    showFormInstant(r.data); applyPaymentMethods(); localStorage.setItem('melimpah_product_' + productId, JSON.stringify(r));
+                } else { if(!isFormVisible) { showToast(r.message, 'error'); setTimeout(() => window.location.href = '/', 1500); } }
+            } catch (e) { if(!isFormVisible) showToast('Gagal memuat produk.', 'error'); }
+        }
+
+        document.getElementById('form-checkout').onsubmit = async (e) => {
+            e.preventDefault();
+            const processingOverlay = document.getElementById('processing-overlay'); const processingText = document.getElementById('processing-text');
+            processingText.innerText = 'Membuka Jalur Pembayaran...'; processingOverlay.classList.remove('hidden'); processingOverlay.classList.add('flex');
+            
+            const bumpChecked = isBumpAvailable ? document.getElementById('bump-checkbox').checked : false;
+
+            if(typeof fbq === 'function') {
+                let finalPriceVal = basePrice - discountAmount; if (finalPriceVal < 0) finalPriceVal = 0; if (bumpChecked) finalPriceVal += activeBumpPrice;
+                fbq('track', 'InitiateCheckout', { content_name: document.getElementById('prod-title').value, content_ids: [document.getElementById('prod-id').value], value: finalPriceVal, currency: 'IDR' });
+            }
+
+            const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
+            const paymentTypeSelected = checkedRadio ? checkedRadio.getAttribute('data-type') : 'duitku';
+            const paymentChannelSelected = checkedRadio ? checkedRadio.value : '';
+
+            const pData = { action: 'create_order', nama: document.getElementById('cust-name').value, email: document.getElementById('cust-email').value, whatsapp: document.getElementById('cust-wa').value, id_produk: document.getElementById('prod-id').value, nama_produk: document.getElementById('prod-title').value, harga: document.getElementById('prod-price').value, take_bump: bumpChecked, kupon: appliedCouponCode, affiliate: localStorage.getItem('melimpah_affiliate') || "-", metode_pembayaran: paymentTypeSelected, payment_channel: paymentChannelSelected };
+
+            try {
+                const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(pData) });
+                const r = await res.json();
+
+                if(r.status === 'success') {
+                    if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
+
+                    if(r.payment_url) {
+                        setTimeout(() => { window.location.href = r.payment_url; }, 800); 
+                    } else {
+                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                        
+                        document.getElementById('main-card').classList.remove('show');
+                        setTimeout(() => {
+                            document.getElementById('main-card').classList.add('hidden'); 
+                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
+                        }, 300);
+
+                        if (Number(r.tagihan) > 0) {
+                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                            document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
+                            const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
+                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
+                        } else {
+                            document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
+                            const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
+                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
+                        }
+
+                        if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
+                        showToast('Pesanan berhasil diproses!', 'success'); lucide.createIcons();
+                    }
+                } else { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }
+            } catch (err) { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast('Gagal memproses pesanan.', 'error'); }
+        };
+
+        window.onload = () => { lucide.createIcons(); loadProduct(); };
     </script>
 </body>
 </html>

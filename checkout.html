@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Checkout - SheetFlare</title>
+    <title>Selesaikan Pembayaran - SheetFlare</title>
 
     <link rel="preconnect" href="https://script.google.com">
     <link rel="dns-prefetch" href="https://script.google.com">
@@ -54,21 +54,17 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        /* Hide Number Input Arrows */
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
-        /* Animations */
         .fade-in-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
         .fade-in-up.show { opacity: 1; transform: translateY(0); }
         .loader-ring { width: 4rem; height: 4rem; border: 4px solid #d1fae5; border-top-color: #10b981; border-radius: 50%; }
 
-        /* Toast Notification */
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;}
         .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); pointer-events: auto;}
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background-color: #10b981; } .toast.error { background-color: #ef4444; } .toast.warning { background-color: #f59e0b; }
 
-        /* Custom Radio Button for Payment Methods */
         .pay-card input[type="radio"] { display: none; }
         .pay-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: white; border: 1px solid #cbd5e1; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s ease; position: relative; height: 5.5rem; text-align: center; }
         .pay-card label:hover { border-color: #94a3b8; background-color: #f8fafc; }
@@ -78,7 +74,6 @@
         .pay-logo img { max-height: 1.5rem; max-width: 3.75rem; object-fit: contain; filter: grayscale(100%); opacity: 0.6; transition: all 0.2s ease; }
         .pay-card input[type="radio"]:checked + label .pay-logo img { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
 
-        /* Order Bump Custom Styling */
         .bump-box { border: 2px dashed #cbd5e1; transition: all 0.3s; }
         .bump-box.bump-checked { border-color: #10b981; border-style: solid; background-color: #ecfdf5; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1); }
     </style>
@@ -113,7 +108,6 @@
     <main class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative flex flex-col">
         
         <div id="main-card" class="hidden fade-in-up flex-1 flex flex-col">
-            
             <header class="px-4 py-4 z-40 sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 flex items-center">
                 <button onclick="history.back()" class="mr-4 text-slate-500 hover:text-slate-900 transition-colors">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
@@ -213,14 +207,19 @@
             </div>
         </div>
 
-        <div id="success-state" class="hidden fade-in-up flex-1 flex flex-col items-center justify-center p-6 bg-white text-center">
-            <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-6">
-                <i data-lucide="check-circle" class="w-10 h-10"></i>
-            </div>
-            <h2 id="success-title" class="text-2xl font-black text-slate-900 tracking-tight mb-2">Akses Terbuka!</h2>
-            <p id="success-desc" class="text-slate-500 text-sm mb-8 leading-relaxed max-w-xs">Pesanan Anda berhasil diproses. Silakan cek WhatsApp atau Email Anda untuk info lebih lanjut.</p>
+        <div id="success-state" class="hidden fade-in-up flex-1 flex flex-col p-6 bg-white text-center">
             
-            <div id="new-user-info" class="hidden w-full max-w-sm bg-slate-50 border border-slate-200 rounded-xl p-4 mb-8 text-left flex gap-4">
+            <header class="py-2 z-40 mb-4 flex items-center">
+                <button onclick="window.location.reload()" class="mr-4 text-slate-500 hover:text-slate-900 transition-colors">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <h2 id="success-title" class="flex-1 truncate font-bold text-lg text-slate-900 text-left">Instruksi Pembayaran</h2>
+            </header>
+
+            <div id="success-desc" class="w-full flex-1">
+                </div>
+            
+            <div id="new-user-info" class="hidden w-full max-w-sm mx-auto bg-slate-50 border border-slate-200 rounded-xl p-4 mb-8 text-left flex gap-4">
                 <div class="text-emerald-500 shrink-0 mt-1"><i data-lucide="key" class="w-6 h-6"></i></div>
                 <div>
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Akun Member Dibuat</p>
@@ -228,8 +227,8 @@
                 </div>
             </div>
             
-            <a href="#" id="wa-btn" target="_blank" class="w-full max-w-sm bg-[#25D366] hover:bg-[#16a34a] text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-[#25D366]/30 flex items-center justify-center gap-2 transition-colors">
-                <i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin
+            <a href="#" id="wa-btn" target="_blank" class="w-full max-w-sm mx-auto mt-auto bg-[#25D366] hover:bg-[#16a34a] text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-[#25D366]/30 flex items-center justify-center gap-2 transition-colors">
+                <i data-lucide="help-circle" class="w-5 h-5"></i> Lihat Panduan
             </a>
         </div>
 
@@ -258,7 +257,6 @@
 
         let basePrice = 0; let activeBumpPrice = 0; let isBumpAvailable = false; let appliedCouponCode = ""; let discountAmount = 0;
 
-        // DATABASE PAYMENT GATEWAYS CHANNELS
         const paymentChannels = {
             duitku: [
                 { category: 'Virtual Account (Otomatis)', channels: [
@@ -318,7 +316,6 @@
             ]
         };
 
-        // RENDER PAYMENT METHOD
         function applyPaymentMethods() {
             const container = document.getElementById('dynamic-payment-methods');
             container.innerHTML = ''; 
@@ -331,7 +328,6 @@
             let html = '';
             let isFirstRendered = false; 
 
-            // Render Gateway Otomatis
             if (autoGateway !== 'none' && paymentChannels[autoGateway]) {
                 paymentChannels[autoGateway].forEach(cat => {
                     html += `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 mt-4 flex items-center gap-2">${cat.category}<div class="flex-1 h-px bg-slate-200"></div></div><div class="grid grid-cols-2 gap-3 mb-4">`;
@@ -353,7 +349,6 @@
                 });
             }
 
-            // Render Manual Transfer
             if (manualActive) {
                 const isChecked = !isFirstRendered ? 'checked' : '';
                 if(!isFirstRendered) isFirstRendered = true;
@@ -528,45 +523,86 @@
 
                 if(r.status === 'success') {
                     if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
-                    
-                    // Matikan Loader & Sembunyikan Form Checkout
-                    processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
-                    document.getElementById('main-card').classList.remove('show');
-                    setTimeout(() => {
-                        document.getElementById('main-card').classList.add('hidden'); 
-                        const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
-                    }, 300);
 
-                    // 🔥 PERBAIKAN: JIKA ADA LINK XENDIT/TRIPAY (TIDAK AUTO REDIRECT) 🔥
                     if(r.payment_url) {
-                        document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                        document.getElementById('success-desc').innerHTML = `Tagihan Anda berhasil dibuat. Silakan klik tombol di bawah ini untuk melihat <b>Nomor Rekening / Kode QRIS</b> pembayaran.`;
                         
-                        const waBtn = document.getElementById('wa-btn');
-                        waBtn.href = r.payment_url; // Link diarahkan ke Xendit
-                        waBtn.innerHTML = `<i data-lucide="external-link" class="w-5 h-5"></i> Lihat Instruksi Pembayaran`;
-                        waBtn.className = "w-full max-w-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-colors";
-                    } 
-                    // JIKA MANUAL TRANSFER BANK
-                    else if (Number(r.tagihan) > 0) {
-                        document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                        document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
-                        const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
-                        document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
-                    } 
-                    // JIKA GRATIS (Rp 0)
-                    else {
-                        document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
-                        const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
-                        document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
+                        // 🔥 STOP REDIRECT & GANTI JADI TAMPILAN WHITE-LABEL 🔥
+                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                        
+                        document.getElementById('main-card').classList.remove('show');
+                        setTimeout(() => {
+                            document.getElementById('main-card').classList.add('hidden'); 
+                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
+                        }, 300);
+
+                        if (r.pay_code && r.pay_code !== "") {
+                            // JIKA ADA NOMOR VA (FULL WHITE-LABEL)
+                            document.getElementById('success-title').innerText = "Instruksi Pembayaran";
+                            document.getElementById('success-desc').innerHTML = `
+                                <div class="flex flex-col items-center mb-6 py-2 bg-rose-50 rounded-xl border border-rose-100">
+                                    <span class="text-xs text-center text-rose-600 font-bold">Selesaikan pembayaran sebelum batas waktu</span>
+                                </div>
+                                <div class="text-left w-full mb-4">
+                                    <p class="text-sm text-slate-500 font-bold mb-2">Kode Pembayaran / No. VA</p>
+                                    <div class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center justify-between rounded-2xl bg-slate-50 group">
+                                        <div class="font-black text-left text-lg tracking-widest text-slate-800 select-all">${r.pay_code}</div>
+                                        <button type="button" onclick="navigator.clipboard.writeText('${r.pay_code}'); showToast('Kode disalin!');" class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all cursor-pointer z-10 relative">Salin</button>
+                                    </div>
+                                </div>
+                                <div class="text-left w-full mb-6">
+                                    <p class="text-sm text-slate-500 font-bold mb-2 mt-4">Total Tagihan</p>
+                                    <div class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center justify-between rounded-2xl bg-slate-50 group">
+                                        <strong class="text-2xl font-black text-slate-900 select-all">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</strong>
+                                        <button type="button" onclick="navigator.clipboard.writeText('${r.tagihan}'); showToast('Nominal disalin!');" class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all cursor-pointer z-10 relative">Salin</button>
+                                    </div>
+                                    <p class="text-xs text-rose-500 mt-2 font-bold mb-6">*Selesaikan pembayaran persis hingga digit terakhir.</p>
+                                </div>
+                            `;
+                            const waBtn = document.getElementById('wa-btn');
+                            waBtn.href = r.payment_url; 
+                            waBtn.target = "_blank";
+                            waBtn.innerHTML = `<i data-lucide="help-circle" class="w-5 h-5"></i> Lihat Panduan Pembayaran Asli`;
+                            waBtn.className = "w-full max-w-sm mx-auto mt-auto border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 rounded-xl py-3.5 font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors";
+                        } else {
+                            // JIKA QRIS ATAU E-WALLET (SEMI WHITE-LABEL, HARUS BUKA LINK)
+                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                            document.getElementById('success-desc').innerHTML = `<p class="mb-4">Tagihan Anda sebesar <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> telah dibuat.</p><p>Silakan klik tombol di bawah ini untuk membuka halaman QRIS / E-Wallet dan selesaikan pembayaran.</p>`;
+                            const waBtn = document.getElementById('wa-btn');
+                            waBtn.href = r.payment_url;
+                            waBtn.target = "_blank";
+                            waBtn.innerHTML = `<i data-lucide="external-link" class="w-5 h-5"></i> Buka Halaman Pembayaran`;
+                            waBtn.className = "w-full max-w-sm mx-auto mt-auto bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-colors";
+                        }
+
+                    } else {
+                        // JIKA MANUAL TRANSFER / GRATIS (TanPA PAYMENT GATEWAY)
+                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                        
+                        document.getElementById('main-card').classList.remove('show');
+                        setTimeout(() => {
+                            document.getElementById('main-card').classList.add('hidden'); 
+                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
+                        }, 300);
+
+                        if (Number(r.tagihan) > 0) {
+                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                            document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
+                            const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
+                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
+                        } else {
+                            document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
+                            const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
+                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
+                        }
                     }
 
                     if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
                     showToast('Pesanan berhasil diproses!', 'success'); lucide.createIcons();
-                    
+
                 } else { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }
             } catch (err) { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast('Gagal memproses pesanan.', 'error'); }
         };
+
         window.onload = () => { lucide.createIcons(); loadProduct(); };
     </script>
 </body>

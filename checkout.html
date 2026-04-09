@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Selesaikan Pembayaran - SheetFlare</title>
+    <title>Checkout - SheetFlare</title>
 
     <link rel="preconnect" href="https://script.google.com">
     <link rel="dns-prefetch" href="https://script.google.com">
@@ -207,8 +207,113 @@
             </div>
         </div>
 
+        <div id="instruction-state" class="hidden fade-in-up flex-1 flex flex-col bg-white">
+            <header class="px-4 py-4 z-40 sticky top-0 bg-white border-b border-slate-100 flex items-center">
+                <button onclick="window.location.reload()" class="mr-4 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <h2 class="flex-1 truncate font-bold text-lg text-slate-900">Instruksi Pembayaran</h2>
+            </header>
+
+            <div class="flex-1 overflow-y-auto pb-8 bg-slate-50/30">
+                <div class="p-5">
+                    <div class="flex flex-col items-center justify-center mb-6 py-3 bg-rose-50 rounded-xl border border-rose-100">
+                        <span class="text-xs text-center text-rose-600 font-bold">Selesaikan pembayaran sebelum batas waktu</span>
+                    </div>
+
+                    <div class="text-left w-full mb-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <img id="inst-logo" src="" class="h-5 w-auto object-contain max-w-[3rem]" alt="Bank Logo">
+                            <p id="inst-bank-name" class="text-sm text-slate-600 font-bold">Kode Pembayaran / No. VA</p>
+                        </div>
+                        <div class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center justify-between rounded-xl bg-white shadow-sm group">
+                            <div id="inst-va" class="font-black text-left text-xl tracking-widest text-slate-800 select-all">...</div>
+                            <button type="button" onclick="copyText(document.getElementById('inst-va').innerText)" class="font-bold text-xs py-1.5 px-4 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer">Salin</button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-left w-full mb-6">
+                        <p class="text-sm text-slate-600 font-bold mb-2">Total Tagihan</p>
+                        <div class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center justify-between rounded-xl bg-white shadow-sm group">
+                            <strong id="inst-amount" class="text-2xl font-black text-slate-900 select-all">...</strong>
+                            <span id="inst-amount-raw" class="hidden"></span>
+                            <button type="button" onclick="copyText(document.getElementById('inst-amount-raw').innerText)" class="font-bold text-xs py-1.5 px-4 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer">Salin</button>
+                        </div>
+                        <p class="text-xs text-rose-500 mt-2 font-bold mb-6">*Selesaikan pembayaran persis hingga digit terakhir.</p>
+                    </div>
+
+                    <a id="inst-guide-btn" href="#" target="_blank" class="w-full border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 rounded-xl py-3.5 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-colors mb-6">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i> Lihat Panduan Pembayaran Asli
+                    </a>
+                </div>
+
+                <div class="h-2 w-full bg-slate-100"></div>
+
+                <div class="p-5">
+                    <h3 class="font-black text-slate-900 mb-4 flex items-center gap-2 text-sm uppercase tracking-widest">
+                        <i data-lucide="book-open" class="w-4 h-4 text-emerald-500"></i> Panduan Manual
+                    </h3>
+                    <div class="border border-slate-200 overflow-hidden rounded-xl bg-white shadow-sm">
+                        <div class="border-b border-slate-100 last:border-0">
+                            <button type="button" onclick="toggleAccordion('acc-1', 'icon-1')" class="w-full py-4 px-4 font-bold text-sm text-slate-700 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                Mobile Banking / M-Banking
+                                <i id="icon-1" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                            </button>
+                            <div id="acc-1" class="hidden px-4 pb-4 text-sm text-slate-600 leading-relaxed bg-slate-50">
+                                <ol class="list-decimal pl-4 space-y-2 mt-2 font-medium">
+                                    <li>Buka aplikasi Mobile Banking Anda dan login.</li>
+                                    <li>Pilih menu <strong>Transfer / Pembayaran</strong>.</li>
+                                    <li>Pilih menu <strong>Virtual Account (VA)</strong> lalu salin dan masukkan nomor VA di atas.</li>
+                                    <li>Cek detail tagihan. Pastikan nominal sesuai dengan Total Tagihan di atas.</li>
+                                    <li>Masukkan PIN Anda dan selesaikan pembayaran.</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="border-b border-slate-100 last:border-0">
+                            <button type="button" onclick="toggleAccordion('acc-2', 'icon-2')" class="w-full py-4 px-4 font-bold text-sm text-slate-700 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                ATM
+                                <i id="icon-2" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                            </button>
+                            <div id="acc-2" class="hidden px-4 pb-4 text-sm text-slate-600 leading-relaxed bg-slate-50">
+                                <ol class="list-decimal pl-4 space-y-2 mt-2 font-medium">
+                                    <li>Masukkan kartu ATM dan PIN Anda.</li>
+                                    <li>Pilih <strong>Menu Lainnya</strong> > <strong>Transfer / Pembayaran</strong>.</li>
+                                    <li>Pilih <strong>Virtual Account Billing</strong>.</li>
+                                    <li>Masukkan nomor VA di atas lalu tekan Benar.</li>
+                                    <li>Konfirmasi detail dan selesaikan pembayaran.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-2 w-full bg-slate-100"></div>
+
+                <div class="p-5">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
+                        <div class="flex justify-between items-center text-sm mb-3">
+                            <span class="text-slate-500 font-medium">No. Invoice</span>
+                            <span id="inst-inv" class="font-black text-slate-800 font-mono">...</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm mb-4">
+                            <span class="text-slate-500 font-medium">Status Pembayaran</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px] uppercase tracking-widest border border-amber-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Menunggu
+                            </span>
+                        </div>
+                        <button type="button" onclick="window.location.reload()" class="w-full py-3 px-4 bg-white border-2 border-slate-800 hover:bg-slate-50 transition-colors text-slate-800 font-black uppercase tracking-widest text-xs rounded-xl flex items-center justify-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Cek Status Pembayaran
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="window.location.reload()" class="text-rose-500 hover:text-rose-700 text-center mt-4 px-4 py-2 block w-full font-bold text-xs uppercase tracking-widest transition-colors underline underline-offset-4">
+                        Batalkan Pesanan
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="success-state" class="hidden fade-in-up flex-1 flex flex-col p-6 bg-white text-center">
-            
             <header class="py-2 z-40 mb-4 flex items-center">
                 <button onclick="window.location.reload()" class="mr-4 text-slate-500 hover:text-slate-900 transition-colors">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
@@ -240,6 +345,28 @@
             const ref = urlParams.get('ref');
             if(ref) { localStorage.setItem('melimpah_affiliate', ref); }
         })();
+
+        // FUNGSI COPY TEXT
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Berhasil disalin!', 'success');
+            }).catch(err => {
+                showToast('Gagal menyalin teks.', 'error');
+            });
+        }
+
+        // FUNGSI ACCORDION
+        function toggleAccordion(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
@@ -341,7 +468,7 @@
                             <label for="${ch.id}">
                                 <div class="check-icon"><i data-lucide="check" class="w-3 h-3"></i></div>
                                 <div class="pay-logo mb-2 flex items-center justify-center h-6"><img src="${ch.logo}" alt="${ch.name}"></div>
-                                <span class="text-[10px] font-bold text-slate-500 leading-tight">${ch.name}</span>
+                                <span class="text-[10px] font-bold text-slate-500 leading-tight pay-name">${ch.name}</span>
                             </label>
                         </div>`;
                     });
@@ -362,7 +489,7 @@
                         <div class="mb-2 flex items-center justify-center h-6 text-slate-400">
                             <i data-lucide="landmark" class="w-6 h-6"></i>
                         </div>
-                        <span class="text-[10px] font-bold text-slate-500 leading-tight">Transfer ${sysPayment.bank_name || 'Bank'}</span>
+                        <span class="text-[10px] font-bold text-slate-500 leading-tight pay-name">Transfer ${sysPayment.bank_name || 'Bank'}</span>
                     </label>
                 </div></div>`;
 
@@ -478,7 +605,7 @@
             if(!productId) { window.location.href = '/'; return; }
             const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
             
-            const urlParams = new URLSearchParams(window.location.search);
+            const urlParams = newSearchParams(window.location.search);
             const forceRefresh = urlParams.get('refresh');
 
             if (!forceRefresh) {
@@ -524,80 +651,74 @@
                 if(r.status === 'success') {
                     if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
 
-                    if(r.payment_url) {
-                        
-                        // 🔥 STOP REDIRECT & GANTI JADI TAMPILAN WHITE-LABEL 🔥
-                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
-                        
-                        document.getElementById('main-card').classList.remove('show');
-                        setTimeout(() => {
-                            document.getElementById('main-card').classList.add('hidden'); 
-                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
-                        }, 300);
+                    // HIDE CHECKOUT FORM
+                    processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                    document.getElementById('main-card').classList.remove('show');
+                    
+                    setTimeout(() => {
+                        document.getElementById('main-card').classList.add('hidden'); 
 
+                        // 🔥 JIKA MENDAPATKAN NOMOR VA DARI TRIPAY/XENDIT (FULL WHITE-LABEL) 🔥
                         if (r.pay_code && r.pay_code !== "") {
-                            // JIKA ADA NOMOR VA (FULL WHITE-LABEL)
-                            document.getElementById('success-title').innerText = "Instruksi Pembayaran";
-                            document.getElementById('success-desc').innerHTML = `
-                                <div class="flex flex-col items-center mb-6 py-2 bg-rose-50 rounded-xl border border-rose-100">
-                                    <span class="text-xs text-center text-rose-600 font-bold">Selesaikan pembayaran sebelum batas waktu</span>
-                                </div>
-                                <div class="text-left w-full mb-4">
-                                    <p class="text-sm text-slate-500 font-bold mb-2">Kode Pembayaran / No. VA</p>
-                                    <div class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center justify-between rounded-2xl bg-slate-50 group">
-                                        <div class="font-black text-left text-lg tracking-widest text-slate-800 select-all">${r.pay_code}</div>
-                                        <button type="button" onclick="navigator.clipboard.writeText('${r.pay_code}'); showToast('Kode disalin!');" class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all cursor-pointer z-10 relative">Salin</button>
-                                    </div>
-                                </div>
-                                <div class="text-left w-full mb-6">
-                                    <p class="text-sm text-slate-500 font-bold mb-2 mt-4">Total Tagihan</p>
-                                    <div class="w-full border border-slate-200 hover:border-emerald-500 transition-colors px-4 py-4 flex items-center justify-between rounded-2xl bg-slate-50 group">
-                                        <strong class="text-2xl font-black text-slate-900 select-all">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</strong>
-                                        <button type="button" onclick="navigator.clipboard.writeText('${r.tagihan}'); showToast('Nominal disalin!');" class="font-bold text-xs py-1.5 px-3 rounded-lg text-emerald-600 border border-emerald-200 bg-emerald-50 group-hover:bg-emerald-500 group-hover:text-white transition-all cursor-pointer z-10 relative">Salin</button>
-                                    </div>
-                                    <p class="text-xs text-rose-500 mt-2 font-bold mb-6">*Selesaikan pembayaran persis hingga digit terakhir.</p>
-                                </div>
-                            `;
-                            const waBtn = document.getElementById('wa-btn');
-                            waBtn.href = r.payment_url; 
-                            waBtn.target = "_blank";
-                            waBtn.innerHTML = `<i data-lucide="help-circle" class="w-5 h-5"></i> Lihat Panduan Pembayaran Asli`;
-                            waBtn.className = "w-full max-w-sm mx-auto mt-auto border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 rounded-xl py-3.5 font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors";
-                        } else {
-                            // JIKA QRIS ATAU E-WALLET (SEMI WHITE-LABEL, HARUS BUKA LINK)
-                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                            document.getElementById('success-desc').innerHTML = `<p class="mb-4">Tagihan Anda sebesar <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> telah dibuat.</p><p>Silakan klik tombol di bawah ini untuk membuka halaman QRIS / E-Wallet dan selesaikan pembayaran.</p>`;
-                            const waBtn = document.getElementById('wa-btn');
-                            waBtn.href = r.payment_url;
-                            waBtn.target = "_blank";
-                            waBtn.innerHTML = `<i data-lucide="external-link" class="w-5 h-5"></i> Buka Halaman Pembayaran`;
-                            waBtn.className = "w-full max-w-sm mx-auto mt-auto bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-colors";
+                            
+                            // Tarik Logo & Nama Bank dari form yang tadi dipilih
+                            const checkedLabel = document.querySelector('input[name="payment_method"]:checked + label');
+                            let bankLogoSrc = ""; let bankNameText = "Bank Transfer";
+                            if (checkedLabel) {
+                                const imgEl = checkedLabel.querySelector('img');
+                                if (imgEl) bankLogoSrc = imgEl.src;
+                                const nameEl = checkedLabel.querySelector('.pay-name');
+                                if (nameEl) bankNameText = nameEl.innerText;
+                            }
+
+                            // Inject data ke UI AmalSholeh
+                            document.getElementById('inst-va').innerText = r.pay_code;
+                            document.getElementById('inst-amount').innerText = 'Rp ' + Number(r.tagihan).toLocaleString('id-ID');
+                            document.getElementById('inst-amount-raw').innerText = r.tagihan;
+                            if (bankLogoSrc !== "") { document.getElementById('inst-logo').src = bankLogoSrc; } else { document.getElementById('inst-logo').style.display = 'none'; }
+                            document.getElementById('inst-bank-name').innerText = bankNameText;
+                            document.getElementById('inst-inv').innerText = r.invoice;
+                            document.getElementById('inst-guide-btn').href = r.payment_url || "#";
+
+                            // Generate batas waktu palsu (24 jam dari sekarang)
+                            let expDate = new Date();
+                            expDate.setHours(expDate.getHours() + 24);
+                            const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                            document.getElementById('inst-exp').innerText = expDate.toLocaleDateString('id-ID', options).replace(',', ' -') + ' WIB';
+
+                            // Tampilkan UI Instruksi
+                            const instState = document.getElementById('instruction-state');
+                            instState.classList.remove('hidden');
+                            setTimeout(() => instState.classList.add('show'), 50);
+
+                        } 
+                        // JIKA FALLBACK (QRIS / E-WALLET / DUITKU / MANUAL)
+                        else {
+                            const succ = document.getElementById('success-state');
+                            succ.classList.remove('hidden');
+
+                            if (r.payment_url) {
+                                document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                                document.getElementById('success-desc').innerHTML = `<p class="mb-4">Tagihan Anda sebesar <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> telah dibuat.</p><p>Silakan klik tombol di bawah ini untuk membuka halaman QRIS / E-Wallet dan selesaikan pembayaran.</p>`;
+                                const waBtn = document.getElementById('wa-btn');
+                                waBtn.href = r.payment_url;
+                                waBtn.target = "_blank";
+                                waBtn.innerHTML = `<i data-lucide="external-link" class="w-5 h-5"></i> Buka Halaman Pembayaran`;
+                                waBtn.className = "w-full max-w-sm mx-auto mt-auto bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-colors";
+                            } else if (Number(r.tagihan) > 0) {
+                                document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                                document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
+                                const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
+                                document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
+                            } else {
+                                document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
+                                const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
+                                document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
+                            }
+                            if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
+                            setTimeout(() => succ.classList.add('show'), 50);
                         }
-
-                    } else {
-                        // JIKA MANUAL TRANSFER / GRATIS (TanPA PAYMENT GATEWAY)
-                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
-                        
-                        document.getElementById('main-card').classList.remove('show');
-                        setTimeout(() => {
-                            document.getElementById('main-card').classList.add('hidden'); 
-                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
-                        }, 300);
-
-                        if (Number(r.tagihan) > 0) {
-                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                            document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
-                            const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
-                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
-                        } else {
-                            document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
-                            const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
-                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
-                        }
-                    }
-
-                    if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
-                    showToast('Pesanan berhasil diproses!', 'success'); lucide.createIcons();
+                    }, 300);
 
                 } else { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }
             } catch (err) { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast('Gagal memproses pesanan.', 'error'); }

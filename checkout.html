@@ -605,7 +605,7 @@
             if(!productId) { window.location.href = '/'; return; }
             const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
             
-            const urlParams = newSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(window.location.search);
             const forceRefresh = urlParams.get('refresh');
 
             if (!forceRefresh) {

@@ -528,36 +528,45 @@
 
                 if(r.status === 'success') {
                     if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
+                    
+                    // Matikan Loader & Sembunyikan Form Checkout
+                    processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                    document.getElementById('main-card').classList.remove('show');
+                    setTimeout(() => {
+                        document.getElementById('main-card').classList.add('hidden'); 
+                        const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
+                    }, 300);
 
+                    // 🔥 PERBAIKAN: JIKA ADA LINK XENDIT/TRIPAY (TIDAK AUTO REDIRECT) 🔥
                     if(r.payment_url) {
-                        setTimeout(() => { window.location.href = r.payment_url; }, 800); 
-                    } else {
-                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                        document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                        document.getElementById('success-desc').innerHTML = `Tagihan Anda berhasil dibuat. Silakan klik tombol di bawah ini untuk melihat <b>Nomor Rekening / Kode QRIS</b> pembayaran.`;
                         
-                        document.getElementById('main-card').classList.remove('show');
-                        setTimeout(() => {
-                            document.getElementById('main-card').classList.add('hidden'); 
-                            const succ = document.getElementById('success-state'); succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('show'), 50);
-                        }, 300);
-
-                        if (Number(r.tagihan) > 0) {
-                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                            document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
-                            const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
-                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
-                        } else {
-                            document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
-                            const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
-                            document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
-                        }
-
-                        if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
-                        showToast('Pesanan berhasil diproses!', 'success'); lucide.createIcons();
+                        const waBtn = document.getElementById('wa-btn');
+                        waBtn.href = r.payment_url; // Link diarahkan ke Xendit
+                        waBtn.innerHTML = `<i data-lucide="external-link" class="w-5 h-5"></i> Lihat Instruksi Pembayaran`;
+                        waBtn.className = "w-full max-w-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-colors";
+                    } 
+                    // JIKA MANUAL TRANSFER BANK
+                    else if (Number(r.tagihan) > 0) {
+                        document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                        document.getElementById('success-desc').innerHTML = `Silakan transfer tepat <b class="text-slate-900">Rp ${Number(r.tagihan).toLocaleString('id-ID')}</b> ke:<br><br><div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank ${r.bank_name || sysPayment.bank_name}</p><p class="text-xl font-mono font-black text-emerald-500 mb-1 select-all">${r.bank_norek || sysPayment.bank_norek}</p><p class="text-xs font-bold text-slate-700">a.n ${r.bank_owner || sysPayment.bank_owner}</p></div><br><span class="text-[10px] font-bold text-rose-500">*Wajib transfer hingga 3 digit terakhir agar otomatis Lunas.</span>`;
+                        const waText = `Halo Admin! 👋\n\nSaya mau konfirmasi transfer manual:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nBerikut bukti transfer saya:`;
+                        document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi Transfer`;
+                    } 
+                    // JIKA GRATIS (Rp 0)
+                    else {
+                        document.getElementById('success-title').innerText = "Akses Terbuka! 🎉"; document.getElementById('success-desc').innerText = "Silakan cek WhatsApp/Email Anda untuk info login.";
+                        const waText = `Halo Admin! 👋\n\nSaya mengklaim produk:\n📌 *Invoice:* #${r.invoice}\n👤 *Nama:* ${pData.nama}\n\nTerima kasih!`;
+                        document.getElementById('wa-btn').href = `https://wa.me/${sysPayment.wa_admin}?text=${encodeURIComponent(waText)}`; document.getElementById('wa-btn').innerHTML = `<i data-lucide="message-circle" class="w-5 h-5"></i> Hubungi Admin`;
                     }
+
+                    if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
+                    showToast('Pesanan berhasil diproses!', 'success'); lucide.createIcons();
+                    
                 } else { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }
             } catch (err) { processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast('Gagal memproses pesanan.', 'error'); }
         };
-
         window.onload = () => { lucide.createIcons(); loadProduct(); };
     </script>
 </body>

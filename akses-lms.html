@@ -99,7 +99,7 @@
         .video-title { font-size: 1.5rem; font-weight: 900; color: var(--slate-900); letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem; }
         @media (min-width: 768px) { .video-title { font-size: 1.875rem; } }
 
-        .desc-box { background: rgba(236, 253, 245, 0.5); /* emerald-50/50 */ border: 1px solid var(--emerald-100); border-radius: 1rem; padding: 1.5rem; }
+        .desc-box { background: rgba(236, 253, 245, 0.5); border: 1px solid var(--emerald-100); border-radius: 1rem; padding: 1.5rem; }
         @media (min-width: 768px) { .desc-box { padding: 2rem; } }
         .desc-box-title { font-size: 0.75rem; font-weight: 900; color: var(--emerald-800); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
         .desc-box-title svg { width: 1rem; height: 1rem; }
@@ -155,26 +155,21 @@
     </header>
 
     <main class="main-wrapper hidden" id="main-ui">
-        
         <div class="content-area custom-scroll">
-            
             <div class="video-wrapper-bg">
                 <div class="video-container">
                     <iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe>
                 </div>
             </div>
-
             <div class="info-container">
                 <div class="info-header">
                     <div>
                         <h2 id="lms-title" class="video-title">Pilih video di playlist</h2>
                     </div>
                 </div>
-
                 <div class="desc-box">
                     <h3 class="desc-box-title"><i data-lucide="book-open"></i> Deskripsi Kelas</h3>
-                    <div id="lms-desc" class="desc-content">
-                        </div>
+                    <div id="lms-desc" class="desc-content"></div>
                 </div>
             </div>
         </div>
@@ -184,11 +179,8 @@
                 <h3 class="playlist-title">Kurikulum</h3>
                 <span id="video-count" class="playlist-count">0 Video</span>
             </div>
-            
-            <div id="video-playlist" class="playlist-scroll custom-scroll">
-                </div>
+            <div id="video-playlist" class="playlist-scroll custom-scroll"></div>
         </aside>
-
     </main>
 
     <script>
@@ -247,10 +239,12 @@
         async function verifyAndLoad() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
+            
             const userEmail = sessionStorage.getItem('user_email');
-            const isAdmin = sessionStorage.getItem('adm_v10') === 'true'; // Identifikasi Sesi Admin
+            
+            // 🔥 SOLUSI TAB BARU: Kita cek localStorage juga karena sessionStorage tidak tembus Tab Baru 🔥
+            const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
 
-            // 🔥 PENGAMAN BARU MENGGUNAKAN TOAST 🔥
             if (!userEmail && !isAdmin) {
                 document.getElementById('loader').style.display = 'none';
                 showToast("Sesi login berakhir. Silakan login kembali.", "error");
@@ -268,8 +262,6 @@
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
                 
-                // 🔥 VIP BYPASS UNTUK ADMIN 🔥
-                // Jika Admin yg buka, kita kirim parameter rahasia agar bisa preview tanpa harus beli produk
                 const payloadEmail = (isAdmin && !userEmail) ? "" : userEmail;
 
                 const res = await fetch(targetUrl, {
@@ -312,7 +304,6 @@
         function renderPlaylist() {
             const container = document.getElementById('video-playlist');
             let html = '';
-            
             globalVideos.forEach((vid, index) => {
                 html += `
                 <button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item">
@@ -334,14 +325,9 @@
             document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`;
             document.getElementById('lms-title').innerText = vid.title;
 
-            // Reset all active classes
             document.querySelectorAll('.module-item').forEach(btn => btn.classList.remove('active'));
-            
-            // Set active class to clicked button
             const activeBtn = document.getElementById(`vid-btn-${index}`);
-            if(activeBtn) {
-                activeBtn.classList.add('active');
-            }
+            if(activeBtn) { activeBtn.classList.add('active'); }
             
             lucide.createIcons();
         }

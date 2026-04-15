@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <script>
-        // ⚡ PENGAMAN 0 DETIK: Tendang penyusup sebelum layar terbuka!
-        if(!sessionStorage.getItem('user_email')) {
-            alert("Sesi login Anda tidak ditemukan. Silakan login kembali.");
-            window.location.replace('/login');
-        }
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruang Belajar - SheetFlare</title>
@@ -28,6 +20,7 @@
         :root {
             --emerald-50: #ecfdf5; --emerald-100: #d1fae5; --emerald-500: #10b981; --emerald-600: #059669; --emerald-700: #047857; --emerald-800: #065f46;
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-800: #1e293b; --slate-900: #0f172a;
+            --rose-500: #f43f5e; --amber-500: #f59e0b;
         }
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-50); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; height: 100vh; width: 100vw; }
@@ -45,6 +38,15 @@
         .animate-spin { animation: spin 1s linear infinite; }
         @keyframes pulse { 50% { opacity: 0.5; } }
         .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* === TOAST NOTIFICATION === */
+        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background-color: var(--emerald-500); }
+        .toast.error { background-color: var(--rose-500); }
+        .toast.warning { background-color: var(--amber-500); }
+        .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
         /* === LOADER OVERLAY === */
         #loader { position: fixed; inset: 0; background: white; z-index: 999; display: flex; flex-direction: column; items-center; justify-content: center; align-items: center; color: var(--emerald-600); transition: opacity 0.3s; }
@@ -132,6 +134,8 @@
 </head>
 <body>
 
+    <div id="toast-container"></div>
+
     <div id="loader">
         <i data-lucide="loader" class="animate-spin"></i>
         <p class="animate-pulse">Memverifikasi Akses...</p>
@@ -188,6 +192,21 @@
     </main>
 
     <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if(!container) return alert(message);
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'check-circle';
+            if (type === 'error') icon = 'x-circle';
+            if (type === 'warning') icon = 'alert-triangle';
+            toast.innerHTML = `<i data-lucide="${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            if(typeof lucide !== 'undefined') lucide.createIcons({ root: toast });
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
         (function() {
             window.waAdminGlobal = '';
             function applyBrandingSapuJagat(data) {
@@ -229,18 +248,33 @@
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
             const userEmail = sessionStorage.getItem('user_email');
+            const isAdmin = sessionStorage.getItem('adm_v10') === 'true'; // Identifikasi Sesi Admin
+
+            // 🔥 PENGAMAN BARU MENGGUNAKAN TOAST 🔥
+            if (!userEmail && !isAdmin) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Sesi login berakhir. Silakan login kembali.", "error");
+                setTimeout(() => { window.location.replace('/login'); }, 2000);
+                return;
+            }
 
             if (!productId) {
-                alert("Link materi tidak valid (ID Produk hilang).");
-                window.location.replace('/dashboard');
+                document.getElementById('loader').style.display = 'none';
+                showToast("Link materi tidak valid (ID Produk hilang).", "error");
+                setTimeout(() => { window.location.replace('/dashboard'); }, 2000);
                 return;
             }
 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                
+                // 🔥 VIP BYPASS UNTUK ADMIN 🔥
+                // Jika Admin yg buka, kita kirim parameter rahasia agar bisa preview tanpa harus beli produk
+                const payloadEmail = (isAdmin && !userEmail) ? "" : userEmail;
+
                 const res = await fetch(targetUrl, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'get_lms_materi', email: userEmail, product_id: productId })
+                    body: JSON.stringify({ action: 'get_lms_materi', email: payloadEmail, product_id: productId })
                 });
                 
                 const r = await res.json();
@@ -264,12 +298,14 @@
                     document.getElementById('main-ui').classList.remove('hidden');
                     lucide.createIcons();
                 } else {
-                    alert("AKSES DITOLAK: " + r.message);
-                    window.location.replace('/dashboard');
+                    document.getElementById('loader').style.display = 'none';
+                    showToast("AKSES DITOLAK: " + r.message, "error");
+                    setTimeout(() => window.location.replace('/dashboard'), 2500);
                 }
             } catch (e) {
-                alert("Terjadi kesalahan sistem saat memverifikasi data.");
-                window.location.replace('/dashboard');
+                document.getElementById('loader').style.display = 'none';
+                showToast("Terjadi kesalahan sistem saat memverifikasi data.", "error");
+                setTimeout(() => window.location.replace('/dashboard'), 2500);
             }
         }
 

@@ -303,15 +303,15 @@
                 
                 // Tambahkan icon yg hilang sementara saat render instan
                 const titleEl = document.getElementById('head-title');
-                if(!titleEl.innerHTML.includes('lucide')) {
+                if(titleEl && !titleEl.innerHTML.includes('lucide')) {
                     titleEl.innerHTML = '<i data-lucide="shopping-cart" style="display:inline-block; vertical-align:middle; margin-right:5px;"></i> Checkout';
                 }
                 const backBtn = document.querySelector('.btn-back');
-                if(!backBtn.innerHTML.includes('lucide')) {
+                if(backBtn && !backBtn.innerHTML.includes('lucide')) {
                     backBtn.innerHTML = '<i data-lucide="arrow-left" style="display:inline-block; vertical-align:middle; margin-right:5px;"></i> Batal / Kembali';
                 }
                 const subBtn = document.querySelector('.btn-submit');
-                if(!subBtn.innerHTML.includes('lucide')) {
+                if(subBtn && !subBtn.innerHTML.includes('lucide')) {
                     subBtn.innerHTML = '<i data-lucide="lock" style="display:inline-block; vertical-align:middle; margin-right:5px;"></i> Lanjutkan Pembayaran';
                 }
                 lucide.createIcons();
@@ -540,7 +540,7 @@
                             const succ = document.getElementById('success-state'); 
                             
                             // JIKA TRANSFER MANUAL (ADA TAGIHAN & INFO BANK)
-                            if (r.tagihan > 0 && r.bank_name) {
+                            if (r.tagihan > 0) {
                                 document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
                                 document.getElementById('success-title').style.color = "#f59e0b";
                                 const sIcon = document.querySelector('.success-icon');
@@ -551,15 +551,24 @@
                                 
                                 // Tampilkan kotak rincian
                                 document.getElementById('manual-transfer-info').classList.remove('hidden');
-                                document.getElementById('succ-bank-name').innerText = r.bank_name;
-                                document.getElementById('succ-bank-norek').innerText = r.bank_norek;
-                                document.getElementById('succ-bank-owner').innerText = r.bank_owner;
-                                document.getElementById('succ-tagihan').innerText = "Rp " + r.tagihan.toLocaleString('id-ID');
-                                document.getElementById('succ-tagihan').setAttribute('data-val', r.tagihan); // Data asli u/ copy
                                 
-                                // Set WA Button
-                                let adminWa = sysPayment.wa_admin || "";
+                                // Gunakan fallback sysPayment jika r.bank_name kosong
+                                const bName = r.bank_name || sysPayment.bank_name || "Bank";
+                                const bNorek = r.bank_norek || sysPayment.bank_norek || "-";
+                                const bOwner = r.bank_owner || sysPayment.bank_owner || "-";
+
+                                document.getElementById('succ-bank-name').innerText = bName;
+                                document.getElementById('succ-bank-norek').innerText = bNorek;
+                                document.getElementById('succ-bank-owner').innerText = bOwner;
+                                document.getElementById('succ-tagihan').innerText = "Rp " + r.tagihan.toLocaleString('id-ID');
+                                document.getElementById('succ-tagihan').setAttribute('data-val', r.tagihan); 
+                                
+                                // 🔥 PERBAIKAN FORMAT WA DI SINI 🔥
+                                let adminWa = String(sysPayment.wa_admin || "");
+                                adminWa = adminWa.replace(/\D/g, ''); // bersihkan karakter aneh
                                 if (adminWa.startsWith('0')) adminWa = '62' + adminWa.substring(1);
+                                else if (adminWa.startsWith('8')) adminWa = '62' + adminWa;
+
                                 let waText = encodeURIComponent(`Halo Admin, saya sudah melakukan transfer untuk pesanan:\n\n*Invoice:* #${r.invoice}\n*Produk:* ${pData.nama_produk}\n*Nominal:* Rp ${r.tagihan.toLocaleString('id-ID')}\n\nBerikut saya lampirkan bukti transfernya.`);
                                 const waBtn = document.getElementById('wa-btn');
                                 waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
@@ -578,7 +587,7 @@
                             
                             succ.classList.remove('hidden'); 
                             setTimeout(() => succ.classList.add('show'), 50);
-                            lucide.createIcons();
+                            tryCreateIcons();
                         }, 300);
 
                         showToast('Pesanan berhasil diproses!', 'success'); 

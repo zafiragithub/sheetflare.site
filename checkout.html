@@ -381,21 +381,12 @@
             if (manualActive) {
                 const isChecked = !isFirstRendered ? 'checked' : ''; if(!isFirstRendered) isFirstRendered = true;
                 html += `<div class="cat-title">Transfer Manual (Cek Admin)</div><div class="pay-grid"><div class="pay-card"><input type="radio" name="payment_method" id="pay-manual" data-type="manual" value="manual" ${isChecked}><label for="pay-manual"><div class="check-icon">✓</div><div class="pay-logo" style="color:#94a3b8;">🏦</div><span class="pay-name">Transfer ${sysPayment.bank_name || 'Bank'}</span></label></div></div>`;
-                
-                html += `<div id="manual-info-box" style="display: ${isChecked ? 'block' : 'none'}; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem;"><p style="font-size: 0.625rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">Info Rekening Tujuan</p><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;"><span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Bank</span><strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_name || '-'}</strong></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;"><span style="font-size: 0.75rem; color: #475569; font-weight: 600;">No. Rekening</span><strong style="font-size: 1rem; font-family: monospace; color: #10b981; user-select: all;">${sysPayment.bank_norek || '-'}</strong></div><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Atas Nama</span><strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_owner || '-'}</strong></div></div>`;
             }
 
             if(html === '') { html = `<div style="text-align: center; padding: 2rem; background: white; border: 1px dashed #cbd5e1; border-radius: 1rem;"><p style="font-size: 0.875rem; color: #ef4444; font-weight: 700;">Admin belum mengaktifkan metode pembayaran.</p></div>`; }
             container.innerHTML = html;
             
             setTimeout(() => {
-                const radios = document.querySelectorAll('input[name="payment_method"]');
-                const manualBox = document.getElementById('manual-info-box');
-                radios.forEach(r => {
-                    r.addEventListener('change', (e) => {
-                        if(manualBox) { manualBox.style.display = (e.target.getAttribute('data-type') === 'manual') ? 'block' : 'none'; }
-                    });
-                });
                 tryCreateIcons();
             }, 50);
         }
@@ -511,6 +502,9 @@
             const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
             const paymentTypeSelected = checkedRadio ? checkedRadio.getAttribute('data-type') : 'duitku';
             const paymentChannelSelected = checkedRadio ? checkedRadio.value : '';
+            
+            // 🔥 MENGAMBIL NAMA METODE PEMBAYARAN YANG DIPILIH 🔥
+            const paymentNameSelected = checkedRadio ? checkedRadio.nextElementSibling.querySelector('.pay-name').innerText : 'Payment Gateway';
 
             const pData = { action: 'create_order', nama: document.getElementById('cust-name').value, email: document.getElementById('cust-email').value, whatsapp: document.getElementById('cust-wa').value, id_produk: document.getElementById('prod-id').value, nama_produk: document.getElementById('prod-title').value, harga: document.getElementById('prod-price').value, take_bump: bumpChecked, kupon: appliedCouponCode, affiliate: localStorage.getItem('melimpah_affiliate') || "-", metode_pembayaran: paymentTypeSelected, payment_channel: paymentChannelSelected };
 
@@ -552,7 +546,7 @@
                             waBtn.href = "/dashboard";
                             waBtn.innerHTML = '<i data-lucide="layout-dashboard" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Buka Dashboard Member';
                         } 
-                        // JIKA TRANSFER MANUAL (Tidak ada URL API dari gateway)
+                        // JIKA TRANSFER MANUAL
                         else if (paymentTypeSelected === 'manual' || !r.payment_url) {
                             document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
                             document.getElementById('success-title').style.color = "#f59e0b";
@@ -589,23 +583,25 @@
                             document.getElementById('manual-transfer-info').classList.remove('hidden');
                             document.getElementById('succ-note-manual').classList.add('hidden');
                             
-                            document.getElementById('succ-bank-name').innerText = "Metode Pembayaran";
+                            // 🔥 FIX METODE PEMBAYARAN 🔥
+                            document.getElementById('succ-bank-name').innerText = paymentNameSelected; 
                             
                             // Cek apakah API mengembalikan Kode VA atau Gambar QRIS secara langsung (Direct API mode)
                             if (r.pay_code) {
                                 document.getElementById('succ-bank-norek').innerText = r.pay_code;
-                                document.getElementById('succ-bank-owner').innerText = "Virtual Account Otomatis";
+                                // 🔥 FIX ATAS NAMA (Gunakan Nama Pembeli) 🔥
+                                document.getElementById('succ-bank-owner').innerText = pData.nama; 
                                 document.getElementById('btn-copy-rek').style.display = 'block';
                             } else if (r.qr_url) {
                                 document.getElementById('succ-rek-label').innerText = "Kode QRIS";
                                 document.getElementById('succ-bank-norek').innerHTML = `<img src="${r.qr_url}" style="max-width: 150px; border-radius:8px;">`;
-                                document.getElementById('succ-bank-owner').innerText = "QRIS Otomatis";
+                                document.getElementById('succ-bank-owner').innerText = pData.nama; 
                                 document.getElementById('btn-copy-rek').style.display = 'none';
                             } else {
                                 // Default Hosted Page
                                 document.getElementById('succ-rek-label').innerText = "Link Pembayaran";
                                 document.getElementById('succ-bank-norek').innerHTML = `<a href="${r.payment_url}" target="_blank" style="background-color: #10b981; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; display: inline-block;">BAYAR SEKARANG &rarr;</a>`;
-                                document.getElementById('succ-bank-owner').innerText = "Otomatis Diverifikasi";
+                                document.getElementById('succ-bank-owner').innerText = pData.nama; 
                                 document.getElementById('btn-copy-rek').style.display = 'none';
                             }
 

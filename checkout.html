@@ -20,7 +20,6 @@
                 if(cachedSet) { let d = JSON.parse(cachedSet).data; if(d.site_name) document.title = `Checkout - ${d.site_name}`; }
             }catch(e){}
             
-            // Background fetch setting
             if(typeof window.SCRIPT_URL !== 'undefined' || typeof SCRIPT_URL !== 'undefined') {
                 const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
                 fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) }).then(res => res.json()).then(r => {
@@ -216,7 +215,7 @@
                                 </div>
                                 <div>
                                     <h4 id="bump-title-display" class="bump-title">...</h4>
-                                    <p id="bump-desc-display" class="bump-desc">...</p>
+                                    <p id="bump-desc-display" class="bump-desc">...<br><span style="font-size: 0.65rem; color: #10b981; font-weight: 700;">*Beri centang jika berminat</span></p>
                                     <span class="bump-price-badge">+ Rp <span id="bump-price-display">0</span></span>
                                 </div>
                             </div>
@@ -248,7 +247,7 @@
                 <p style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; text-align: center;">Info Pembayaran:</p>
                 
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px dashed #cbd5e1;">
-                    <span style="font-size: 0.875rem; color: #475569;">Metode</span>
+                    <span style="font-size: 0.875rem; color: #475569;">Bank</span>
                     <strong id="succ-bank-name" style="font-size: 0.875rem; color: #1e293b;">...</strong>
                 </div>
                 
@@ -272,7 +271,7 @@
                         <button type="button" id="btn-copy-nominal" onclick="copyToClipboard('succ-tagihan', true)" style="padding: 0.375rem; color: #64748b; background: #e2e8f0; border-radius: 0.375rem; cursor: pointer; transition: background 0.3s;"><i data-lucide="copy" style="width: 14px; height: 14px;"></i></button>
                     </div>
                 </div>
-                <p id="succ-note-manual" class="hidden" style="font-size: 0.7rem; color: #ef4444; text-align: center; margin-top: 1rem; font-weight: 700;">* Transfer TEPAT hingga 3 digit terakhir agar mudah diverifikasi.</p>
+                <p id="succ-note-manual" class="hidden" style="font-size: 0.7rem; color: #ef4444; text-align: center; margin-top: 1rem; font-weight: 700;">* Transfer TEPAT hingga 3 digit terakhir agar otomatis terverifikasi.</p>
             </div>
 
             <div id="new-user-info" class="new-user-box hidden">
@@ -449,7 +448,7 @@
             
             if (p.bump_status === 'Active') {
                 isBumpAvailable = true; activeBumpPrice = Number(p.bump_price) || 0;
-                document.getElementById('bump-container').classList.remove('hidden'); document.getElementById('bump-title-display').innerText = p.bump_title || 'Penawaran Spesial'; document.getElementById('bump-desc-display').innerText = p.bump_desc || 'Ambil penawaran terbatas ini!'; document.getElementById('bump-price-display').innerText = activeBumpPrice.toLocaleString('id-ID');
+                document.getElementById('bump-container').classList.remove('hidden'); document.getElementById('bump-title-display').innerText = p.bump_title || 'Penawaran Spesial'; document.getElementById('bump-desc-display').innerHTML = (p.bump_desc || 'Ambil penawaran terbatas ini!') + '<br><span style="font-size: 0.65rem; color: #10b981; font-weight: 700;">*Beri centang jika berminat</span>'; document.getElementById('bump-price-display').innerText = activeBumpPrice.toLocaleString('id-ID');
             } else { isBumpAvailable = false; activeBumpPrice = 0; document.getElementById('bump-checkbox').checked = false; document.getElementById('bump-container').classList.add('hidden'); }
             calculateTotalDisplay(); tryCreateIcons();
         }
@@ -457,7 +456,7 @@
         async function loadProduct() {
             if(!productId) { window.location.href = '/'; return; }
             const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
-            const forceRefresh = new URLSearchParams(window.location.search).get('refresh');
+            const forceRefresh = newSearchParams = new URLSearchParams(window.location.search).get('refresh');
 
             if (!forceRefresh) {
                 const cachedData = localStorage.getItem('melimpah_product_' + productId);
@@ -502,7 +501,6 @@
             const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
             const paymentTypeSelected = checkedRadio ? checkedRadio.getAttribute('data-type') : 'duitku';
             const paymentChannelSelected = checkedRadio ? checkedRadio.value : '';
-            
             const paymentNameSelected = checkedRadio ? checkedRadio.nextElementSibling.querySelector('.pay-name').innerText : 'Payment Gateway';
 
             const pData = { action: 'create_order', nama: document.getElementById('cust-name').value, email: document.getElementById('cust-email').value, whatsapp: document.getElementById('cust-wa').value, id_produk: document.getElementById('prod-id').value, nama_produk: document.getElementById('prod-title').value, harga: document.getElementById('prod-price').value, take_bump: bumpChecked, kupon: appliedCouponCode, affiliate: localStorage.getItem('melimpah_affiliate') || "-", metode_pembayaran: paymentTypeSelected, payment_channel: paymentChannelSelected };
@@ -521,92 +519,57 @@
                     if (r.tagihan <= 0) {
                         processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
                         document.getElementById('main-card').classList.remove('show');
-                        
                         setTimeout(() => {
                             document.getElementById('main-card').classList.add('hidden'); 
                             const succ = document.getElementById('success-state'); 
-                            
                             document.getElementById('success-title').innerText = "Akses Terbuka!";
                             document.getElementById('success-title').style.color = "#10b981";
                             const sIcon = document.querySelector('.success-icon');
                             sIcon.style.backgroundColor = "#ecfdf5"; sIcon.style.color = "#10b981"; sIcon.innerHTML = '<i data-lucide="check-circle"></i>';
                             document.getElementById('success-desc').innerText = "Pesanan Anda berhasil diproses secara gratis.";
                             document.getElementById('manual-transfer-info').classList.add('hidden');
-                            
                             const waBtn = document.getElementById('wa-btn');
                             waBtn.href = "/dashboard";
                             waBtn.innerHTML = '<i data-lucide="layout-dashboard" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Buka Dashboard Member';
-
                             if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
-                            
                             succ.classList.remove('hidden'); 
                             setTimeout(() => succ.classList.add('show'), 50);
                             tryCreateIcons();
                         }, 300);
                         showToast('Pesanan berhasil diproses!', 'success'); 
                     } 
-                    // JIKA MANUAL ATAU TRIPAY DIRECT
-                    else if (paymentTypeSelected === 'manual' || (paymentTypeSelected === 'tripay' && (r.pay_code || r.qr_url))) {
+                    // JIKA MANUAL
+                    else if (paymentTypeSelected === 'manual') {
                         processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
                         document.getElementById('main-card').classList.remove('show');
-                        
                         setTimeout(() => {
                             document.getElementById('main-card').classList.add('hidden'); 
                             const succ = document.getElementById('success-state'); 
-                            
                             document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
                             document.getElementById('success-title').style.color = "#f59e0b";
                             const sIcon = document.querySelector('.success-icon');
                             sIcon.style.backgroundColor = "#fffbeb"; sIcon.style.color = "#f59e0b"; sIcon.innerHTML = '<i data-lucide="clock"></i>';
                             document.getElementById('success-desc').innerText = "Selesaikan pembayaran Anda menggunakan detail di bawah ini.";
-                            
                             document.getElementById('manual-transfer-info').classList.remove('hidden');
-                            document.getElementById('succ-note-manual').classList.add('hidden');
+                            document.getElementById('succ-note-manual').classList.remove('hidden');
                             
-                            document.getElementById('succ-bank-name').innerText = paymentNameSelected; 
+                            const bName = r.bank_name || sysPayment.bank_name || "Bank Lokal";
+                            const bNorek = r.bank_norek || sysPayment.bank_norek || "-";
+                            const bOwner = r.bank_owner || sysPayment.bank_owner || "-";
+                            document.getElementById('succ-bank-name').innerText = bName;
+                            document.getElementById('succ-bank-norek').innerText = bNorek;
+                            document.getElementById('succ-bank-owner').innerText = bOwner;
+                            document.getElementById('btn-copy-rek').style.display = 'block';
                             
                             const waBtn = document.getElementById('wa-btn');
                             let adminWa = String(sysPayment.wa_admin || "");
                             adminWa = adminWa.replace(/\D/g, ''); 
                             if (adminWa.startsWith('0')) adminWa = '62' + adminWa.substring(1);
                             else if (adminWa.startsWith('8')) adminWa = '62' + adminWa;
-
-                            // JIKA MANUAL
-                            if (paymentTypeSelected === 'manual') {
-                                document.getElementById('succ-note-manual').classList.remove('hidden');
-                                const bName = r.bank_name || sysPayment.bank_name || "Bank Lokal";
-                                const bNorek = r.bank_norek || sysPayment.bank_norek || "-";
-                                const bOwner = r.bank_owner || sysPayment.bank_owner || "-";
-
-                                document.getElementById('succ-bank-name').innerText = bName;
-                                document.getElementById('succ-bank-norek').innerText = bNorek;
-                                document.getElementById('succ-bank-owner').innerText = bOwner;
-                                document.getElementById('btn-copy-rek').style.display = 'block';
-                                
-                                let waText = encodeURIComponent(`Halo Admin, saya sudah melakukan transfer untuk pesanan:\n\n*Invoice:* #${r.invoice}\n*Produk:* ${pData.nama_produk}\n*Nominal:* Rp ${r.tagihan.toLocaleString('id-ID')}\n\nBerikut saya lampirkan bukti transfernya.`);
-                                waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
-                                waBtn.innerHTML = '<i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Konfirmasi Transfer';
-                                waBtn.style.backgroundColor = "#25D366";
-                            } 
-                            // JIKA TRIPAY DIRECT (VA/QRIS)
-                            else {
-                                if (r.pay_code && !r.qr_url) {
-                                    document.getElementById('succ-bank-norek').innerText = r.pay_code;
-                                    document.getElementById('succ-bank-owner').innerText = pData.nama; 
-                                    document.getElementById('btn-copy-rek').style.display = 'block';
-                                } else if (r.qr_url) {
-                                    document.getElementById('succ-rek-label').innerText = "Kode QRIS";
-                                    document.getElementById('succ-bank-norek').innerHTML = `<img src="${r.qr_url}" style="max-width: 150px; border-radius:8px;">`;
-                                    document.getElementById('succ-bank-owner').innerText = pData.nama; 
-                                    document.getElementById('btn-copy-rek').style.display = 'none';
-                                }
-
-                                let waText = encodeURIComponent(`Halo Admin, saya mengalami kendala saat melakukan pembayaran otomatis untuk Invoice #${r.invoice} (${pData.nama_produk}). Mohon bantuannya.`);
-                                waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
-                                waBtn.innerHTML = '<i data-lucide="help-circle" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Bantuan Admin';
-                                waBtn.style.backgroundColor = "#64748b";
-                                waBtn.style.boxShadow = "none";
-                            }
+                            let waText = encodeURIComponent(`Halo Admin, saya sudah melakukan transfer untuk pesanan:\n\n*Invoice:* #${r.invoice}\n*Produk:* ${pData.nama_produk}\n*Nominal:* Rp ${r.tagihan.toLocaleString('id-ID')}\n\nBerikut saya lampirkan bukti transfernya.`);
+                            waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
+                            waBtn.innerHTML = '<i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Konfirmasi Transfer';
+                            waBtn.style.backgroundColor = "#25D366";
 
                             document.getElementById('succ-tagihan').innerText = "Rp " + r.tagihan.toLocaleString('id-ID');
                             document.getElementById('succ-tagihan').setAttribute('data-val', r.tagihan);
@@ -620,7 +583,7 @@
                         }, 300);
                         showToast('Pesanan berhasil diproses!', 'success');
                     } 
-                    // JIKA DUITKU ATAU XENDIT ATAU E-WALLET (AUTO-REDIRECT)
+                    // JIKA GATEWAY (TRIPAY / DUITKU / XENDIT)
                     else {
                         processingText.innerText = "Mengalihkan ke halaman pembayaran...";
                         setTimeout(() => { window.location.href = r.payment_url; }, 800); 

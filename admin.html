@@ -652,16 +652,20 @@
                     </div>
 
                     <div class="settings-card">
-                        <h3 class="settings-title green"><i data-lucide="message-circle"></i> WhatsApp & Notifikasi</h3>
-                        <div class="form-grid">
-                            <div class="form-group"><label class="form-label">No WA Admin</label><input type="number" data-key="wa_admin" class="form-input" placeholder="628123xxxx"></div>
-                            <div class="form-group">
-                                <label class="form-label">Pilih WA Gateway</label>
-                                <select data-key="wa_gateway" class="form-select"><option value="onesender">OneSender (Default)</option><option value="fonnte">Fonnte</option></select>
-                            </div>
-                            <div class="form-group full"><label class="form-label">API Token WhatsApp</label><input type="password" autocomplete="new-password" data-key="wa_token" class="form-input"></div>
-                        </div>
-                    </div>
+    <h3 class="settings-title green"><i data-lucide="message-circle"></i> WhatsApp & Notifikasi</h3>
+    <div class="form-grid">
+        <div class="form-group"><label class="form-label">No WA Admin</label><input type="number" data-key="wa_admin" class="form-input" placeholder="628123xxxx"></div>
+        <div class="form-group">
+            <label class="form-label">Pilih WA Gateway</label>
+            <select data-key="wa_gateway" class="form-select">
+                <option value="onesender">OneSender (Default)</option>
+                <option value="fonnte">Fonnte</option>
+                <option value="starsender">StarSender</option> 
+            </select>
+        </div>
+        <div class="form-group full"><label class="form-label">API Token WhatsApp</label><input type="password" autocomplete="new-password" data-key="wa_token" class="form-input"></div>
+    </div>
+</div>
 
                     <div class="settings-card">
                         <h3 class="settings-title blue"><i data-lucide="mail"></i> Email Gateway Server</h3>

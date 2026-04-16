@@ -245,18 +245,18 @@
             <p id="success-desc" class="success-desc">Pesanan Anda berhasil diproses.</p>
             
             <div id="manual-transfer-info" class="hidden" style="margin-bottom: 1.5rem; text-align: left; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem;">
-                <p style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; text-align: center;">Transfer ke Rekening Berikut:</p>
+                <p style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; text-align: center;">Info Pembayaran:</p>
                 
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px dashed #cbd5e1;">
-                    <span style="font-size: 0.875rem; color: #475569;">Bank</span>
+                    <span style="font-size: 0.875rem; color: #475569;">Metode</span>
                     <strong id="succ-bank-name" style="font-size: 0.875rem; color: #1e293b;">...</strong>
                 </div>
                 
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px dashed #cbd5e1;">
-                    <span style="font-size: 0.875rem; color: #475569;">No. Rekening</span>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.875rem; color: #475569;" id="succ-rek-label">No. Rekening</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;" id="succ-norek-container">
                         <strong id="succ-bank-norek" style="font-size: 1.125rem; font-family: monospace; color: #10b981;">...</strong>
-                        <button type="button" onclick="copyToClipboard('succ-bank-norek')" style="padding: 0.375rem; color: #64748b; background: #e2e8f0; border-radius: 0.375rem; cursor: pointer; transition: background 0.3s;"><i data-lucide="copy" style="width: 14px; height: 14px;"></i></button>
+                        <button type="button" id="btn-copy-rek" onclick="copyToClipboard('succ-bank-norek')" style="padding: 0.375rem; color: #64748b; background: #e2e8f0; border-radius: 0.375rem; cursor: pointer; transition: background 0.3s;"><i data-lucide="copy" style="width: 14px; height: 14px;"></i></button>
                     </div>
                 </div>
                 
@@ -266,13 +266,13 @@
                 </div>
 
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size: 0.875rem; color: #475569;">Nominal Transfer</span>
+                    <span style="font-size: 0.875rem; color: #475569;">Total Tagihan</span>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <strong id="succ-tagihan" style="font-size: 1.125rem; font-weight: 900; color: #e11d48;">...</strong>
-                        <button type="button" onclick="copyToClipboard('succ-tagihan', true)" style="padding: 0.375rem; color: #64748b; background: #e2e8f0; border-radius: 0.375rem; cursor: pointer; transition: background 0.3s;"><i data-lucide="copy" style="width: 14px; height: 14px;"></i></button>
+                        <button type="button" id="btn-copy-nominal" onclick="copyToClipboard('succ-tagihan', true)" style="padding: 0.375rem; color: #64748b; background: #e2e8f0; border-radius: 0.375rem; cursor: pointer; transition: background 0.3s;"><i data-lucide="copy" style="width: 14px; height: 14px;"></i></button>
                     </div>
                 </div>
-                <p style="font-size: 0.7rem; color: #ef4444; text-align: center; margin-top: 1rem; font-weight: 700;">* Transfer TEPAT hingga 3 digit terakhir agar mudah diverifikasi.</p>
+                <p id="succ-note-manual" class="hidden" style="font-size: 0.7rem; color: #ef4444; text-align: center; margin-top: 1rem; font-weight: 700;">* Transfer TEPAT hingga 3 digit terakhir agar mudah diverifikasi.</p>
             </div>
 
             <div id="new-user-info" class="new-user-box hidden">
@@ -296,12 +296,9 @@
             if(ref) { localStorage.setItem('melimpah_affiliate', ref); }
         })();
 
-        // Fungsi Tembus Icon (Aman dari Icon Nyangkut)
         function tryCreateIcons() {
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
-                
-                // Tambahkan icon yg hilang sementara saat render instan
                 const titleEl = document.getElementById('head-title');
                 if(titleEl && !titleEl.innerHTML.includes('lucide')) {
                     titleEl.innerHTML = '<i data-lucide="shopping-cart" style="display:inline-block; vertical-align:middle; margin-right:5px;"></i> Checkout';
@@ -326,7 +323,6 @@
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 200); }, 3000);
         }
 
-        // FUNGSI COPY TO CLIPBOARD BARU
         function copyToClipboard(elementId, isNumber = false) {
             let textToCopy = "";
             const el = document.getElementById(elementId);
@@ -385,7 +381,7 @@
             if (manualActive) {
                 const isChecked = !isFirstRendered ? 'checked' : ''; if(!isFirstRendered) isFirstRendered = true;
                 html += `<div class="cat-title">Transfer Manual (Cek Admin)</div><div class="pay-grid"><div class="pay-card"><input type="radio" name="payment_method" id="pay-manual" data-type="manual" value="manual" ${isChecked}><label for="pay-manual"><div class="check-icon">✓</div><div class="pay-logo" style="color:#94a3b8;">🏦</div><span class="pay-name">Transfer ${sysPayment.bank_name || 'Bank'}</span></label></div></div>`;
-                // Info Box disembunyikan awalnya
+                
                 html += `<div id="manual-info-box" style="display: ${isChecked ? 'block' : 'none'}; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem;"><p style="font-size: 0.625rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">Info Rekening Tujuan</p><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;"><span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Bank</span><strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_name || '-'}</strong></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;"><span style="font-size: 0.75rem; color: #475569; font-weight: 600;">No. Rekening</span><strong style="font-size: 1rem; font-family: monospace; color: #10b981; user-select: all;">${sysPayment.bank_norek || '-'}</strong></div><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size: 0.75rem; color: #475569; font-weight: 600;">Atas Nama</span><strong style="font-size: 0.75rem; color: #1e293b;">${sysPayment.bank_owner || '-'}</strong></div></div>`;
             }
 
@@ -528,70 +524,110 @@
                     if(typeof fbq === 'function') { fbq('track', 'Purchase', { content_name: pData.nama_produk, content_ids: [pData.id_produk], value: r.tagihan, currency: 'IDR' }); }
                     fetch('/api/payment-success', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pData.email, whatsapp: pData.whatsapp, harga: r.tagihan }) }).catch(err => console.log('CAPI fail'));
 
-                    if(r.payment_url) {
-                        setTimeout(() => { window.location.href = r.payment_url; }, 800); 
-                    } else {
-                        // KETIKA TRANSFER MANUAL ATAU GRATIS (Rp 0)
-                        processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
-                        document.getElementById('main-card').classList.remove('show');
+                    // HENTIKAN REDIRECT OTOMATIS! KITA TAMPILKAN DI HALAMAN INI
+                    processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); window.scrollTo({top: 0, behavior: 'smooth'}); 
+                    document.getElementById('main-card').classList.remove('show');
+                    
+                    setTimeout(() => {
+                        document.getElementById('main-card').classList.add('hidden'); 
+                        const succ = document.getElementById('success-state'); 
                         
-                        setTimeout(() => {
-                            document.getElementById('main-card').classList.add('hidden'); 
-                            const succ = document.getElementById('success-state'); 
+                        const waBtn = document.getElementById('wa-btn');
+                        const sIcon = document.querySelector('.success-icon');
+                        
+                        // Bersihkan nomor WA admin
+                        let adminWa = String(sysPayment.wa_admin || "");
+                        adminWa = adminWa.replace(/\D/g, ''); 
+                        if (adminWa.startsWith('0')) adminWa = '62' + adminWa.substring(1);
+                        else if (adminWa.startsWith('8')) adminWa = '62' + adminWa;
+
+                        // JIKA TOTAL = 0 (GRATIS)
+                        if (r.tagihan <= 0) {
+                            document.getElementById('success-title').innerText = "Akses Terbuka!";
+                            document.getElementById('success-title').style.color = "#10b981";
+                            sIcon.style.backgroundColor = "#ecfdf5"; sIcon.style.color = "#10b981"; sIcon.innerHTML = '<i data-lucide="check-circle"></i>';
+                            document.getElementById('success-desc').innerText = "Pesanan Anda berhasil diproses secara gratis.";
+                            document.getElementById('manual-transfer-info').classList.add('hidden');
                             
-                            // JIKA TRANSFER MANUAL (ADA TAGIHAN & INFO BANK)
-                            if (r.tagihan > 0) {
-                                document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
-                                document.getElementById('success-title').style.color = "#f59e0b";
-                                const sIcon = document.querySelector('.success-icon');
-                                sIcon.style.backgroundColor = "#fffbeb";
-                                sIcon.style.color = "#f59e0b";
-                                sIcon.innerHTML = '<i data-lucide="clock"></i>';
-                                document.getElementById('success-desc').innerText = "Silakan transfer ke rekening di bawah ini sebelum batas waktu pembayaran habis.";
-                                
-                                // Tampilkan kotak rincian
-                                document.getElementById('manual-transfer-info').classList.remove('hidden');
-                                
-                                // Gunakan fallback sysPayment jika r.bank_name kosong
-                                const bName = r.bank_name || sysPayment.bank_name || "Bank";
-                                const bNorek = r.bank_norek || sysPayment.bank_norek || "-";
-                                const bOwner = r.bank_owner || sysPayment.bank_owner || "-";
+                            waBtn.href = "/dashboard";
+                            waBtn.innerHTML = '<i data-lucide="layout-dashboard" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Buka Dashboard Member';
+                        } 
+                        // JIKA TRANSFER MANUAL (Tidak ada URL API dari gateway)
+                        else if (paymentTypeSelected === 'manual' || !r.payment_url) {
+                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                            document.getElementById('success-title').style.color = "#f59e0b";
+                            sIcon.style.backgroundColor = "#fffbeb"; sIcon.style.color = "#f59e0b"; sIcon.innerHTML = '<i data-lucide="clock"></i>';
+                            document.getElementById('success-desc').innerText = "Silakan transfer ke rekening di bawah ini sebelum batas waktu habis.";
+                            
+                            document.getElementById('manual-transfer-info').classList.remove('hidden');
+                            document.getElementById('succ-note-manual').classList.remove('hidden');
+                            
+                            const bName = r.bank_name || sysPayment.bank_name || "Bank Lokal";
+                            const bNorek = r.bank_norek || sysPayment.bank_norek || "-";
+                            const bOwner = r.bank_owner || sysPayment.bank_owner || "-";
 
-                                document.getElementById('succ-bank-name').innerText = bName;
-                                document.getElementById('succ-bank-norek').innerText = bNorek;
-                                document.getElementById('succ-bank-owner').innerText = bOwner;
-                                document.getElementById('succ-tagihan').innerText = "Rp " + r.tagihan.toLocaleString('id-ID');
-                                document.getElementById('succ-tagihan').setAttribute('data-val', r.tagihan); 
-                                
-                                // 🔥 PERBAIKAN FORMAT WA DI SINI 🔥
-                                let adminWa = String(sysPayment.wa_admin || "");
-                                adminWa = adminWa.replace(/\D/g, ''); // bersihkan karakter aneh
-                                if (adminWa.startsWith('0')) adminWa = '62' + adminWa.substring(1);
-                                else if (adminWa.startsWith('8')) adminWa = '62' + adminWa;
-
-                                let waText = encodeURIComponent(`Halo Admin, saya sudah melakukan transfer untuk pesanan:\n\n*Invoice:* #${r.invoice}\n*Produk:* ${pData.nama_produk}\n*Nominal:* Rp ${r.tagihan.toLocaleString('id-ID')}\n\nBerikut saya lampirkan bukti transfernya.`);
-                                const waBtn = document.getElementById('wa-btn');
-                                waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
-                                waBtn.innerHTML = '<i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Konfirmasi Transfer';
-                            } 
-                            // JIKA PRODUK GRATIS (Rp 0)
-                            else {
-                                document.getElementById('success-title').innerText = "Akses Terbuka!";
-                                document.getElementById('success-desc').innerText = "Pesanan Anda berhasil diproses.";
-                                const waBtn = document.getElementById('wa-btn');
-                                waBtn.href = "/dashboard";
-                                waBtn.innerHTML = '<i data-lucide="layout-dashboard" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Buka Dashboard Member';
+                            document.getElementById('succ-bank-name').innerText = bName;
+                            document.getElementById('succ-bank-norek').innerText = bNorek;
+                            document.getElementById('succ-bank-owner').innerText = bOwner;
+                            document.getElementById('succ-tagihan').innerText = "Rp " + r.tagihan.toLocaleString('id-ID');
+                            document.getElementById('succ-tagihan').setAttribute('data-val', r.tagihan);
+                            
+                            document.getElementById('btn-copy-rek').style.display = 'block';
+                            document.getElementById('btn-copy-nominal').style.display = 'block';
+                            
+                            let waText = encodeURIComponent(`Halo Admin, saya sudah melakukan transfer untuk pesanan:\n\n*Invoice:* #${r.invoice}\n*Produk:* ${pData.nama_produk}\n*Nominal:* Rp ${r.tagihan.toLocaleString('id-ID')}\n\nBerikut saya lampirkan bukti transfernya.`);
+                            waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
+                            waBtn.innerHTML = '<i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Konfirmasi Transfer';
+                        }
+                        // JIKA MENGGUNAKAN GATEWAY OTOMATIS (Duitku / Tripay / Xendit)
+                        else {
+                            document.getElementById('success-title').innerText = "Menunggu Pembayaran ⏳";
+                            document.getElementById('success-title').style.color = "#f59e0b";
+                            sIcon.style.backgroundColor = "#fffbeb"; sIcon.style.color = "#f59e0b"; sIcon.innerHTML = '<i data-lucide="clock"></i>';
+                            document.getElementById('success-desc').innerText = "Pilih tombol Bayar Sekarang untuk membuka panduan / kode pembayaran otomatis.";
+                            
+                            document.getElementById('manual-transfer-info').classList.remove('hidden');
+                            document.getElementById('succ-note-manual').classList.add('hidden');
+                            
+                            document.getElementById('succ-bank-name').innerText = "Metode Pembayaran";
+                            
+                            // Cek apakah API mengembalikan Kode VA atau Gambar QRIS secara langsung (Direct API mode)
+                            if (r.pay_code) {
+                                document.getElementById('succ-bank-norek').innerText = r.pay_code;
+                                document.getElementById('succ-bank-owner').innerText = "Virtual Account Otomatis";
+                                document.getElementById('btn-copy-rek').style.display = 'block';
+                            } else if (r.qr_url) {
+                                document.getElementById('succ-rek-label').innerText = "Kode QRIS";
+                                document.getElementById('succ-bank-norek').innerHTML = `<img src="${r.qr_url}" style="max-width: 150px; border-radius:8px;">`;
+                                document.getElementById('succ-bank-owner').innerText = "QRIS Otomatis";
+                                document.getElementById('btn-copy-rek').style.display = 'none';
+                            } else {
+                                // Default Hosted Page
+                                document.getElementById('succ-rek-label').innerText = "Link Pembayaran";
+                                document.getElementById('succ-bank-norek').innerHTML = `<a href="${r.payment_url}" target="_blank" style="background-color: #10b981; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; text-decoration: none; display: inline-block;">BAYAR SEKARANG &rarr;</a>`;
+                                document.getElementById('succ-bank-owner').innerText = "Otomatis Diverifikasi";
+                                document.getElementById('btn-copy-rek').style.display = 'none';
                             }
 
-                            if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
+                            document.getElementById('succ-tagihan').innerText = "Rp " + r.tagihan.toLocaleString('id-ID');
+                            document.getElementById('succ-tagihan').setAttribute('data-val', r.tagihan);
+                            document.getElementById('btn-copy-nominal').style.display = 'block';
                             
-                            succ.classList.remove('hidden'); 
-                            setTimeout(() => succ.classList.add('show'), 50);
-                            tryCreateIcons();
-                        }, 300);
+                            let waText = encodeURIComponent(`Halo Admin, saya mengalami kendala saat melakukan pembayaran otomatis untuk Invoice #${r.invoice} (${pData.nama_produk}). Mohon bantuannya.`);
+                            waBtn.href = `https://wa.me/${adminWa}?text=${waText}`;
+                            waBtn.innerHTML = '<i data-lucide="help-circle" style="width:1rem;height:1rem;margin-right:0.5rem;display:inline-block;vertical-align:middle;"></i> Bantuan Admin';
+                            waBtn.style.backgroundColor = "#64748b";
+                            waBtn.style.boxShadow = "none";
+                        }
 
-                        showToast('Pesanan berhasil diproses!', 'success'); 
-                    }
+                        if(r.is_new_user) { document.getElementById('new-user-info').classList.remove('hidden'); document.getElementById('temp-pass').innerText = r.password; }
+                        
+                        succ.classList.remove('hidden'); 
+                        setTimeout(() => succ.classList.add('show'), 50);
+                        tryCreateIcons();
+                    }, 300);
+
+                    showToast('Pesanan berhasil diproses!', 'success'); 
                 } else { clearInterval(textAnim); processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast(r.message, 'error'); }
             } catch (err) { clearInterval(textAnim); processingOverlay.classList.add('hidden'); processingOverlay.classList.remove('flex'); showToast('Gagal memproses pesanan.', 'error'); }
         };

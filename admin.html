@@ -283,6 +283,7 @@
         .settings-title.emerald { color: var(--emerald-600); }
         .settings-title.green { color: #16a34a; }
         .settings-title.orange { color: #ea580c; }
+        .settings-title.blue { color: var(--blue-600); }
         .settings-title svg { width: 1.25rem; height: 1.25rem; }
         
         .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
@@ -663,6 +664,38 @@
                     </div>
 
                     <div class="settings-card">
+                        <h3 class="settings-title blue"><i data-lucide="mail"></i> Email Gateway Server</h3>
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label class="form-label">Pilih Provider Email</label>
+                                <select data-key="mail_provider" class="form-select font-bold" onchange="toggleEmailFields()">
+                                    <option value="google">Google Mail (Bawaan / Gratis)</option>
+                                    <option value="mailketing">Mailketing API</option>
+                                    <option value="kirimemail">Kirim.Email REST API</option>
+                                </select>
+                                <p style="font-size: 0.625rem; color: #64748b; margin-top: 0.5rem;">* Google gratis tapi limit 100 email/hari. Gunakan Mailketing/Kirim.Email untuk pengiriman tanpa batas.</p>
+                            </div>
+                            
+                            <div class="form-group"><label class="form-label">Nama Pengirim</label><input type="text" data-key="mail_sender_name" class="form-input" placeholder="Sistem SheetFlare"></div>
+                            <div class="form-group"><label class="form-label">Email Pengirim</label><input type="email" data-key="mail_sender_email" class="form-input" placeholder="no-reply@domainanda.com"></div>
+                            
+                            <div id="email-api-box" class="form-group full hidden" style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 1rem; background: var(--slate-50); margin-top: 0.5rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem; color: var(--slate-800);">Kredensial API Email</h4>
+                                <div class="form-grid">
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Username / Akun ID</label>
+                                        <input type="text" data-key="mail_username" class="form-input" placeholder="(Wajib untuk Kirim.Email)">
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">API Key / Token</label>
+                                        <input type="password" autocomplete="new-password" data-key="mail_api_key" class="form-input" placeholder="Token dari layanan email">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
                         <h3 class="settings-title orange"><i data-lucide="cpu"></i> Integrasi API Lanjutan</h3>
                         <div class="form-grid">
                             <div class="form-group"><label class="form-label">Cloudflare Zone ID</label><input type="text" data-key="cf_zone_id" class="form-input" style="font-family: monospace;"></div>
@@ -911,6 +944,18 @@
             });
         }
 
+        function toggleEmailFields() {
+            const provider = document.querySelector('select[data-key="mail_provider"]');
+            const apiBox = document.getElementById('email-api-box');
+            if(provider && apiBox) {
+                if(provider.value === 'google') {
+                    apiBox.classList.add('hidden');
+                } else {
+                    apiBox.classList.remove('hidden');
+                }
+            }
+        }
+
         const CACHE_KEY_ADMIN = 'melimpah_admin_data';
         let IK_PUB = ''; let IK_END = ''; 
         let cachedPages = []; let cachedProducts = []; let cachedLms = []; 
@@ -989,7 +1034,6 @@
                 return;
             }
             tbody.innerHTML = cachedPages.map(p => {
-                // Not mapping to Home anymore, simple listing
                 return `
                 <tr>
                     <td class="td-bold">${p[2]}</td>
@@ -1035,18 +1079,25 @@
                 tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada data komisi affiliate.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = affList.map(a => `
-            <tr>
-                <td class="td-mono">${a.id}</td>
-                <td class="td-bold">${a.name} <span class="td-sub">${a.email}</span></td>
-                <td class="td-bold" style="color: var(--emerald-600);">Rp ${Number(a.komisi).toLocaleString('id-ID')}</td>
-                <td>
-                    <div class="action-btns">
-                        <a href="https://wa.me/${a.wa}" target="_blank" class="btn-icon emerald" title="WA Member"><i data-lucide="message-circle"></i></a>
-                        <button onclick="cairkanKomisi('${a.id}', ${a.komisi})" class="btn-icon amber" style="width: auto; padding: 0.5rem 1rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase;"><i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.25rem;"></i> Cairkan</button>
-                    </div>
-                </td>
-            </tr>`).join('');
+            tbody.innerHTML = affList.map(a => {
+                let waLink = String(a.wa).replace(/\D/g, '');
+                if (waLink.startsWith('0')) waLink = '62' + waLink.substring(1);
+                
+                let rekInfo = a.rekening ? `<span class="td-mono" style="color: var(--slate-700);">${a.rekening}</span>` : `<span class="badge inactive">Belum Diisi</span>`;
+
+                return `
+                <tr>
+                    <td class="td-mono">${a.id}</td>
+                    <td class="td-bold">${a.name} <span class="td-sub">${a.email}</span></td>
+                    <td class="td-bold" style="color: var(--emerald-600);">Rp ${Number(a.komisi).toLocaleString('id-ID')}</td>
+                    <td>
+                        <div class="action-btns">
+                            <a href="https://wa.me/${waLink}" target="_blank" class="btn-icon emerald" title="WA Member"><i data-lucide="message-circle"></i></a>
+                            <button onclick="cairkanKomisi('${a.id}', ${a.komisi})" class="btn-icon amber" style="width: auto; padding: 0.5rem 1rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase;"><i data-lucide="check-circle" style="width:1rem;height:1rem;margin-right:0.25rem;"></i> Cairkan</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
             lucide.createIcons();
         }
 
@@ -1139,6 +1190,8 @@
                 }
             });
 
+            if(typeof toggleEmailFields === 'function') toggleEmailFields();
+            
             IK_PUB = r.settings.ik_public_key || ''; IK_END = r.settings.ik_endpoint || ''; 
             lucide.createIcons();
         }

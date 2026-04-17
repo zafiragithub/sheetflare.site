@@ -188,7 +188,7 @@
 
         .input-field {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem; /* padding left is bigger for icon */
+            padding: 1rem 3rem 1rem 3rem; /* padding left is bigger for icon, right for eye icon */
             background-color: #f8fafc;
             border-radius: 1rem;
             border: 1px solid #e2e8f0;
@@ -211,6 +211,25 @@
         /* Hilangkan spinner bawaan input number */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Tombol Toggle Password */
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: color 0.3s ease;
+        }
+        .toggle-password:hover { color: #64748b; }
+        .toggle-password svg { width: 1.25rem; height: 1.25rem; }
 
         /* Buttons */
         .btn {
@@ -382,6 +401,9 @@
                         <div class="input-wrapper">
                             <div class="input-icon"><i data-lucide="lock"></i></div>
                             <input type="password" id="pass" class="input-field" placeholder="••••••••" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('pass', this)">
+                                <i data-lucide="eye"></i>
+                            </button>
                         </div>
                     </div>
                     
@@ -414,7 +436,12 @@
                     
                     <div class="form-group">
                         <label class="form-label">Buat Password</label>
-                        <input type="password" id="reg-pass" class="input-field input-field-no-icon" placeholder="Minimal 6 karakter" minlength="6" required>
+                        <div class="input-wrapper">
+                            <input type="password" id="reg-pass" class="input-field input-field-no-icon" placeholder="Minimal 6 karakter" minlength="6" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-pass', this)">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <button type="submit" id="btn-register" class="btn btn-dark">
@@ -490,6 +517,19 @@
                 formTitle.innerText = 'Login';
                 formSubtitle.innerText = 'Silakan masuk untuk akses dashboard.';
             }
+        }
+
+        // Fungsi Tampilkan/Sembunyikan Password
+        function togglePasswordVisibility(inputId, btnElement) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btnElement.innerHTML = '<i data-lucide="eye-off"></i>';
+            } else {
+                input.type = 'password';
+                btnElement.innerHTML = '<i data-lucide="eye"></i>';
+            }
+            lucide.createIcons({ root: btnElement });
         }
 
         // Form Submit Handlers

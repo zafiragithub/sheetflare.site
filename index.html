@@ -11,7 +11,7 @@
         const cleanSlug = path.replace(/^\/|\/$/g, '');
         const baseSlug = cleanSlug.replace(/\.html$/, '');
         
-        const corePages = ['login', 'dashboard', 'checkout', 'admin', 'akses', 'akses-lms'];
+        const corePages = ['login', 'dashboard', 'checkout', 'admin', 'akses', 'akses-lms', 'member'];
 
         let isCorePage = corePages.includes(baseSlug);
         let isRedirecting = false;

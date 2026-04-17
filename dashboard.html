@@ -65,9 +65,9 @@
         :root {
             --emerald-50: #ecfdf5; --emerald-100: #d1fae5; --emerald-400: #34d399; --emerald-500: #10b981; --emerald-600: #059669; --emerald-700: #047857;
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
-            --rose-50: #fff1f2; --rose-500: #f43f5e; --rose-600: #e11d48;
-            --amber-50: #fffbeb; --amber-500: #f59e0b; --amber-600: #d97706;
-            --blue-50: #eff6ff; --blue-600: #2563eb;
+            --rose-50: #fff1f2; --rose-100: #ffe4e6; --rose-500: #f43f5e; --rose-600: #e11d48; --rose-700: #be123c;
+            --amber-50: #fffbeb; --amber-100: #fef3c7; --amber-500: #f59e0b; --amber-600: #d97706; --amber-700: #b45309;
+            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-600: #2563eb;
         }
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-50); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; height: 100vh; width: 100vw; }
@@ -226,6 +226,17 @@
         .dash-footer { margin-top: 4rem; text-align: center; border-top: 1px solid var(--slate-200); padding-top: 2rem; max-width: 72rem; margin-inline: auto; }
         .dash-footer p { font-size: 0.625rem; font-weight: 900; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.3em; }
 
+        /* === TABLE PROSPEK === */
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
+        .data-table th { padding: 1rem; font-size: 0.6875rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); }
+        .data-table td { padding: 1rem; font-size: 0.875rem; border-bottom: 1px solid var(--slate-100); color: var(--slate-600); }
+        .data-table tr:hover td { background-color: var(--slate-50); }
+        .badge-status { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; display: inline-block; }
+        .badge-lunas { background: var(--emerald-100); color: var(--emerald-700); }
+        .badge-pending { background: var(--amber-100); color: var(--amber-700); }
+        .badge-expired { background: var(--rose-100); color: var(--rose-700); }
+
         /* === MODALS === */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); transition: opacity 0.3s; }
         .modal-card { background: white; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%; max-width: 28rem; padding: 1.5rem; transition: transform 0.3s; }
@@ -267,7 +278,7 @@
         .btn-copy.primary:hover { background: var(--emerald-700); }
         .btn-copy svg { width: 1rem; height: 1rem; }
 
-        /* === TOAST NOTIFICATION (DIPERBAIKI POSISINYA) === */
+        /* === TOAST NOTIFICATION === */
         #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
         .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.25rem; border-radius: 0.75rem; font-size: 0.8125rem; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); max-width: 22rem; line-height: 1.4; pointer-events: auto; }
         .toast.show { opacity: 1; transform: translateY(0); }
@@ -294,7 +305,8 @@
             <button onclick="toggleSidebar()" class="sidebar-close"><i data-lucide="x"></i></button>
         </div>
         <nav class="sidebar-nav custom-scroll">
-            <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard Member</a>
+            <a href="#" onclick="switchTab('dashboard'); return false;" id="nav-dashboard" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard Member</a>
+            <a href="#" onclick="switchTab('prospek'); return false;" id="nav-prospek" class="nav-item default"><i data-lucide="users"></i> Prospek Affiliate</a>
             <a href="#" onclick="openPasswordModal(); return false;" class="nav-item default"><i data-lucide="key-round"></i> Ganti Password</a>
         </nav>
         <div class="sidebar-footer">
@@ -306,7 +318,7 @@
         <header class="top-header">
             <div class="header-left">
                 <button onclick="toggleSidebar()" class="btn-menu"><i data-lucide="menu"></i></button>
-                <h2 class="header-title">Member Area</h2>
+                <h2 class="header-title" id="header-page-title">Member Area</h2>
             </div>
             <div class="header-right">
                 <div class="header-greeting">
@@ -319,8 +331,8 @@
         </header>
 
         <div class="dashboard-body custom-scroll">
-            <div id="dashboard-content" class="dashboard-container">
-                
+            
+            <div id="view-dashboard" class="dashboard-container">
                 <section>
                     <div class="aff-banner">
                         <div class="aff-bg-blur"></div>
@@ -379,7 +391,37 @@
                         </div>
                     </div>
                 </section>
-                
+            </div>
+
+            <div id="view-prospek" class="dashboard-container hidden">
+                <section>
+                    <div class="section-header">
+                        <i data-lucide="users"></i>
+                        <h2 class="section-title">Data Prospek & Penjualan</h2>
+                    </div>
+                    <div class="card" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Nama Prospek</th>
+                                        <th>Produk Dibeli</th>
+                                        <th>Komisi</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="list-prospek">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                                            <div class="skeleton" style="height: 1.5rem; width: 60%; margin: 0 auto;"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </div>
             
             <div class="dash-footer">
@@ -459,10 +501,33 @@
         const userId = sessionStorage.getItem('user_id'); 
         if (userNama) { document.getElementById('header-name').innerText = userNama.split(' ')[0]; }
 
-        // Sidebar Toggles
+        // Sidebar & Tab Toggles
         function toggleSidebar() { 
             document.getElementById('sidebar').classList.toggle('open'); 
             document.getElementById('sidebar-overlay').classList.toggle('open'); 
+        }
+
+        function switchTab(tabId) {
+            // Update Menu Active State
+            document.getElementById('nav-dashboard').className = 'nav-item default';
+            document.getElementById('nav-prospek').className = 'nav-item default';
+            document.getElementById(`nav-${tabId}`).className = 'nav-item active';
+
+            // Hide all views
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-prospek').classList.add('hidden');
+
+            // Show target view & update Title
+            if(tabId === 'dashboard') {
+                document.getElementById('view-dashboard').classList.remove('hidden');
+                document.getElementById('header-page-title').innerText = 'Member Area';
+            } else {
+                document.getElementById('view-prospek').classList.remove('hidden');
+                document.getElementById('header-page-title').innerText = 'Prospek Affiliate';
+            }
+
+            // Close sidebar on mobile after clicking
+            if(window.innerWidth <= 768) { toggleSidebar(); }
         }
         
         // Password Modal Toggles
@@ -527,6 +592,7 @@
         // 🚀 RENDER UI
         // =======================================================
         function renderDashboardUI(r) {
+            // 1. Render Saldo & Produk
             if (r.total_komisi !== undefined) { document.getElementById('display-saldo-komisi').innerText = 'Rp ' + Number(r.total_komisi).toLocaleString('id-ID'); }
 
             const ownedContainer = document.getElementById('list-owned');
@@ -534,42 +600,28 @@
                 ownedContainer.innerHTML = r.owned.map(p => {
                     let linkMateri = `/akses?id=${p.id}`; 
                     if (p.url && p.url.includes('akses-lms.html')) { linkMateri = p.url; }
-
                     let bumpBtnHTML = '';
                     if (p.bump_access) {
                         let finalBumpUrl = (p.bump_url && p.bump_url !== "") ? p.bump_url : "#";
                         let btnText = (finalBumpUrl === "#") ? "Link Bonus Kosong" : "Akses Bonus";
-                        bumpBtnHTML = `
-                        <a href="${finalBumpUrl}" target="_blank" class="btn-bump mt-2">
-                            <i data-lucide="gift"></i> ${btnText}
-                        </a>`;
+                        bumpBtnHTML = `<a href="${finalBumpUrl}" target="_blank" class="btn-bump mt-2"><i data-lucide="gift"></i> ${btnText}</a>`;
                     }
-
                     return `
                     <div class="card">
                         <div class="card-badge-wrap"><span class="card-badge owned"><i data-lucide="check-circle-2"></i> Aktif</span></div>
                         <h3 class="card-title">${p.title}</h3>
                         <p class="card-desc">${p.desc}</p>
-                        
                         <div class="card-actions">
                             <div class="action-row">
-                                <a href="${linkMateri}" class="btn-main">
-                                    Materi Utama <i data-lucide="arrow-right"></i>
-                                </a>
-                                <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-icon">
-                                    <i data-lucide="share-2"></i>
-                                </button>
+                                <a href="${linkMateri}" class="btn-main">Materi Utama <i data-lucide="arrow-right"></i></a>
+                                <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-icon"><i data-lucide="share-2"></i></button>
                             </div>
                             ${bumpBtnHTML}
                         </div>
-                    </div>
-                `}).join('');
+                    </div>`;
+                }).join('');
             } else {
-                ownedContainer.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon"><i data-lucide="folder-open"></i></div>
-                    <p class="empty-text">Belum ada materi aktif.</p>
-                </div>`;
+                ownedContainer.innerHTML = `<div class="empty-state"><div class="empty-icon"><i data-lucide="folder-open"></i></div><p class="empty-text">Belum ada materi aktif.</p></div>`;
             }
 
             const availableContainer = document.getElementById('list-available');
@@ -582,21 +634,39 @@
                         <h3 class="card-title">${p.title}</h3>
                         <p class="card-desc">${p.desc}</p>
                         <span class="card-price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
-                        
                         <div class="card-actions">
                             <div class="action-row">
                                 <a href="${targetLink}" class="btn-main" style="background: var(--emerald-600);">Beli Sekarang</a>
-                                <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-icon">
-                                    <i data-lucide="share-2"></i>
-                                </button>
+                                <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-icon"><i data-lucide="share-2"></i></button>
                             </div>
                         </div>
-                    </div>
-                    `;
+                    </div>`;
                 }).join('');
             } else {
                 availableContainer.innerHTML = `<p class="empty-state" style="border:none; background: transparent;">Belum ada produk tambahan.</p>`;
             }
+
+            // 2. Render Tabel Prospek
+            const prospekContainer = document.getElementById('list-prospek');
+            if (r.prospek && r.prospek.length > 0) {
+                prospekContainer.innerHTML = r.prospek.map(p => {
+                    let bClass = 'badge-pending';
+                    if(p.status === 'Lunas') bClass = 'badge-lunas';
+                    else if(p.status === 'Expired') bClass = 'badge-expired';
+                    
+                    return `
+                    <tr>
+                        <td>${p.tanggal}</td>
+                        <td style="font-weight: 700; color: var(--slate-800);">${p.nama}</td>
+                        <td>${p.produk}</td>
+                        <td style="font-weight: 800; color: var(--emerald-600);">Rp ${Number(p.komisi).toLocaleString('id-ID')}</td>
+                        <td><span class="badge-status ${bClass}">${p.status}</span></td>
+                    </tr>`;
+                }).join('');
+            } else {
+                prospekContainer.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem 1rem; color: var(--slate-500);">Belum ada data prospek referal.<br>Bagikan link afiliasi Anda untuk mendapatkan prospek pertama!</td></tr>`;
+            }
+
             lucide.createIcons();
         }
 
@@ -604,27 +674,28 @@
         function forceSync() {
             localStorage.removeItem(DASHBOARD_CACHE_KEY + '_' + userEmail);
             showToast('Memuat ulang data terbaru...', 'warning');
-            loadDashboard();
+            loadDashboard(true);
         }
 
-        async function loadDashboard() {
+        async function loadDashboard(force = false) {
             const cacheKeyUser = DASHBOARD_CACHE_KEY + '_' + userEmail;
             const cachedData = localStorage.getItem(cacheKeyUser);
             
-            if(cachedData) { renderDashboardUI(JSON.parse(cachedData)); }
+            if(cachedData && !force) { renderDashboardUI(JSON.parse(cachedData)); }
 
             try {
                 if(typeof window.SCRIPT_URL === 'undefined' && typeof SCRIPT_URL === 'undefined') return;
                 const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
-                const res = await fetch(targetUrl, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: 'get_products', email: userEmail }) 
-                });
+                
+                let payload = { action: 'get_products', email: userEmail };
+                if (force) payload.refresh = true;
+
+                const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify(payload) });
                 const r = await res.json();
 
                 if (r.status === 'success') {
                     const freshData = JSON.stringify(r);
-                    if(cachedData !== freshData) {
+                    if(cachedData !== freshData || force) {
                         localStorage.setItem(cacheKeyUser, freshData);
                         renderDashboardUI(r);
                     }

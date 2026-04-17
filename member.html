@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+        const isUser = sessionStorage.getItem('user_email');
+        const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
+        if (!isUser && !isAdmin) {
+            window.location.replace('/member');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetFlare - Portal Member</title>
+    <title>Member Area - SheetFlare</title>
     
     <script src="config.js?v=2026"></script>
 
@@ -22,12 +29,9 @@
             }
 
             function applyGlobalSettings(data) {
-                if(data.site_name) { 
-                    document.title = document.title.replace(/Melimpah Digital/gi, data.site_name).replace(/Melimpah/gi, data.site_name).replace(/Sistem Digital/gi, data.site_name).replace(/SheetFlare/gi, data.site_name); 
-                }
+                if(data.site_name) { document.title = document.title.replace(/Melimpah Digital/gi, data.site_name).replace(/Melimpah/gi, data.site_name).replace(/Sistem Digital/gi, data.site_name).replace(/SheetFlare/gi, data.site_name); }
                 if(data.wa_admin) window.waAdminGlobal = data.wa_admin;
                 const updateDomElements = () => {
-                    if(data.affiliate_commission) { const commEl = document.getElementById('display-comm-rate'); if(commEl) commEl.innerText = data.affiliate_commission + '%'; }
                     if(data.site_name) { document.querySelectorAll('.dyn-site-name').forEach(el => el.innerText = data.site_name); }
                     if(data.site_tagline) { document.querySelectorAll('.dyn-site-tagline').forEach(el => el.innerText = data.site_tagline); }
                 };
@@ -61,33 +65,39 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            /* TEMA WARNA SESUAI REQUEST (#00AAE7 & #FF9800) */
             --brand-blue: #00AAE7;
             --brand-blue-hover: #0092c7;
             --brand-orange: #FF9800;
-            --brand-orange-hover: #e68900;
             
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
-            --rose-50: #fff1f2; --rose-100: #ffe4e6; --rose-500: #f43f5e; --rose-600: #e11d48;
-            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-600: #2563eb;
+            --rose-500: #f43f5e;
+            --blue-50: #eff6ff; --blue-100: #dbeafe;
         }
 
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; height: 100vh; width: 100vw; }
-        button { cursor: pointer; border: none; background: none; font-family: inherit; outline: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-900); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; height: 100vh; width: 100vw; }
         a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; outline: none; }
         .hidden { display: none !important; }
 
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
 
-        .skeleton { background: var(--slate-200); background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%); border-radius: 0.25rem; background-size: 200% 100%; animation: 1.5s shine linear infinite; }
-        @keyframes shine { to { background-position-x: -200%; } }
-        
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
         .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 0.375rem; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background-color: var(--slate-800); }
+        .toast.error { background-color: var(--rose-500); }
+        .toast.warning { background-color: var(--slate-600); }
+        .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
         /* =========================================
            UI OTENTIKASI (LOGIN & REGISTER)
@@ -108,7 +118,7 @@
         .auth-subtitle { text-align: center; color: var(--slate-500); font-size: 0.875rem; margin-bottom: 2rem; font-weight: 500; }
 
         .auth-form-group { margin-bottom: 1.25rem; text-align: left; }
-        .auth-form-label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .auth-form-label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; margin-left: 0.25rem; }
 
         .auth-input-wrapper { position: relative; }
         .auth-input-icon { position: absolute; top: 50%; transform: translateY(-50%); left: 1rem; color: var(--slate-400); pointer-events: none; display: flex; align-items: center; }
@@ -159,6 +169,10 @@
         .sidebar-close:hover { color: var(--slate-800); }
         
         .sidebar-nav { padding: 1rem 1.25rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.15rem; }
+        
+        /* Nav Item Category Label */
+        .nav-category { font-size: 0.6875rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; padding: 1rem 0.875rem 0.5rem; }
+        
         .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.875rem; font-weight: 600; font-size: 0.875rem; border-radius: 0.375rem; transition: all 0.2s; width: 100%; text-align: left; }
         .nav-item svg { width: 1.15rem; height: 1.15rem; }
         
@@ -205,45 +219,51 @@
 
         .dashboard-body { flex: 1; overflow-y: auto; padding: 1.5rem; padding-bottom: 5rem; }
         @media (min-width: 768px) { .dashboard-body { padding: 2rem; } }
-        .dashboard-container { max-width: 72rem; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+        .dashboard-container { max-width: 72rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
 
-        /* Banner Affiliate */
-        .aff-banner { background-image: linear-gradient(135deg, var(--brand-blue) 0%, #007bb5 100%); border-radius: 0.5rem; padding: 1.5rem; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 170, 231, 0.3); }
-        @media (min-width: 768px) { .aff-banner { padding: 1.5rem 2rem; } }
-        .aff-bg-blur { position: absolute; top: 0; right: 0; width: 16rem; height: 16rem; background: rgba(255, 255, 255, 0.15); border-radius: 50%; filter: blur(40px); transform: translate(30%, -30%); pointer-events: none; }
-        .aff-bg-icon { position: absolute; bottom: -2rem; right: -1rem; width: 10rem; height: 10rem; color: rgba(255,255,255,0.1); transform: rotate(-15deg); pointer-events: none; }
+        /* Dashboard Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
         
-        .aff-content { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 1rem; }
-        @media (min-width: 768px) { .aff-content { flex-direction: row; align-items: center; justify-content: space-between; } }
+        .stat-card { border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .stat-card.solid-blue { background: var(--brand-blue); color: white; border: none; }
+        .stat-card.solid-orange { background: var(--brand-orange); color: white; border: none; }
         
-        .aff-text-area { flex: 1; }
-        .aff-badge { display: inline-flex; align-items: center; gap: 0.375rem; background: rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-        .aff-badge svg { width: 0.75rem; height: 0.75rem; }
+        .stat-label { font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.25rem; margin-bottom: 0.5rem; }
+        .stat-card.solid-blue .stat-label { color: rgba(255,255,255,0.9); }
+        .stat-card.solid-orange .stat-label { color: rgba(255,255,255,0.9); }
         
-        .aff-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.25rem; color: white; }
-        .aff-desc { color: rgba(255,255,255,0.9); font-size: 0.75rem; margin-bottom: 0; max-width: 30rem; line-height: 1.4; font-weight: 500; }
-        
-        .aff-action-area { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem; margin-top: 0.5rem;}
-        @media (min-width: 768px) { .aff-action-area { flex-direction: column; align-items: flex-end; border-top: none; padding-top: 0; margin-top: 0; text-align: right; } }
-        
-        .aff-balance-label { font-size: 0.625rem; font-weight: 800; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.125rem; }
-        .aff-balance-val { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; color: white; margin-bottom: 0.5rem; }
-        
-        .btn-withdraw { background: white; color: var(--brand-blue); padding: 0.625rem 1.5rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; border: none; }
-        @media (min-width: 768px) { .btn-withdraw { width: auto; } }
-        .btn-withdraw:hover { background: var(--slate-50); transform: translateY(-2px); }
-        .btn-withdraw svg { width: 1rem; height: 1rem; }
+        .stat-value { font-size: 1.75rem; font-weight: 900; }
+        .stat-card.solid-blue .stat-value { color: white; }
+        .stat-card.solid-orange .stat-value { color: white; }
 
-        .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.75rem; }
+        /* General Sections */
+        .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding-bottom: 0.75rem; }
         .section-header svg { width: 1.25rem; height: 1.25rem; color: var(--slate-800); }
         .section-title { font-size: 1.125rem; font-weight: 800; color: var(--slate-800); letter-spacing: 0.05em; }
+
+        .card { background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         
+        /* Tables */
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
+        .data-table th { padding: 1rem 1.5rem; font-size: 0.6875rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--slate-200); background: white; }
+        .data-table td { padding: 1rem 1.5rem; font-size: 0.875rem; border-bottom: 1px solid var(--slate-100); color: var(--slate-600); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background-color: var(--slate-50); }
+        
+        .badge-status { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; display: inline-block; border: 1px solid transparent; }
+        .badge-lunas { background: var(--brand-blue); color: white; }
+        .badge-pending { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
+        .badge-expired { background: var(--slate-50); color: var(--slate-400); border-color: var(--slate-200); text-decoration: line-through; }
+
+        /* Cards Grid untuk Katalog / Materi */
         .grid-cards { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 768px) { .grid-cards { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .grid-cards { grid-template-columns: repeat(3, 1fr); } }
 
-        .card { background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.2s; }
-        .card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--slate-300); }
+        .prod-card { background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.2s; }
+        .prod-card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--slate-300); }
         
         .card-badge-wrap { margin-bottom: 1.25rem; }
         .card-badge { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid var(--slate-200); }
@@ -279,18 +299,6 @@
 
         .dash-footer { margin-top: 4rem; text-align: center; border-top: 1px solid var(--slate-200); padding-top: 2rem; max-width: 72rem; margin-inline: auto; }
         .dash-footer p { font-size: 0.625rem; font-weight: 700; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; }
-
-        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .data-table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
-        .data-table th { padding: 1rem 1.5rem; font-size: 0.6875rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--slate-200); background: white; }
-        .data-table td { padding: 1rem 1.5rem; font-size: 0.875rem; border-bottom: 1px solid var(--slate-100); color: var(--slate-600); }
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background-color: var(--slate-50); }
-        
-        .badge-status { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; display: inline-block; border: 1px solid transparent; }
-        .badge-lunas { background: var(--brand-blue); color: white; }
-        .badge-pending { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
-        .badge-expired { background: var(--slate-50); color: var(--slate-400); border-color: var(--slate-200); text-decoration: line-through; }
 
         /* =========================================
            MODALS
@@ -330,20 +338,6 @@
         .btn-copy.primary { background: var(--slate-800); color: white; border-color: var(--slate-900); }
         .btn-copy.primary:hover { background: var(--slate-900); }
         .btn-copy svg { width: 1rem; height: 1rem; }
-
-        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.25rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 22rem; line-height: 1.4; pointer-events: auto; }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { background-color: var(--slate-800); }
-        .toast.error { background-color: #dc2626; }
-        .toast.warning { background-color: var(--slate-600); }
-        .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
-
-        .skel-title { height: 1.25rem; width: 75%; margin-bottom: 0.75rem; }
-        .skel-text { height: 0.75rem; width: 100%; margin-bottom: 0.5rem; }
-        .skel-text-short { height: 0.75rem; width: 66%; margin-bottom: 2rem; }
-        .skel-price { height: 1.25rem; width: 33%; margin-bottom: 1.5rem; }
-        .skel-btn { height: 2.25rem; width: 100%; border-radius: 0.375rem; }
     </style>
 </head>
 <body>
@@ -386,7 +380,7 @@
                 </form>
                 
                 <div class="auth-toggle-section">
-                    Belum punya akun? <button onclick="toggleAuthView('register')" class="auth-toggle-link">DaftAR DI SINI</button>
+                    Belum punya akun? <button onclick="toggleAuthView('register')" class="auth-toggle-link">DAFTAR DI SINI</button>
                 </div>
             </div>
 
@@ -446,7 +440,12 @@
             </div>
             <nav class="sidebar-nav custom-scroll">
                 <a href="#" onclick="switchTab('dashboard'); return false;" id="nav-dashboard" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard Member</a>
-                <a href="#" onclick="switchTab('prospek'); return false;" id="nav-prospek" class="nav-item default"><i data-lucide="users"></i> Prospek Affiliate</a>
+                
+                <div class="nav-category">Akses Produk</div>
+                <a href="#" onclick="switchTab('owned'); return false;" id="nav-owned" class="nav-item default"><i data-lucide="unlock"></i> Materi Saya</a>
+                <a href="#" onclick="switchTab('available'); return false;" id="nav-available" class="nav-item default"><i data-lucide="shopping-bag"></i> Katalog Produk</a>
+                
+                <div class="nav-category">Pengaturan</div>
                 <a href="#" onclick="openRekeningModal(); return false;" class="nav-item default"><i data-lucide="credit-card"></i> Atur Rekening</a>
                 <a href="#" onclick="openPasswordModal(); return false;" class="nav-item default"><i data-lucide="key-round"></i> Ganti Password</a>
             </nav>
@@ -475,28 +474,48 @@
                 
                 <div id="view-dashboard" class="dashboard-container fade-in">
                     <section>
-                        <div class="aff-banner">
-                            <div class="aff-bg-blur"></div>
-                            <i data-lucide="megaphone" class="aff-bg-icon"></i>
-                            <div class="aff-content">
-                                <div class="aff-text-area">
-                                    <span class="aff-badge"><i data-lucide="gem"></i> Program Kemitraan</span>
-                                    <h2 class="aff-title">Sebarkan & Hasilkan Komisi!</h2>
-                                    <p class="aff-desc">Gunakan link afiliasi khusus produk di bawah ini untuk mengundang pengguna baru dan dapatkan komisi dari setiap penjualan.</p>
-                                </div>
-                                <div class="aff-action-area">
-                                    <div>
-                                        <p class="aff-balance-label">Saldo Komisi</p>
-                                        <div id="display-saldo-komisi" class="aff-balance-val">
-                                            <div class="skeleton" style="height: 1.5rem; width: 6rem; background: rgba(255,255,255,0.1);"></div>
-                                        </div>
-                                    </div>
-                                    <button onclick="requestWithdrawal()" class="btn-withdraw">Cairkan <i data-lucide="wallet"></i></button>
-                                </div>
+                        <div class="stat-grid">
+                            <div class="stat-card solid-blue">
+                                <p class="stat-label">Total Pesanan <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i></p>
+                                <h3 id="stat-orders" class="stat-value">0</h3>
+                            </div>
+                            <div class="stat-card solid-orange">
+                                <p class="stat-label">Komisi Affiliate <i data-lucide="wallet" style="width: 14px; height: 14px;"></i></p>
+                                <h3 id="display-saldo-komisi" class="stat-value">Rp 0</h3>
                             </div>
                         </div>
                     </section>
 
+                    <section>
+                        <div class="section-header">
+                            <i data-lucide="history"></i>
+                            <h2 class="section-title">Riwayat Pesanan & Prospek</h2>
+                        </div>
+                        <div class="card" style="padding: 0; border-radius: 0.5rem; overflow: hidden;">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Nama Produk/Pembeli</th>
+                                            <th>Komisi</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="list-prospek">
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 2rem;">
+                                                <div class="skeleton" style="height: 1.5rem; width: 60%; margin: 0 auto;"></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div id="view-owned" class="dashboard-container hidden fade-in">
                     <section>
                         <div class="section-header">
                             <i data-lucide="unlock"></i>
@@ -514,7 +533,9 @@
                             </div>
                         </div>
                     </section>
+                </div>
 
+                <div id="view-available" class="dashboard-container hidden fade-in">
                     <section>
                         <div class="section-header">
                             <i data-lucide="shopping-bag"></i>
@@ -530,37 +551,6 @@
                                 <div class="card-actions" style="border: none; padding-top: 0;">
                                     <div class="skeleton skel-btn"></div>
                                 </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-
-                <div id="view-prospek" class="dashboard-container hidden fade-in">
-                    <section>
-                        <div class="section-header">
-                            <i data-lucide="users"></i>
-                            <h2 class="section-title">Data Prospek & Penjualan</h2>
-                        </div>
-                        <div class="card" style="padding: 0; border-radius: 0.5rem; overflow: hidden;">
-                            <div class="table-responsive">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Tanggal</th>
-                                            <th>Nama Prospek</th>
-                                            <th>Produk Dibeli</th>
-                                            <th>Komisi</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="list-prospek">
-                                        <tr>
-                                            <td colspan="5" style="text-align: center; padding: 2rem;">
-                                                <div class="skeleton" style="height: 1.5rem; width: 60%; margin: 0 auto;"></div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </section>
@@ -654,13 +644,14 @@
             </div>
         </div>
     </div> <script>
-        // Cek URL Param
+        // Set Ref ID jika ada di URL
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
             if(ref) localStorage.setItem('melimpah_affiliate', ref); 
         })();
 
+        // GLOBAL TOAST FUNCTION
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
             let icon = type === 'error' ? 'x-circle' : (type === 'warning' ? 'alert-triangle' : 'check-circle');
@@ -795,20 +786,30 @@
         }
 
         function switchTab(tabId) {
-            document.getElementById('nav-dashboard').className = 'nav-item default';
-            document.getElementById('nav-prospek').className = 'nav-item default';
-            document.getElementById(`nav-${tabId}`).className = 'nav-item active';
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.add('default'));
+            
+            const targetNav = document.getElementById(`nav-${tabId}`);
+            if(targetNav) {
+                targetNav.classList.remove('default');
+                targetNav.classList.add('active');
+            }
 
             document.getElementById('view-dashboard').classList.add('hidden');
-            document.getElementById('view-prospek').classList.add('hidden');
+            document.getElementById('view-owned').classList.add('hidden');
+            document.getElementById('view-available').classList.add('hidden');
 
             if(tabId === 'dashboard') {
                 document.getElementById('view-dashboard').classList.remove('hidden');
-                document.getElementById('header-page-title').innerText = 'Member Area';
-            } else {
-                document.getElementById('view-prospek').classList.remove('hidden');
-                document.getElementById('header-page-title').innerText = 'Prospek Affiliate';
+                document.getElementById('header-page-title').innerText = 'Dashboard Member';
+            } else if(tabId === 'owned') {
+                document.getElementById('view-owned').classList.remove('hidden');
+                document.getElementById('header-page-title').innerText = 'Materi Saya';
+            } else if(tabId === 'available') {
+                document.getElementById('view-available').classList.remove('hidden');
+                document.getElementById('header-page-title').innerText = 'Katalog Produk';
             }
+            
             if(window.innerWidth <= 768) { toggleSidebar(); }
         }
         
@@ -854,21 +855,11 @@
             showToast(`Link berhasil disalin!`, "success"); closeAffiliateModal(); 
         }
 
-        function requestWithdrawal() {
-            const saldoEl = document.getElementById('display-saldo-komisi').innerText;
-            if(saldoEl === 'Rp 0' || saldoEl.includes('...')) { showToast("Belum ada saldo yang bisa dicairkan.", "warning"); return; }
-            if(!window.waAdminGlobal) { showToast("Sistem memuat admin, coba lagi.", "error"); return; }
-            
-            const uNama = sessionStorage.getItem('user_nama');
-            const uId = sessionStorage.getItem('user_id');
-            const dSiteName = document.querySelectorAll('.dyn-site-name').length > 0 ? document.querySelectorAll('.dyn-site-name')[0].innerText : "Admin";
-            const waMsg = `Halo ${dSiteName}! 👋\n\nSaya mengajukan pencairan komisi.\n\n👤 *Nama:* ${uNama}\n🆔 *ID Member:* ${uId}\n💰 *Saldo:* ${saldoEl}\n\n💳 *Info Rekening Pencairan:*\nBank:\nNo Rek:\nAtas Nama:`;
-            window.open(`https://wa.me/${window.waAdminGlobal}?text=${encodeURIComponent(waMsg)}`, '_blank');
-        }
-
         async function prosesUpdateRekening(event) {
             if(event) event.preventDefault(); 
-            const uEmail = sessionStorage.getItem('user_email');
+            const uEmail = sessionStorage.getItem('user_email') || '';
+            if(!uEmail) { showToast("Admin tidak perlu mengatur rekening.", "warning"); return; }
+
             const bank = document.getElementById('input-nama-bank').value; const norek = document.getElementById('input-nomor-rek').value; const nama = document.getElementById('input-atas-nama').value;
             
             const btn = document.getElementById('btn-save-rekening'); const oriText = btn.innerHTML;
@@ -885,7 +876,9 @@
 
         async function prosesGantiPassword(event) {
             if(event) event.preventDefault(); 
-            const uEmail = sessionStorage.getItem('user_email');
+            const uEmail = sessionStorage.getItem('user_email') || '';
+            if(!uEmail) { showToast("Admin mengganti password melalui dashboard admin.", "warning"); return; }
+
             const pLama = document.getElementById('input-password-lama').value; const pBaru = document.getElementById('input-password-baru').value; const pKonf = document.getElementById('input-konfirmasi-password').value;
             if (pBaru !== pKonf) { return showToast("Password baru tidak cocok!", "error"); } if (pBaru.length < 6) { return showToast("Password minimal 6 karakter!", "error"); }
             
@@ -902,7 +895,9 @@
         }
 
         function renderDashboardUI(r) {
+            // Update Stats
             if (r.total_komisi !== undefined) { document.getElementById('display-saldo-komisi').innerText = 'Rp ' + Number(r.total_komisi).toLocaleString('id-ID'); }
+            if (r.owned) { document.getElementById('stat-orders').innerText = r.owned.length; }
 
             const ownedContainer = document.getElementById('list-owned');
             if (r.owned && r.owned.length > 0) {
@@ -983,40 +978,39 @@
                     return `
                     <tr>
                         <td>${p.tanggal}</td>
-                        <td style="font-weight: 700; color: var(--slate-800);">${p.nama}</td>
-                        <td>${p.produk}</td>
+                        <td style="font-weight: 700; color: var(--slate-800);">${p.produk}<br><span style="font-size:0.65rem; color:var(--slate-500); font-weight:normal;">${p.nama}</span></td>
                         <td style="font-weight: 800; color: var(--brand-blue);">Rp ${Number(p.komisi).toLocaleString('id-ID')}</td>
                         <td><span class="badge-status ${bClass}">${p.status}</span></td>
                     </tr>`;
                 }).join('');
             } else {
-                prospekContainer.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem 1rem; color: var(--slate-500);">Belum ada data referal.</td></tr>`;
+                prospekContainer.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 3rem 1rem; color: var(--slate-500);">Belum ada riwayat pesanan.</td></tr>`;
             }
 
             lucide.createIcons();
         }
 
         function forceSync() {
-            const uEmail = sessionStorage.getItem('user_email');
-            if(!uEmail) return;
+            const uEmail = sessionStorage.getItem('user_email') || 'admin';
             localStorage.removeItem(DASHBOARD_CACHE_KEY + '_' + uEmail);
+            showToast('Memuat ulang data terbaru...', 'warning');
             loadDashboard(true);
         }
 
         async function loadDashboard(force = false) {
             const uEmail = sessionStorage.getItem('user_email');
-            if(!uEmail) return;
-
-            const cacheKeyUser = DASHBOARD_CACHE_KEY + '_' + uEmail;
-            const cachedData = localStorage.getItem(cacheKeyUser);
+            const isAdm = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
+            const payloadEmail = (isAdm && !uEmail) ? "" : uEmail;
+            const cacheKeyUser = DASHBOARD_CACHE_KEY + '_' + (uEmail || 'admin');
             
+            const cachedData = localStorage.getItem(cacheKeyUser);
             if(cachedData && !force) { renderDashboardUI(JSON.parse(cachedData)); }
 
             try {
                 if(typeof window.SCRIPT_URL === 'undefined' && typeof SCRIPT_URL === 'undefined') return;
                 const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
                 
-                let payload = { action: 'get_products', email: uEmail };
+                let payload = { action: 'get_products', email: payloadEmail };
                 if (force) payload.refresh = true;
 
                 const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify(payload) });
@@ -1037,11 +1031,10 @@
         }
 
         function logout() {
-            const uEmail = sessionStorage.getItem('user_email');
+            const uEmail = sessionStorage.getItem('user_email') || 'admin';
             sessionStorage.clear();
-            if (uEmail) localStorage.removeItem(DASHBOARD_CACHE_KEY + '_' + uEmail);
-            
-            checkLoginStatus(); // Langsung pindah ke halaman login
+            localStorage.removeItem(DASHBOARD_CACHE_KEY + '_' + uEmail);
+            window.location.replace('/member');
         }
 
         window.onload = () => {

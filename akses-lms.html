@@ -2,7 +2,9 @@
 <html lang="id">
 <head>
     <script>
-        if (!sessionStorage.getItem('user_email')) {
+        const isUser = sessionStorage.getItem('user_email');
+        const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
+        if (!isUser && !isAdmin) {
             window.location.replace('/login');
         }
     </script>
@@ -69,7 +71,6 @@
         :root {
             --brand-blue: #00AAE7;
             --brand-blue-hover: #0092c7;
-            
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-800: #1e293b; --slate-900: #0f172a;
             --rose-500: #f43f5e; --amber-500: #f59e0b;
             --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe;
@@ -94,7 +95,7 @@
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background-color: var(--slate-800); }
         .toast.error { background-color: var(--rose-500); }
-        .toast.warning { background-color: var(--slate-600); }
+        .toast.warning { background-color: var(--amber-500); }
         .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
         #loader { position: fixed; inset: 0; background: white; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--brand-blue); transition: opacity 0.3s; }

@@ -62,8 +62,14 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
+            --brand-blue: #00aae7;
+            --brand-blue-hover: #0092c7;
+            --brand-orange: #ff9800;
+            --brand-orange-hover: #e68900;
+            
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
             --rose-50: #fff1f2; --rose-100: #ffe4e6; --rose-500: #f43f5e; --rose-600: #e11d48;
+            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-600: #2563eb;
         }
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; height: 100vh; width: 100vw; }
@@ -78,10 +84,11 @@
         .skeleton { background: var(--slate-200); background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%); border-radius: 0.25rem; background-size: 200% 100%; animation: 1.5s shine linear infinite; }
         @keyframes shine { to { background-position-x: -200%; } }
 
+        /* Sidebar Sesuai Admin */
         .sidebar { width: 250px; background: white; color: var(--slate-600); border-right: 1px solid var(--slate-200); display: flex; flex-direction: column; height: 100%; flex-shrink: 0; transition: transform 0.3s ease-in-out; position: relative; z-index: 50; }
         .sidebar-header { padding: 1.25rem 1.5rem; font-size: 1.25rem; font-weight: 800; color: var(--slate-900); border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; }
         .sidebar-brand { display: flex; align-items: center; gap: 0.5rem; }
-        .sidebar-brand svg { width: 1.5rem; height: 1.5rem; color: var(--slate-800); }
+        .sidebar-brand svg { width: 1.5rem; height: 1.5rem; color: var(--brand-blue); }
         .sidebar-close { display: none; color: var(--slate-500); transition: color 0.2s; }
         .sidebar-close:hover { color: var(--slate-800); }
         
@@ -89,9 +96,9 @@
         .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.875rem; font-weight: 600; font-size: 0.875rem; border-radius: 0.375rem; transition: all 0.2s; width: 100%; text-align: left; }
         .nav-item svg { width: 1.15rem; height: 1.15rem; }
         
-        .nav-item.active { background: var(--slate-800); color: white; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .nav-item.active { background: var(--blue-50); color: var(--brand-blue); font-weight: 800; }
         .nav-item.default { color: var(--slate-600); }
-        .nav-item.default:hover { background: var(--slate-50); color: var(--slate-900); }
+        .nav-item.default:hover { background: var(--slate-50); color: var(--brand-blue); }
         
         .sidebar-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--slate-200); }
         .sidebar-logout { display: flex; align-items: center; gap: 0.6rem; font-size: 0.75rem; font-weight: 700; color: var(--slate-500); transition: color 0.2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
@@ -108,14 +115,15 @@
 
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
         
-        .top-header { background: white; border-bottom: 1px solid var(--slate-200); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 30; }
-        @media (min-width: 768px) { .top-header { padding: 1rem 2.5rem; } }
+        /* Top Header Sesuai Admin */
+        .top-header { background: white; border-bottom: 1px solid var(--slate-200); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 30; margin: -1.5rem -1.5rem 1.5rem -1.5rem; }
+        @media (min-width: 768px) { .top-header { padding: 1.25rem 2rem; margin: -2rem -2rem 2rem -2rem; } }
         
         .header-left { display: flex; align-items: center; gap: 1rem; }
         .btn-menu { display: none; padding: 0.5rem; background: white; border: 1px solid var(--slate-300); border-radius: 0.375rem; color: var(--slate-600); }
         .btn-menu:hover { background: var(--slate-50); }
         @media (max-width: 768px) { .btn-menu { display: block; } }
-        .header-title { font-size: 1.125rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.025em; }
+        .header-title { font-size: 1.125rem; font-weight: 800; color: var(--slate-800); }
         
         .header-right { display: flex; align-items: center; gap: 1rem; }
         .header-greeting { text-align: right; display: none; }
@@ -123,39 +131,40 @@
         .header-greeting-sub { font-size: 0.625rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.125rem; }
         .header-greeting-name { font-size: 0.875rem; font-weight: 800; color: var(--slate-800); line-height: 1; }
         
-        .header-avatar { width: 2.25rem; height: 2.25rem; background: var(--slate-800); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .header-avatar { width: 2rem; height: 2rem; background: var(--brand-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
         .header-avatar svg { width: 1.125rem; height: 1.125rem; }
         
-        .btn-refresh { padding: 0.5rem; color: var(--slate-500); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-refresh:hover { color: var(--slate-800); }
+        .btn-refresh { padding: 0.5rem; color: var(--slate-400); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-refresh:hover { color: var(--brand-blue); }
         .btn-refresh svg { width: 1.125rem; height: 1.125rem; }
 
         .dashboard-body { flex: 1; overflow-y: auto; padding: 1.5rem; padding-bottom: 5rem; }
-        @media (min-width: 768px) { .dashboard-body { padding: 2.5rem; } }
+        @media (min-width: 768px) { .dashboard-body { padding: 2rem; } }
         .dashboard-container { max-width: 72rem; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem; }
 
-        .aff-banner { background: var(--slate-900); border-radius: 0.75rem; padding: 2rem; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        /* Banner Affiliate dengan Gradient Biru */
+        .aff-banner { background-image: linear-gradient(135deg, #0f172a 0%, var(--brand-blue) 100%); border-radius: 0.75rem; padding: 2rem; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 170, 231, 0.3); }
         @media (min-width: 768px) { .aff-banner { padding: 2.5rem; } }
-        .aff-bg-blur { position: absolute; top: 0; right: 0; width: 16rem; height: 16rem; background: rgba(255, 255, 255, 0.05); border-radius: 50%; filter: blur(40px); transform: translate(30%, -30%); pointer-events: none; }
-        .aff-bg-icon { position: absolute; bottom: -2rem; right: -1rem; width: 10rem; height: 10rem; color: rgba(255,255,255,0.03); transform: rotate(-15deg); pointer-events: none; }
+        .aff-bg-blur { position: absolute; top: 0; right: 0; width: 16rem; height: 16rem; background: rgba(255, 255, 255, 0.15); border-radius: 50%; filter: blur(40px); transform: translate(30%, -30%); pointer-events: none; }
+        .aff-bg-icon { position: absolute; bottom: -2rem; right: -1rem; width: 10rem; height: 10rem; color: rgba(255,255,255,0.05); transform: rotate(-15deg); pointer-events: none; }
         
         .aff-content { position: relative; z-index: 10; }
-        .aff-badge { display: inline-flex; align-items: center; gap: 0.375rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+        .aff-badge { display: inline-flex; align-items: center; gap: 0.375rem; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
         .aff-badge svg { width: 0.875rem; height: 0.875rem; }
         
         .aff-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.75rem; color: white; }
         @media (min-width: 768px) { .aff-title { font-size: 2rem; } }
-        .aff-desc { color: var(--slate-300); font-size: 0.875rem; margin-bottom: 2rem; max-width: 38rem; line-height: 1.625; font-weight: 500; }
+        .aff-desc { color: rgba(255,255,255,0.8); font-size: 0.875rem; margin-bottom: 2rem; max-width: 38rem; line-height: 1.625; font-weight: 500; }
         
-        .aff-action-area { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+        .aff-action-area { border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
         @media (min-width: 768px) { .aff-action-area { flex-direction: row; align-items: center; justify-content: space-between; } }
-        .aff-balance-label { font-size: 0.625rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.375rem; }
+        .aff-balance-label { font-size: 0.625rem; font-weight: 800; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.375rem; }
         .aff-balance-val { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.05em; color: white; }
         @media (min-width: 768px) { .aff-balance-val { font-size: 2.25rem; } }
         
-        .btn-withdraw { background: white; color: var(--slate-900); padding: 0.875rem 2rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; border: none; }
+        .btn-withdraw { background: white; color: var(--brand-blue); padding: 0.875rem 2rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; border: none; }
         @media (min-width: 768px) { .btn-withdraw { width: auto; } }
-        .btn-withdraw:hover { background: var(--slate-100); }
+        .btn-withdraw:hover { background: var(--slate-100); transform: translateY(-2px); }
         .btn-withdraw svg { width: 1.125rem; height: 1.125rem; }
 
         .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.75rem; }
@@ -171,7 +180,7 @@
         
         .card-badge-wrap { margin-bottom: 1.25rem; }
         .card-badge { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid var(--slate-200); }
-        .card-badge.owned { background: var(--slate-100); color: var(--slate-700); }
+        .card-badge.owned { background: var(--blue-50); color: var(--brand-blue); border-color: var(--blue-100); }
         .card-badge.avail { background: var(--slate-800); color: white; border-color: var(--slate-900); }
         .card-badge svg { width: 0.75rem; height: 0.75rem; }
         
@@ -184,14 +193,16 @@
         
         .btn-main { flex: 1; background: var(--slate-800); color: white; padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background 0.2s; }
         .btn-main:hover { background: var(--slate-900); }
+        .btn-main.primary { background: var(--brand-blue); }
+        .btn-main.primary:hover { background: var(--brand-blue-hover); }
         .btn-main svg { width: 1rem; height: 1rem; }
         
         .btn-icon { background: white; border: 1px solid var(--slate-200); color: var(--slate-600); padding: 0.75rem 1rem; border-radius: 0.375rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-icon:hover { background: var(--slate-50); color: var(--slate-900); border-color: var(--slate-300); }
+        .btn-icon:hover { background: var(--slate-50); color: var(--brand-blue); border-color: var(--brand-blue); }
         .btn-icon svg { width: 1rem; height: 1rem; }
 
-        .btn-bump { background: var(--slate-100); color: var(--slate-700); padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background 0.2s; width: 100%; border: 1px solid var(--slate-200); }
-        .btn-bump:hover { background: var(--slate-200); color: var(--slate-900); }
+        .btn-bump { background: var(--brand-orange); color: white; padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background 0.2s; width: 100%; border: none; }
+        .btn-bump:hover { background: var(--brand-orange-hover); }
         .btn-bump svg { width: 1rem; height: 1rem; }
 
         .empty-state { grid-column: 1 / -1; background: white; border: 1px dashed var(--slate-300); padding: 2.5rem; border-radius: 0.5rem; text-align: center; }
@@ -210,7 +221,7 @@
         .data-table tr:hover td { background-color: var(--slate-50); }
         
         .badge-status { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; display: inline-block; border: 1px solid transparent; }
-        .badge-lunas { background: var(--slate-800); color: white; border-color: var(--slate-900); }
+        .badge-lunas { background: var(--brand-blue); color: white; }
         .badge-pending { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
         .badge-expired { background: var(--slate-50); color: var(--slate-400); border-color: var(--slate-200); text-decoration: line-through; }
 
@@ -254,7 +265,7 @@
         .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.25rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 22rem; line-height: 1.4; pointer-events: auto; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background-color: var(--slate-800); }
-        .toast.error { background-color: var(--rose-600); }
+        .toast.error { background-color: #dc2626; }
         .toast.warning { background-color: var(--slate-600); }
         .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
@@ -569,7 +580,7 @@
                         <p class="card-desc">${p.desc}</p>
                         <div class="card-actions">
                             <div class="action-row">
-                                <a href="${linkMateri}" class="btn-main">Materi Utama <i data-lucide="arrow-right"></i></a>
+                                <a href="${linkMateri}" class="btn-main primary">Materi Utama <i data-lucide="arrow-right"></i></a>
                                 <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-icon"><i data-lucide="share-2"></i></button>
                             </div>
                             ${bumpBtnHTML}
@@ -614,7 +625,7 @@
                         <td>${p.tanggal}</td>
                         <td style="font-weight: 700; color: var(--slate-800);">${p.nama}</td>
                         <td>${p.produk}</td>
-                        <td style="font-weight: 800; color: var(--slate-800);">Rp ${Number(p.komisi).toLocaleString('id-ID')}</td>
+                        <td style="font-weight: 800; color: var(--brand-blue);">Rp ${Number(p.komisi).toLocaleString('id-ID')}</td>
                         <td><span class="badge-status ${bClass}">${p.status}</span></td>
                     </tr>`;
                 }).join('');

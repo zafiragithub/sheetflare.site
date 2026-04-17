@@ -1,8 +1,7 @@
-/login       /member.html       200
-/dashboard   /member.html       200
-/member      /member.html       200
-/checkout    /checkout.html     200
-/akses       /akses.html        200
-/member     /member.html   200
-/dashboard  /dashboard.html       200
-/* /index.html        200
+/login       /member 301
+/dashboard   /member 301
+/member      /member.html 200
+/checkout    /checkout.html 200
+/akses       /akses.html 200
+/admin-area  /admin-area.html 200
+/* /index.html 200

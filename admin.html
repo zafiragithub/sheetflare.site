@@ -72,12 +72,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* === CSS RESET & VARIABLES (SCALEV-LIKE THEME) === */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --brand-blue: #00aae7;
+            --brand-blue: #00AAE7;
             --brand-blue-hover: #0092c7;
-            --brand-orange: #ff9800;
+            --brand-orange: #FF9800;
             --brand-red: #dc2626;
             
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
@@ -94,12 +93,10 @@
         input, select, textarea { font-family: inherit; }
         .hidden { display: none !important; }
 
-        /* === SCROLLBAR === */
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
 
-        /* === LOGIN SCREEN === */
         #login-overlay { position: fixed; inset: 0; background-color: var(--slate-100); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
         .login-bg-shape { position: absolute; width: 400px; height: 400px; background: var(--blue-50); border-radius: 50%; filter: blur(100px); opacity: 0.8; pointer-events: none; }
         .login-bg-shape.top { top: -10%; left: -10%; }
@@ -138,10 +135,8 @@
         .login-footer a { font-size: 0.75rem; font-weight: 700; color: var(--slate-400); transition: color 0.2s; }
         .login-footer a:hover { color: var(--brand-blue); }
 
-        /* === ADMIN LAYOUT === */
         #admin-main { display: none; height: 100vh; width: 100vw; }
         
-        /* Sidebar (Tampilan Putih - Scalev Style) */
         .sidebar { width: 250px; background: white; color: var(--slate-600); border-right: 1px solid var(--slate-200); display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.3s ease-in-out; position: relative; z-index: 50; }
         .sidebar-header { padding: 1.25rem 1.5rem; font-size: 1.25rem; font-weight: 900; color: var(--slate-800); border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; }
         .sidebar-brand { display: flex; align-items: center; gap: 0.5rem; }
@@ -162,14 +157,11 @@
         .sidebar-logout { display: flex; align-items: center; gap: 0.6rem; font-size: 0.75rem; font-weight: 700; color: var(--slate-500); transition: color 0.2s; cursor: pointer; border: none; background: none; }
         .sidebar-logout:hover { color: var(--rose-600); }
 
-        /* Overlay Mobile */
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 40; backdrop-filter: blur(2px); }
 
-        /* Main Content */
         .main-content { flex: 1; overflow-y: auto; background-color: var(--slate-100); padding: 1.5rem; position: relative; }
         @media (min-width: 768px) { .main-content { padding: 2rem; } }
         
-        /* Top Header */
         .top-header { background: white; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--slate-200); padding: 1rem 1.5rem; margin: -1.5rem -1.5rem 1.5rem -1.5rem; z-index: 30; position: sticky; top: 0; }
         @media (min-width: 768px) { .top-header { padding: 1.25rem 2rem; margin: -2rem -2rem 2rem -2rem; } }
         
@@ -186,7 +178,6 @@
         .btn-refresh { color: var(--slate-400); transition: color 0.2s; }
         .btn-refresh:hover { color: var(--brand-blue); }
 
-        /* Responsive Sidebar */
         @media (max-width: 768px) {
             .sidebar { position: fixed; height: 100%; transform: translateX(-100%); border-right: none; }
             .sidebar.open { transform: translateX(0); }
@@ -195,7 +186,6 @@
             .sidebar-overlay.open { display: block; }
         }
 
-        /* === COMPONENTS === */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -203,12 +193,10 @@
         .animate-spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Action Bar */
         .action-bar { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
         @media (min-width: 640px) { .action-bar { flex-direction: row; justify-content: space-between; align-items: center; } }
         .action-title { font-size: 1rem; font-weight: 800; color: var(--slate-800); }
         
-        /* Cards & Stats (Solid Colors based on Image) */
         .stat-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.5rem; }
         @media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
         
@@ -224,7 +212,6 @@
         .stat-card.solid-blue .stat-value { color: white; }
         .stat-card.solid-orange .stat-value { color: white; }
 
-        /* Tables */
         .table-wrap { background: white; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow-x: auto; }
         .table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; }
         .table th { background: white; padding: 1rem 1.5rem; font-size: 0.625rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--slate-200); }
@@ -243,13 +230,12 @@
         .btn-icon.rose:hover { border-color: var(--rose-500); color: var(--rose-500); }
         .btn-icon.amber:hover { border-color: var(--brand-orange); color: var(--brand-orange); }
 
-        /* Badges */
         .badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; display: inline-block; }
         .badge.active { background: var(--blue-50); color: var(--brand-blue); border: 1px solid var(--blue-100); }
         .badge.inactive { background: var(--slate-100); color: var(--slate-600); border: 1px solid var(--slate-200); }
         .badge.warning { background: var(--amber-50); color: var(--brand-orange); border: 1px solid var(--amber-100); }
+        .badge.outline { border: 1px solid currentColor; background: transparent; }
 
-        /* General Buttons */
         .btn-primary { background: var(--brand-blue); color: white; padding: 0.75rem 1.5rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.75rem; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; border: none; }
         @media (min-width: 640px) { .btn-primary { width: auto; } }
         .btn-primary:hover { background: var(--brand-blue-hover); }
@@ -261,7 +247,6 @@
         .btn-dark { background: var(--slate-800); color: white; padding: 0.75rem 1.5rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.75rem; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; border: none; }
         .btn-dark:hover { background: var(--slate-900); }
 
-        /* Products Grid */
         .prod-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 768px) { .prod-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .prod-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -281,7 +266,6 @@
         .btn-prod:hover { border-color: var(--brand-blue); color: var(--brand-blue); }
         .btn-prod-toggle.active:hover { border-color: var(--rose-500); color: var(--rose-500); }
 
-        /* Forms inside Settings / Modals */
         .settings-card { background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
         @media (min-width: 768px) { .settings-card { padding: 2rem; } }
         .settings-title { font-size: 1rem; font-weight: 800; color: var(--slate-800); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--slate-100); padding-bottom: 0.75rem; }
@@ -298,20 +282,18 @@
         .form-checkbox, .form-radio { width: 1rem; height: 1rem; accent-color: var(--brand-blue); cursor: pointer; }
         .form-textarea { min-height: 80px; resize: vertical; }
         
-        /* Modals */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); }
         .modal-card { background: white; width: 100%; border-radius: 0.5rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; border: 1px solid var(--slate-200); }
         @media (min-width: 768px) { .modal-card { padding: 2.5rem; } }
         .modal-card.md { max-width: 28rem; }
         .modal-card.lg { max-width: 36rem; }
         .modal-card.xl { max-width: 48rem; }
-        .modal-title { font-size: 1.25rem; font-weight: 800; color: var(--slate-800); margin-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100); padding-bottom: 0.75rem; }
+        .modal-title { font-size: 1.125rem; font-weight: 800; color: var(--slate-800); margin-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100); padding-bottom: 0.75rem; }
         .modal-footer { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--slate-100); }
         @media (min-width: 640px) { .modal-footer { flex-direction: row; justify-content: flex-end; } }
         .btn-cancel { padding: 0.75rem 1rem; font-weight: 700; font-size: 0.75rem; color: var(--slate-500); border: none; background: transparent; cursor: pointer; transition: color 0.2s; }
         .btn-cancel:hover { color: var(--slate-800); }
 
-        /* Media Box */
         .media-box { background: white; padding: 2rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); margin-bottom: 1.5rem; }
         .media-box h3 { font-size: 1.25rem; font-weight: 800; color: var(--slate-800); margin-bottom: 0.5rem; }
         .media-box p { font-size: 0.875rem; color: var(--slate-500); margin-bottom: 1.5rem; }
@@ -323,23 +305,20 @@
         @media (min-width: 768px) { .media-res-flex { flex-direction: row; } }
         .media-res-input { width: 100%; padding: 0.75rem; background: white; border: 1px solid var(--blue-200); border-radius: 0.375rem; font-family: monospace; font-size: 0.75rem; }
 
-        /* Editor Toolbar */
         .editor-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; background: var(--slate-50); border: 1px solid var(--slate-300); border-radius: 0.375rem 0.375rem 0 0; border-bottom: none; }
         .btn-toolbar { padding: 0.4rem 0.6rem; background: white; border: 1px solid var(--slate-200); border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; color: var(--slate-600); cursor: pointer; }
         .btn-toolbar:hover { border-color: var(--slate-300); background: var(--slate-100); }
         .editor-textarea { width: 100%; padding: 1rem; background: white; border: 1px solid var(--slate-300); border-radius: 0 0 0.375rem 0.375rem; font-family: monospace; font-size: 0.875rem; outline: none; min-height: 250px; }
         .editor-textarea:focus { border-color: var(--brand-blue); }
 
-        /* Toast */
         #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 0.375rem; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
+        .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.25rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 22rem; line-height: 1.4; pointer-events: auto; }
         .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { background-color: var(--brand-blue); }
+        .toast.success { background-color: var(--slate-800); }
         .toast.error { background-color: var(--brand-red); }
-        .toast.warning { background-color: var(--brand-orange); color: white; }
+        .toast.warning { background-color: var(--slate-600); }
         .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
-        /* SweetAlert Custom Override */
         div:where(.swal2-container) { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
@@ -378,7 +357,7 @@
             </form>
             
             <div class="login-footer">
-                <a href="index.html">&larr; Kembali ke Beranda</a>
+                <a href="/">&larr; Kembali ke Beranda</a>
             </div>
         </div>
     </div>
@@ -413,7 +392,7 @@
             </nav>
             
             <div class="sidebar-footer">
-                <a href="index.html" target="_blank" class="sidebar-link"><i data-lucide="external-link"></i> Kunjungi Website</a>
+                <a href="/" target="_blank" class="sidebar-link"><i data-lucide="external-link"></i> Kunjungi Website</a>
                 <button onclick="logout()" class="sidebar-logout"><i data-lucide="log-out"></i> Keluar Panel</button>
             </div>
         </aside>
@@ -461,7 +440,13 @@
                 <div class="table-wrap custom-scroll">
                     <table class="table">
                         <thead>
-                            <tr><th style="width: 20%">Affiliate ID</th><th style="width: 35%">Detail Member</th><th style="width: 25%">Saldo Komisi</th><th style="width: 20%; text-align: right;">Aksi Panel</th></tr>
+                            <tr>
+                                <th style="width: 15%">Affiliate ID</th>
+                                <th style="width: 25%">Detail Member</th>
+                                <th style="width: 25%">Info Rekening</th>
+                                <th style="width: 15%">Saldo Komisi</th>
+                                <th style="width: 20%; text-align: right;">Aksi Panel</th>
+                            </tr>
                         </thead>
                         <tbody id="list-affiliates"></tbody>
                     </table>
@@ -530,21 +515,21 @@
                     <p>Upload file gambar Anda ke CDN ImageKit untuk performa maksimal.</p>
                     <div class="media-upload-area">
                         <input type="file" id="media-file" class="media-input">
-                        <button onclick="uploadMedia()" id="btn-upload" class="btn-primary">UPLOAD SEKARANG</button>
+                        <button onclick="uploadMedia()" id="btn-upload" class="btn-primary" style="width: auto;">UPLOAD SEKARANG</button>
                     </div>
                 </div>
                 <div id="media-res-box" class="media-res-box hidden">
                     <p class="stat-label" style="color: var(--brand-blue); margin-bottom: 0.5rem;">Berhasil Diupload. Silakan copy link di bawah:</p>
                     <div class="media-res-flex">
                         <input type="text" id="media-url-res" readonly class="media-res-input">
-                        <button onclick="copyLink()" class="btn-primary">COPY LINK</button>
+                        <button onclick="copyLink()" class="btn-primary" style="width: auto; padding: 1rem;">COPY LINK</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-settings" class="tab-content">
                 <div class="action-bar">
-                    <h3 class="action-title">Master Settings</h3>
+                    <h3 class="header-title" style="font-size: 1.5rem;">Master Settings</h3>
                     <button onclick="triggerPurgeCache()" id="btn-purge" class="btn-outline" style="color: var(--brand-orange); border-color: var(--amber-200); background: var(--amber-50);"><i data-lucide="eraser"></i> Purge CF Cache</button>
                 </div>
                 
@@ -899,7 +884,6 @@
     </div>
 
     <script>
-        // Custom UI Functions
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -1070,7 +1054,7 @@
         function renderAffiliatesTable(affList) {
             const tbody = document.getElementById('list-affiliates');
             if (!affList || affList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada data komisi affiliate.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--slate-400); font-style: italic;">Belum ada data komisi affiliate.</td></tr>`;
                 return;
             }
             tbody.innerHTML = affList.map(a => {
@@ -1083,6 +1067,7 @@
                 <tr>
                     <td class="td-mono">${a.id}</td>
                     <td class="td-bold">${a.name} <span class="td-sub">${a.email}</span></td>
+                    <td>${rekInfo}</td>
                     <td class="td-bold" style="color: var(--brand-blue);">Rp ${Number(a.komisi).toLocaleString('id-ID')}</td>
                     <td>
                         <div class="action-btns">
@@ -1115,9 +1100,8 @@
             
             populateLmsDropdown();
 
-            // Sesuai screenshot, urutan: Kiri (Revenue/Cuan), Kanan (Count/Total)
-            document.getElementById('stat-rev').innerText = 'Rp ' + Number(r.stats.rev || 0).toLocaleString('id-ID');
             document.getElementById('stat-orders').innerText = (r.stats.orders || 0); 
+            document.getElementById('stat-rev').innerText = 'Rp ' + Number(r.stats.rev || 0).toLocaleString('id-ID');
             
             const listOrders = document.getElementById('list-orders');
             if(r.orders.length === 0) {

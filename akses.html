@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
     <script>
-        // Lempar penyusup ke halaman login sebelum 1 piksel pun tergambar
         if (!sessionStorage.getItem('user_email')) {
             window.location.replace('/login');
         }
@@ -19,7 +18,7 @@
         (function() {
             window.waAdminGlobal = '';
             
-            function applyBrandingSapuJagat(data) {
+            function applyBrandSettings(data) {
                 if(data.site_favicon) {
                     let link = document.querySelector("link[rel~='icon']");
                     if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
@@ -40,7 +39,7 @@
 
             const cachedStr = localStorage.getItem('melimpah_global_settings');
             if (cachedStr) {
-                try { applyBrandingSapuJagat(JSON.parse(cachedStr).data); } catch(e){}
+                try { applyBrandSettings(JSON.parse(cachedStr).data); } catch(e){}
             }
 
             window.addEventListener('DOMContentLoaded', () => {
@@ -50,9 +49,9 @@
                     .then(r => {
                         if(r.status === 'success') {
                             localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() }));
-                            applyBrandingSapuJagat(r.data); 
+                            applyBrandSettings(r.data); 
                         }
-                    }).catch(e => console.log('Branding sync skipped.'));
+                    }).catch(e => console.log('Sync skipped.'));
                 }
             });
         })();
@@ -66,17 +65,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* === CSS RESET & GLOBAL === */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        :root {
+            --brand-blue: #00AAE7;
+            --brand-blue-hover: #0092c7;
+            --brand-orange: #FF9800;
+            
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
+            --rose-50: #fff1f2; --rose-500: #f43f5e;
+        }
+
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc; /* slate-50 */
-            color: #0f172a; /* slate-900 */
+            background-color: var(--slate-100); 
+            color: var(--slate-900); 
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
             display: flex;
@@ -87,7 +94,6 @@
         button { cursor: pointer; border: none; background: none; font-family: inherit; }
         .hidden { display: none !important; }
 
-        /* === ANIMATIONS === */
         @keyframes spin { to { transform: rotate(360deg); } }
         .animate-spin { animation: spin 1s linear infinite; }
         
@@ -97,18 +103,16 @@
         @keyframes pulse { 50% { opacity: 0.5; } }
         .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-        /* === HEADER === */
         .header {
             background-color: white;
-            border-bottom: 1px solid #f1f5f9; /* slate-100 */
+            border-bottom: 1px solid var(--slate-200);
             padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 50;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         .header-container {
-            max-width: 48rem; /* 768px */
+            max-width: 48rem; 
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
@@ -117,45 +121,42 @@
         }
         .brand-logo {
             font-size: 1.25rem;
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            color: #10b981; /* emerald-500 */
+            font-weight: 800;
+            color: var(--slate-800); 
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            text-transform: uppercase;
         }
-        .brand-logo svg { width: 1.5rem; height: 1.5rem; }
+        .brand-logo svg { width: 1.5rem; height: 1.5rem; color: var(--brand-blue); }
         
         .header-nav { display: flex; align-items: center; gap: 1.5rem; }
         .nav-link {
-            color: #64748b; /* slate-500 */
-            font-size: 0.625rem;
+            color: var(--slate-500); 
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: color 0.3s;
+            letter-spacing: 0.05em;
+            transition: color 0.2s;
         }
-        .nav-link:hover { color: #10b981; /* emerald-500 */ }
+        .nav-link:hover { color: var(--brand-blue); }
         
         .btn-logout {
-            color: #94a3b8; /* slate-400 */
-            font-size: 0.625rem;
+            color: var(--slate-500); 
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
-        .btn-logout:hover { color: #f43f5e; /* rose-500 */ }
+        .btn-logout:hover { color: var(--rose-500); }
         .btn-logout svg { width: 1rem; height: 1rem; }
 
-        /* === MAIN CONTENT === */
         .main-wrapper {
             flex: 1;
-            max-width: 48rem; /* 768px */
+            max-width: 48rem;
             margin: 0 auto;
             padding: 3rem 1.5rem;
             width: 100%;
@@ -165,7 +166,6 @@
         }
         @media (min-width: 768px) { .main-wrapper { padding: 5rem 1.5rem; } }
 
-        /* Loading State */
         .loading-state {
             display: flex;
             flex-direction: column;
@@ -184,135 +184,131 @@
         }
         .loader-ring-1 {
             position: absolute; inset: 0;
-            border-radius: 50%; border: 4px solid #f1f5f9;
+            border-radius: 50%; border: 4px solid var(--slate-200);
         }
         .loader-ring-2 {
             position: absolute; inset: 0;
-            border-radius: 50%; border: 4px solid #10b981; /* emerald-500 */
+            border-radius: 50%; border: 4px solid var(--brand-blue); 
             border-top-color: transparent;
         }
         .loader-ring-3 {
             position: absolute; inset: 0.5rem;
-            border-radius: 50%; border: 4px solid #34d399; /* emerald-400 */
+            border-radius: 50%; border: 4px solid var(--brand-blue-hover); 
             border-bottom-color: transparent;
         }
-        .loader-icon { width: 1.25rem; height: 1.25rem; color: #10b981; }
+        .loader-icon { width: 1.25rem; height: 1.25rem; color: var(--brand-blue); }
 
-        /* Error State */
         .error-state {
             text-align: center;
             padding: 5rem 0;
         }
         .error-icon-wrap {
             width: 5rem; height: 5rem;
-            background-color: #fef2f2; /* rose-50 */
-            color: #ef4444; /* rose-500 */
+            background-color: var(--rose-50); 
+            color: var(--rose-500); 
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 1.5rem;
         }
         .error-icon-wrap svg { width: 2.5rem; height: 2.5rem; }
         .error-title {
-            font-size: 1.875rem; font-weight: 900; color: #0f172a;
+            font-size: 1.875rem; font-weight: 800; color: var(--slate-900);
             margin-bottom: 1rem; letter-spacing: -0.025em;
         }
         .error-msg {
-            color: #64748b; font-size: 1rem; max-width: 28rem;
+            color: var(--slate-500); font-size: 1rem; max-width: 28rem;
             margin: 0 auto 2.5rem; line-height: 1.625;
         }
         .btn-return {
             display: inline-flex; align-items: center; gap: 0.75rem;
-            background-color: #0f172a; color: white;
-            padding: 1rem 2rem; border-radius: 0.75rem;
+            background-color: var(--slate-800); color: white;
+            padding: 1rem 2rem; border-radius: 0.375rem;
             font-weight: 700; font-size: 0.75rem; text-transform: uppercase;
-            letter-spacing: 0.1em; transition: background-color 0.3s;
+            letter-spacing: 0.05em; transition: background-color 0.2s;
         }
-        .btn-return:hover { background-color: #10b981; /* emerald-500 */ }
+        .btn-return:hover { background-color: var(--slate-900); }
         .btn-return svg { width: 1rem; height: 1rem; }
 
-        /* Access Content */
         .access-container { width: 100%; display: flex; flex-direction: column; gap: 2rem; }
         
         .welcome-header { text-align: center; margin-bottom: 1rem; }
         .welcome-badge {
-            color: #10b981; /* emerald-500 */
-            font-weight: 700; font-size: 0.875rem;
-            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--brand-blue); 
+            font-weight: 800; font-size: 0.75rem;
+            letter-spacing: 0.05em; text-transform: uppercase;
             display: flex; align-items: center; justify-content: center; gap: 0.5rem;
             margin-bottom: 0.5rem;
         }
         .welcome-badge svg { width: 1rem; height: 1rem; }
         .welcome-title {
-            font-size: 1.875rem; font-weight: 900; color: #0f172a;
+            font-size: 1.875rem; font-weight: 800; color: var(--slate-900);
             letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem;
         }
-        @media (min-width: 768px) { .welcome-title { font-size: 3rem; } }
-        .welcome-name { color: #10b981; }
-        .welcome-desc { color: #64748b; font-size: 1rem; }
+        @media (min-width: 768px) { .welcome-title { font-size: 2.5rem; } }
+        .welcome-name { color: var(--brand-blue); }
+        .welcome-desc { color: var(--slate-500); font-size: 1rem; }
         @media (min-width: 768px) { .welcome-desc { font-size: 1.125rem; } }
 
-        /* Card Produk */
         .product-card {
-            background-color: white; border: 1px solid #e2e8f0;
-            border-radius: 2rem; padding: 2rem; text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background-color: white; border: 1px solid var(--slate-200);
+            border-radius: 0.5rem; padding: 2rem; text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             position: relative; overflow: hidden;
         }
         @media (min-width: 768px) { .product-card { padding: 3rem; } }
         
         .card-bg-icon {
-            position: absolute; top: 0; right: 0; padding: 2rem; opacity: 0.05;
-            color: #0f172a; transform: rotate(-12deg) translate(2.5rem, -2.5rem);
+            position: absolute; top: 0; right: 0; padding: 2rem; opacity: 0.03;
+            color: var(--slate-900); transform: rotate(-12deg) translate(2.5rem, -2.5rem);
             pointer-events: none;
         }
         .card-bg-icon svg { width: 16rem; height: 16rem; }
         
         .card-content { position: relative; z-index: 10; }
         .product-label {
-            display: inline-block; padding: 0.5rem 1rem; background-color: #f8fafc;
-            border: 1px solid #f1f5f9; color: #64748b; font-size: 0.625rem;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
-            border-radius: 9999px; margin-bottom: 1.5rem;
+            display: inline-block; padding: 0.375rem 1rem; background-color: var(--slate-50);
+            border: 1px solid var(--slate-200); color: var(--slate-500); font-size: 0.625rem;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+            border-radius: 0.25rem; margin-bottom: 1.5rem;
         }
         
         .product-title {
-            font-size: 1.5rem; font-weight: 900; color: #0f172a;
+            font-size: 1.5rem; font-weight: 800; color: var(--slate-900);
             margin-bottom: 1rem; line-height: 1.25;
         }
-        @media (min-width: 768px) { .product-title { font-size: 2.25rem; } }
+        @media (min-width: 768px) { .product-title { font-size: 2rem; } }
         
         .product-desc {
-            color: #64748b; font-size: 0.875rem; max-width: 32rem; margin: 0 auto 3rem; line-height: 1.625;
+            color: var(--slate-500); font-size: 0.875rem; max-width: 32rem; margin: 0 auto 2.5rem; line-height: 1.625;
         }
         @media (min-width: 768px) { .product-desc { font-size: 1rem; } }
 
         .btn-access {
-            display: inline-flex; align-items: center; justify-content: center; gap: 1rem;
-            background-color: #10b981; /* emerald-500 */
-            color: white; width: 100%; padding: 1.5rem; border-radius: 1rem;
-            font-weight: 900; font-size: 0.875rem; text-transform: uppercase;
-            letter-spacing: 0.2em; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
-            transition: all 0.3s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+            background-color: var(--brand-blue); 
+            color: white; width: 100%; padding: 1.25rem; border-radius: 0.375rem;
+            font-weight: 800; font-size: 0.875rem; text-transform: uppercase;
+            letter-spacing: 0.05em; box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2);
+            transition: all 0.2s;
         }
-        @media (min-width: 768px) { .btn-access { width: auto; padding: 1.5rem 3rem; } }
+        @media (min-width: 768px) { .btn-access { width: auto; padding: 1.25rem 3rem; } }
         .btn-access:hover {
-            background-color: #059669; /* emerald-600 */
-            transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4);
+            background-color: var(--brand-blue-hover); 
+            transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 170, 231, 0.3);
         }
-        .btn-access svg { width: 1.25rem; height: 1.25rem; transition: transform 0.3s; }
+        .btn-access svg { width: 1.25rem; height: 1.25rem; transition: transform 0.2s; }
         .btn-access:hover svg { transform: translateX(4px); }
 
-        /* Footer License */
         .license-info {
             text-align: center; margin-top: 1rem;
         }
         .license-text {
-            font-size: 0.625rem; font-weight: 700; color: #94a3b8;
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.6875rem; font-weight: 700; color: var(--slate-500);
+            text-transform: uppercase; letter-spacing: 0.05em;
             display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
-        .license-text svg { width: 1rem; height: 1rem; color: #10b981; }
-        .license-email { color: #334155; font-weight: 900; }
+        .license-text svg { width: 1rem; height: 1rem; color: var(--brand-blue); }
+        .license-email { color: var(--slate-800); font-weight: 800; }
 
     </style>
 </head>
@@ -348,7 +344,7 @@
                 <i data-lucide="lock"></i>
             </div>
             <h2 class="error-title">Akses Terkunci</h2>
-            <p id="error-msg" class="error-msg">Anda belum memiliki akses ke produk ini atau tagihan Anda masih menunggu verifikasi.</p>
+            <p id="error-msg" class="error-msg">Anda belum memiliki akses ke produk ini atau pesanan Anda masih menunggu verifikasi.</p>
             <a href="/dashboard" class="btn-return">
                 <i data-lucide="arrow-left"></i> Kembali ke Dashboard
             </a>
@@ -388,7 +384,7 @@
             <div class="license-info">
                 <p class="license-text">
                     <i data-lucide="shield-check"></i>
-                    Lisensi Resmi Terdaftar Atas Email: <span id="display-email" class="license-email"></span>
+                    Lisensi Terdaftar Atas Email: <span id="display-email" class="license-email"></span>
                 </p>
             </div>
             
@@ -430,7 +426,7 @@
 
         async function verifyAccess() {
             if (!productId) {
-                showError("ID Produk tidak ditemukan di sistem kami.");
+                showError("ID Produk tidak valid.");
                 return;
             }
 
@@ -438,7 +434,6 @@
             const cachedDataStr = localStorage.getItem(cacheKeyUser);
             let accessGrantedFromCache = false;
 
-            // Cek di local storage dulu biar instan
             if (cachedDataStr) {
                 try {
                     const cachedData = JSON.parse(cachedDataStr);
@@ -452,7 +447,6 @@
                 } catch(e) {}
             }
 
-            // Verifikasi ke server (background sync)
             try {
                 if(typeof SCRIPT_URL === 'undefined' || SCRIPT_URL === 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI') {
                     if(!accessGrantedFromCache) showError("Sistem belum dikonfigurasi.");

@@ -11,7 +11,7 @@
         const cleanSlug = path.replace(/^\/|\/$/g, '');
         const baseSlug = cleanSlug.replace(/\.html$/, '');
         
-        const corePages = ['checkout', 'admin', 'akses', 'akses-lms', 'member'];
+        const corePages = ['login', 'dashboard', 'checkout', 'admin', 'akses', 'akses-lms', 'member'];
 
         let isCorePage = corePages.includes(baseSlug);
         let isRedirecting = false;
@@ -255,7 +255,7 @@
                 <div class="header-nav">
                     <a href="/" class="nav-link">Beranda</a>
                     <a href="/login" class="btn-login">
-                        Login Member <i data-lucide="log-in"></i>
+                        Login <i data-lucide="log-in"></i>
                     </a>
                 </div>
             </div>

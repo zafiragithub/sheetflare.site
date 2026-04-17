@@ -61,9 +61,10 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --brand-blue: #00aae7;
+            /* TEMA WARNA SESUAI REQUEST (#00AAE7 & #FF9800) */
+            --brand-blue: #00AAE7;
             --brand-blue-hover: #0092c7;
-            --brand-orange: #ff9800;
+            --brand-orange: #FF9800;
             --brand-orange-hover: #e68900;
             
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
@@ -102,23 +103,23 @@
         .auth-card {
             background-color: #ffffff; padding: 2.5rem; border-radius: 0.5rem; width: 100%; max-width: 28rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid var(--slate-200); position: relative; z-index: 10; transition: all 0.3s ease;
         }
-        .auth-title { font-size: 1.5rem; font-weight: 900; color: var(--slate-800); text-align: center; text-transform: uppercase; letter-spacing: -0.05em; margin-bottom: 0.5rem; }
+        .auth-title { font-size: 1.75rem; font-weight: 900; color: var(--slate-800); text-align: center; text-transform: uppercase; letter-spacing: -0.05em; margin-bottom: 0.5rem; }
         .auth-title .highlight { color: var(--brand-blue); }
-        .auth-subtitle { text-align: center; color: var(--slate-500); font-size: 0.75rem; margin-bottom: 2rem; }
+        .auth-subtitle { text-align: center; color: var(--slate-500); font-size: 0.875rem; margin-bottom: 2rem; font-weight: 500; }
 
         .auth-form-group { margin-bottom: 1.25rem; text-align: left; }
-        .auth-form-label { display: block; font-size: 0.625rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-left: 0.25rem; }
+        .auth-form-label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
 
         .auth-input-wrapper { position: relative; }
         .auth-input-icon { position: absolute; top: 50%; transform: translateY(-50%); left: 1rem; color: var(--slate-400); pointer-events: none; display: flex; align-items: center; }
         .auth-input-icon svg { width: 1.25rem; height: 1.25rem; }
 
         .auth-input-field {
-            width: 100%; padding: 0.875rem 3rem 0.875rem 3rem; background-color: white; border-radius: 0.375rem; border: 1px solid var(--slate-300); outline: none; font-weight: 600; color: var(--slate-800); transition: all 0.2s ease; font-family: inherit; font-size: 0.875rem;
+            width: 100%; padding: 0.875rem 3rem 0.875rem 3rem; background-color: #f4f7f9; border-radius: 0.375rem; border: 1px solid var(--slate-200); outline: none; font-weight: 600; color: var(--slate-800); transition: all 0.2s ease; font-family: inherit; font-size: 0.875rem;
         }
         .auth-input-field::placeholder { color: var(--slate-400); font-weight: 500; }
         .auth-input-field-no-icon { padding-left: 1rem; }
-        .auth-input-field:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 3px #e0f2fe; }
+        .auth-input-field:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 3px #e0f2fe; background-color: white; }
         
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
@@ -129,16 +130,16 @@
         .auth-toggle-password svg { width: 1.25rem; height: 1.25rem; }
 
         .auth-btn {
-            width: 100%; margin-top: 1rem; padding: 1rem; border-radius: 0.375rem; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: all 0.2s ease; cursor: pointer; border: none; font-family: inherit;
+            width: 100%; margin-top: 1rem; padding: 1rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.875rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: all 0.2s ease; cursor: pointer; border: none; font-family: inherit;
         }
-        .auth-btn svg { width: 1rem; height: 1rem; }
+        .auth-btn svg { width: 1.25rem; height: 1.25rem; }
         .auth-btn-primary { background-color: var(--brand-blue); color: white; }
         .auth-btn-primary:hover { background-color: var(--brand-blue-hover); }
         .auth-btn-dark { background-color: var(--slate-800); color: white; }
         .auth-btn-dark:hover { background-color: var(--slate-900); }
 
-        .auth-toggle-section { margin-top: 2rem; text-align: center; font-size: 0.75rem; font-weight: 600; color: var(--slate-500); }
-        .auth-toggle-link { color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.05em; margin-left: 0.25rem; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; background: none; border: none; cursor: pointer; font-weight: 800; transition: color 0.2s ease; font-family: inherit; }
+        .auth-toggle-section { margin-top: 2rem; text-align: center; font-size: 0.875rem; font-weight: 500; color: var(--slate-500); }
+        .auth-toggle-link { color: var(--brand-blue); text-transform: uppercase; margin-left: 0.25rem; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; background: none; border: none; cursor: pointer; font-weight: 800; transition: color 0.2s ease; font-family: inherit; }
         .auth-toggle-link:hover { color: var(--brand-blue-hover); }
 
         .auth-back-home { margin-top: 2rem; text-align: center; position: relative; z-index: 10; }
@@ -206,31 +207,31 @@
         @media (min-width: 768px) { .dashboard-body { padding: 2rem; } }
         .dashboard-container { max-width: 72rem; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
 
-        /* Banner Affiliate (Dirapatkan) */
-        .aff-banner { background-image: linear-gradient(135deg, #0f172a 0%, var(--brand-blue) 100%); border-radius: 0.75rem; padding: 1.5rem; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 170, 231, 0.3); }
+        /* Banner Affiliate */
+        .aff-banner { background-image: linear-gradient(135deg, var(--brand-blue) 0%, #007bb5 100%); border-radius: 0.5rem; padding: 1.5rem; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 170, 231, 0.3); }
         @media (min-width: 768px) { .aff-banner { padding: 1.5rem 2rem; } }
         .aff-bg-blur { position: absolute; top: 0; right: 0; width: 16rem; height: 16rem; background: rgba(255, 255, 255, 0.15); border-radius: 50%; filter: blur(40px); transform: translate(30%, -30%); pointer-events: none; }
-        .aff-bg-icon { position: absolute; bottom: -2rem; right: -1rem; width: 10rem; height: 10rem; color: rgba(255,255,255,0.05); transform: rotate(-15deg); pointer-events: none; }
+        .aff-bg-icon { position: absolute; bottom: -2rem; right: -1rem; width: 10rem; height: 10rem; color: rgba(255,255,255,0.1); transform: rotate(-15deg); pointer-events: none; }
         
         .aff-content { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 1rem; }
         @media (min-width: 768px) { .aff-content { flex-direction: row; align-items: center; justify-content: space-between; } }
         
         .aff-text-area { flex: 1; }
-        .aff-badge { display: inline-flex; align-items: center; gap: 0.375rem; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .aff-badge { display: inline-flex; align-items: center; gap: 0.375rem; background: rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
         .aff-badge svg { width: 0.75rem; height: 0.75rem; }
         
         .aff-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.25rem; color: white; }
-        .aff-desc { color: rgba(255,255,255,0.8); font-size: 0.75rem; margin-bottom: 0; max-width: 30rem; line-height: 1.4; font-weight: 500; }
+        .aff-desc { color: rgba(255,255,255,0.9); font-size: 0.75rem; margin-bottom: 0; max-width: 30rem; line-height: 1.4; font-weight: 500; }
         
         .aff-action-area { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem; margin-top: 0.5rem;}
         @media (min-width: 768px) { .aff-action-area { flex-direction: column; align-items: flex-end; border-top: none; padding-top: 0; margin-top: 0; text-align: right; } }
         
-        .aff-balance-label { font-size: 0.625rem; font-weight: 800; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.125rem; }
+        .aff-balance-label { font-size: 0.625rem; font-weight: 800; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.125rem; }
         .aff-balance-val { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; color: white; margin-bottom: 0.5rem; }
         
         .btn-withdraw { background: white; color: var(--brand-blue); padding: 0.625rem 1.5rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; border: none; }
         @media (min-width: 768px) { .btn-withdraw { width: auto; } }
-        .btn-withdraw:hover { background: var(--slate-100); transform: translateY(-2px); }
+        .btn-withdraw:hover { background: var(--slate-50); transform: translateY(-2px); }
         .btn-withdraw svg { width: 1rem; height: 1rem; }
 
         .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.75rem; }
@@ -257,7 +258,7 @@
         .card-actions { border-top: 1px solid var(--slate-100); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .action-row { display: flex; gap: 0.5rem; }
         
-        .btn-main { flex: 1; background: var(--slate-800); color: white; padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background 0.2s; }
+        .btn-main { flex: 1; background: var(--slate-800); color: white; padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background 0.2s; border: none; }
         .btn-main:hover { background: var(--slate-900); }
         .btn-main.primary { background: var(--brand-blue); }
         .btn-main.primary:hover { background: var(--brand-blue-hover); }
@@ -291,6 +292,9 @@
         .badge-pending { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
         .badge-expired { background: var(--slate-50); color: var(--slate-400); border-color: var(--slate-200); text-decoration: line-through; }
 
+        /* =========================================
+           MODALS
+           ========================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); transition: opacity 0.3s; }
         .modal-card { background: white; border-radius: 0.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 28rem; padding: 2rem; transition: transform 0.2s; border: 1px solid var(--slate-200); }
         
@@ -303,7 +307,7 @@
         .modal-form-group { margin-bottom: 1rem; }
         .modal-form-label { display: block; font-size: 0.6875rem; font-weight: 700; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
         .modal-form-input { width: 100%; background: white; border: 1px solid var(--slate-300); color: var(--slate-900); border-radius: 0.375rem; padding: 0.75rem 1rem; font-size: 0.875rem; outline: none; transition: all 0.2s; }
-        .modal-form-input:focus { border-color: var(--slate-500); box-shadow: 0 0 0 2px var(--slate-100); }
+        .modal-form-input:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 2px var(--blue-50); }
         
         .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
         .btn-modal-cancel { flex: 1; background: white; border: 1px solid var(--slate-300); color: var(--slate-600); padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; }
@@ -351,7 +355,7 @@
 
         <div class="auth-card">
             <h1 class="auth-title">
-                <span id="form-title">Login</span> <span class="dyn-site-name highlight">Member</span>
+                <span id="form-title">LOGIN</span> <span class="dyn-site-name highlight">MEMBER</span>
             </h1>
             <p id="form-subtitle" class="auth-subtitle">Silakan masuk untuk akses dashboard.</p>
             
@@ -371,18 +375,18 @@
                             <div class="auth-input-icon"><i data-lucide="lock"></i></div>
                             <input type="password" id="pass" class="auth-input-field" placeholder="••••••••" required>
                             <button type="button" class="auth-toggle-password" onclick="togglePasswordVisibility('pass', this)">
-                                <i data-lucide="eye"></i>
+                                <i data-lucide="eye-off"></i>
                             </button>
                         </div>
                     </div>
                     
                     <button type="submit" id="btn-login" class="auth-btn auth-btn-primary">
-                        Otentikasi Akun <i data-lucide="arrow-right"></i>
+                        Login
                     </button>
                 </form>
                 
                 <div class="auth-toggle-section">
-                    Belum punya akun? <button onclick="toggleAuthView('register')" class="auth-toggle-link">Daftar Di Sini</button>
+                    Belum punya akun? <button onclick="toggleAuthView('register')" class="auth-toggle-link">DaftAR DI SINI</button>
                 </div>
             </div>
 
@@ -408,7 +412,7 @@
                         <div class="auth-input-wrapper">
                             <input type="password" id="reg-pass" class="auth-input-field auth-input-field-no-icon" placeholder="Minimal 6 karakter" minlength="6" required>
                             <button type="button" class="auth-toggle-password" onclick="togglePasswordVisibility('reg-pass', this)">
-                                <i data-lucide="eye"></i>
+                                <i data-lucide="eye-off"></i>
                             </button>
                         </div>
                     </div>
@@ -650,14 +654,13 @@
             </div>
         </div>
     </div> <script>
-        // Set Ref ID jika ada di URL
+        // Cek URL Param
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
             if(ref) localStorage.setItem('melimpah_affiliate', ref); 
         })();
 
-        // GLOBAL TOAST FUNCTION
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
             let icon = type === 'error' ? 'x-circle' : (type === 'warning' ? 'alert-triangle' : 'check-circle');
@@ -670,7 +673,7 @@
         const DASHBOARD_CACHE_KEY = 'melimpah_dashboard_data';
 
         // ----------------------------------------------------
-        // LOGIC: SWITCH ANTARA AUTH SCREEN DAN MEMBER SCREEN
+        // LOGIKA PENGECEKAN SESI (PENGHUBUNG SCREEN 1 & 2)
         // ----------------------------------------------------
         function checkLoginStatus() {
             const email = sessionStorage.getItem('user_email');
@@ -678,60 +681,58 @@
             const memberScreen = document.getElementById('member-screen');
             
             if (email) {
-                // Sudah Login -> Masuk Member Area
                 authScreen.style.display = 'none';
                 memberScreen.style.display = 'flex';
                 
                 const userNama = sessionStorage.getItem('user_nama');
                 if (userNama) { document.getElementById('header-name').innerText = userNama.split(' ')[0]; }
-                
-                // Load data jika masuk member area
                 loadDashboard();
             } else {
-                // Belum Login -> Tampilkan Login/Register
                 authScreen.style.display = 'flex';
                 memberScreen.style.display = 'none';
             }
         }
 
         // ====================================================
-        // OTENTIKASI: LOGIN & REGISTER FUNCTIONS
+        // OTENTIKASI: LOGIN & REGISTER
         // ====================================================
         function toggleAuthView(view) {
             const viewLogin = document.getElementById('view-login');
             const viewRegister = document.getElementById('view-register');
             const formTitle = document.getElementById('form-title');
-            const formSubtitle = document.getElementById('form-subtitle');
 
             if (view === 'register') {
                 viewLogin.classList.add('hidden'); viewLogin.classList.remove('fade-in');
                 viewRegister.classList.remove('hidden'); viewRegister.classList.add('fade-in');
-                formTitle.innerText = 'Daftar'; formSubtitle.innerText = 'Buat akun gratis untuk mulai mengakses katalog.';
+                formTitle.innerText = 'DAFTAR';
             } else {
                 viewRegister.classList.add('hidden'); viewRegister.classList.remove('fade-in');
                 viewLogin.classList.remove('hidden'); viewLogin.classList.add('fade-in');
-                formTitle.innerText = 'Login'; formSubtitle.innerText = 'Silakan masuk untuk akses dashboard.';
+                formTitle.innerText = 'LOGIN';
             }
         }
 
         function togglePasswordVisibility(inputId, btnElement) {
             const input = document.getElementById(inputId);
             if (input.type === 'password') {
-                input.type = 'text'; btnElement.innerHTML = '<i data-lucide="eye-off"></i>';
+                input.type = 'text'; btnElement.innerHTML = '<i data-lucide="eye"></i>';
             } else {
-                input.type = 'password'; btnElement.innerHTML = '<i data-lucide="eye"></i>';
+                input.type = 'password'; btnElement.innerHTML = '<i data-lucide="eye-off"></i>';
             }
             lucide.createIcons({ root: btnElement });
         }
 
         document.getElementById('form-login').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn-login'); const originalText = btn.innerHTML;
-            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width:1.25rem;height:1.25rem;"></i>'; btn.disabled = true; lucide.createIcons();
+            const btn = document.getElementById('btn-login'); 
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width:1.25rem;height:1.25rem;"></i>'; 
+            btn.disabled = true; 
+            lucide.createIcons();
 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
-                if(!targetUrl) throw new Error("Config.js tidak terpanggil!");
+                if(!targetUrl) throw new Error("Config.js tidak ditemukan.");
                 
                 const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'login', email: document.getElementById('email').value, password: document.getElementById('pass').value }) });
                 const r = await res.json();
@@ -740,10 +741,15 @@
                     sessionStorage.setItem('user_email', r.data.email);
                     sessionStorage.setItem('user_nama', r.data.nama);
                     sessionStorage.setItem('user_id', r.data.id); 
-                    showToast("Login Berhasil! Mengalihkan...", "success");
+                    showToast("Login Berhasil! Memuat Dashboard...", "success");
                     
-                    // Transisi Mulus ke Dashboard
-                    setTimeout(() => { checkLoginStatus(); }, 800);
+                    setTimeout(() => { 
+                        checkLoginStatus(); 
+                        btn.innerHTML = originalText; 
+                        btn.disabled = false;
+                        document.getElementById('form-login').reset();
+                        lucide.createIcons();
+                    }, 800);
                 } else { 
                     showToast(r.message, "error"); 
                     btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons();
@@ -765,7 +771,7 @@
 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
-                if(!targetUrl) throw new Error("Config.js tidak terpanggil!");
+                if(!targetUrl) throw new Error("Config error.");
                 
                 const res = await fetch(targetUrl, { method: 'POST', body: JSON.stringify(pData) });
                 const r = await res.json();
@@ -780,9 +786,8 @@
             finally { if (btn.innerHTML.includes('loader')) { btn.innerText = originalText; btn.disabled = false; } }
         };
 
-
         // ====================================================
-        // DASHBOARD MEMBER AREA FUNCTIONS
+        // DASHBOARD MEMBER AREA
         // ====================================================
         function toggleSidebar() { 
             document.getElementById('sidebar').classList.toggle('open'); 
@@ -852,7 +857,7 @@
         function requestWithdrawal() {
             const saldoEl = document.getElementById('display-saldo-komisi').innerText;
             if(saldoEl === 'Rp 0' || saldoEl.includes('...')) { showToast("Belum ada saldo yang bisa dicairkan.", "warning"); return; }
-            if(!window.waAdminGlobal) { showToast("Sistem sedang memuat, silakan coba lagi.", "error"); return; }
+            if(!window.waAdminGlobal) { showToast("Sistem memuat admin, coba lagi.", "error"); return; }
             
             const uNama = sessionStorage.getItem('user_nama');
             const uId = sessionStorage.getItem('user_id');
@@ -1036,13 +1041,12 @@
             sessionStorage.clear();
             if (uEmail) localStorage.removeItem(DASHBOARD_CACHE_KEY + '_' + uEmail);
             
-            // Kembali tampilkan halaman login (keluar dari member screen)
-            checkLoginStatus();
+            checkLoginStatus(); // Langsung pindah ke halaman login
         }
 
         window.onload = () => {
             lucide.createIcons();
-            checkLoginStatus(); // Mengecek apakah user sudah login atau belum saat web dibuka
+            checkLoginStatus(); 
         };
     </script>
 </body>

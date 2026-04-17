@@ -21,7 +21,7 @@
                     link.href = data.site_favicon;
                 }
                 if(data.site_name) {
-                    document.title = document.title.replace(/Melimpah Digital/gi, data.site_name).replace(/Melimpah/gi, data.site_name);
+                    document.title = document.title.replace(/Melimpah Digital/gi, data.site_name).replace(/Melimpah/gi, data.site_name).replace(/SheetFlare/gi, data.site_name);
                 }
 
                 const updateDomElements = () => {
@@ -57,7 +57,7 @@
                             localStorage.setItem(CACHE_KEY, JSON.stringify({ data: r.data, time: now }));
                             applyGlobalSettings(r.data); 
                         }
-                    }).catch(e => console.error("Global Sync Failed", e));
+                    }).catch(e => {});
             }
         })();
     </script>
@@ -83,8 +83,7 @@
             
             --rose-50: #fff1f2; --rose-500: #f43f5e; --rose-600: #e11d48;
             --amber-50: #fffbeb; --amber-500: #f59e0b; --amber-600: #d97706;
-            --blue-50: #eff6ff; --blue-600: #2563eb;
-            --emerald-50: #ecfdf5; --emerald-600: #059669;
+            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-600: #2563eb;
         }
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; }
@@ -320,6 +319,15 @@
         .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
         div:where(.swal2-container) { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Tombol Set Home Page Styling */
+        .btn-set-home {
+            padding: 0.375rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid var(--brand-blue-light); background: var(--brand-blue-light); color: var(--brand-blue);
+        }
+        .btn-set-home:hover {
+            background: var(--brand-blue); color: white; border-color: var(--brand-blue);
+        }
+        .btn-set-home svg { width: 1rem; height: 1rem; }
     </style>
 </head>
 <body>
@@ -495,7 +503,7 @@
                 <div class="action-bar">
                     <h3 class="action-title">Halaman CMS</h3>
                     <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                        <button onclick="resetHome()" class="btn-outline"><i data-lucide="rotate-ccw"></i> Katalog Asli</button>
+                        <button onclick="resetHome()" class="btn-outline"><i data-lucide="rotate-ccw"></i> Reset Beranda ke Default</button>
                         <button onclick="openPageModal()" class="btn-primary">+ Buat Halaman</button>
                     </div>
                 </div>
@@ -543,8 +551,8 @@
                             
                             <div class="form-group"><label class="form-label">URL Logo</label><input type="url" data-key="site_logo" class="form-input"></div>
                             <div class="form-group"><label class="form-label">URL Favicon</label><input type="url" data-key="site_favicon" class="form-input"></div>
-                            <div class="form-group"><label class="form-label">Status Registrasi</label><select data-key="registration_open" class="form-select"><option value="true">Buka (True)</option><option value="false">Tutup (False)</option></select></div>
-                            <div class="form-group"><label class="form-label">Mode Perbaikan (Maintenance)</label><select data-key="maintenance_mode" class="form-select"><option value="false">Normal (False)</option><option value="true">Maintenance Aktif (True)</option></select></div>
+                            
+                            <input type="hidden" data-key="home_page_slug" id="home-page-slug-input">
                         </div>
                     </div>
 
@@ -1020,6 +1028,7 @@
                         <div class="action-btns">
                             <button onclick="window.open('/${p[1]}', '_blank')" class="btn-icon" title="Preview"><i data-lucide="external-link"></i></button>
                             <button onclick="editPage('${p[0]}')" class="btn-icon" title="Edit"><i data-lucide="edit"></i></button>
+                            <button onclick="setAsHomePage('${p[1]}')" class="btn-set-home" title="Jadikan Halaman Utama"><i data-lucide="home"></i></button>
                             <button onclick="deletePage('${p[0]}')" class="btn-icon rose" title="Hapus"><i data-lucide="trash-2"></i></button>
                         </div>
                     </td>
@@ -1284,6 +1293,48 @@
             document.getElementById('pg-id').value = p[0]; document.getElementById('pg-slug').value = p[1]; document.getElementById('pg-title').value = p[2]; document.getElementById('pg-content').value = p[3]; document.getElementById('pg-is-edit').value = 'true'; document.getElementById('modal-page').classList.remove('hidden'); 
         }
 
+        async function setAsHomePage(slug) {
+            const isConfirmed = await customConfirm(`Apakah Anda yakin ingin menjadikan halaman "/${slug}" ini sebagai Beranda utama website?`, 'Set Beranda');
+            if(!isConfirmed) return;
+            showToast('Memproses...', 'warning');
+
+            const payload = { home_page_slug: slug };
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: payload }) }); 
+                const data = await res.json();
+                if(data.status === 'success') { 
+                    showToast('Beranda berhasil diperbarui!', 'success'); 
+                    forceSync(true); 
+                } else { 
+                    showToast(data.message || 'Gagal mengubah beranda', 'error'); 
+                }
+            } catch(err) { 
+                showToast('Koneksi terputus', 'error'); 
+            }
+        }
+
+        async function resetHome() {
+            const isConfirmed = await customConfirm(`Kembalikan Beranda website ke Katalog Produk Bawaan Sistem?`, 'Reset Beranda');
+            if(!isConfirmed) return;
+            showToast('Memproses...', 'warning');
+
+            const payload = { home_page_slug: "" };
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'update_settings', payload: payload }) }); 
+                const data = await res.json();
+                if(data.status === 'success') { 
+                    showToast('Beranda dikembalikan ke Katalog!', 'success'); 
+                    forceSync(true); 
+                } else { 
+                    showToast(data.message || 'Gagal mereset beranda', 'error'); 
+                }
+            } catch(err) { 
+                showToast('Koneksi terputus', 'error'); 
+            }
+        }
+
         function openCouponModal() { 
             document.getElementById('form-coupon').reset(); 
             document.getElementById('c-is-edit').value = 'false'; 
@@ -1429,7 +1480,6 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
             document.getElementById('tab-'+t).classList.add('active'); document.getElementById('nav-'+t).classList.add('active'); 
             
-            // Atur Judul berdasarkan tab
             let titleText = t.charAt(0).toUpperCase() + t.slice(1);
             if (t === 'orders') titleText = `Halo, ${sessionStorage.getItem('adm_name') || 'Admin'} <span style="font-size: 1.25rem;">👋</span>`;
             else {

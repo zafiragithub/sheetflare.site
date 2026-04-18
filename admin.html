@@ -84,6 +84,7 @@
             --rose-50: #fff1f2; --rose-500: #f43f5e; --rose-600: #e11d48;
             --amber-50: #fffbeb; --amber-500: #f59e0b; --amber-600: #d97706;
             --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-600: #2563eb;
+            --emerald-50: #ecfdf5; --emerald-600: #059669;
         }
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-800); overflow: hidden; -webkit-font-smoothing: antialiased; }
@@ -603,7 +604,7 @@
                                 <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Duitku</h4>
                                 <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                                     <div class="form-group" style="margin: 0;"><label class="form-label">Merchant Code</label><input type="text" data-key="duitku_merchant_code" class="form-input"></div>
-                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="password" autocomplete="new-password" data-key="duitku_api_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="text" data-key="duitku_api_key" class="form-input"></div>
                                     <div class="form-group" style="margin: 0;"><label class="form-label">Environment</label><select data-key="duitku_env" class="form-select"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
                                 </div>
                             </div>
@@ -612,8 +613,8 @@
                                 <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Tripay</h4>
                                 <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                                     <div class="form-group" style="margin: 0;"><label class="form-label">Merchant Code</label><input type="text" data-key="tripay_merchant_code" class="form-input"></div>
-                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="password" autocomplete="new-password" data-key="tripay_api_key" class="form-input"></div>
-                                    <div class="form-group" style="margin: 0;"><label class="form-label">Private Key</label><input type="password" autocomplete="new-password" data-key="tripay_private_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="text" data-key="tripay_api_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Private Key</label><input type="text" data-key="tripay_private_key" class="form-input"></div>
                                     <div class="form-group" style="margin: 0;"><label class="form-label">Environment</label><select data-key="tripay_env" class="form-select"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
                                 </div>
                             </div>
@@ -623,11 +624,11 @@
                                 <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                                     <div class="form-group" style="margin: 0;">
                                         <label class="form-label">Secret API Key</label>
-                                        <input type="password" autocomplete="new-password" data-key="xendit_api_key" class="form-input" placeholder="xnd_development_...">
+                                        <input type="text" data-key="xendit_api_key" class="form-input" placeholder="xnd_development_...">
                                     </div>
                                     <div class="form-group" style="margin: 0;">
                                         <label class="form-label">Callback / Verification Token</label>
-                                        <input type="password" autocomplete="new-password" data-key="xendit_callback_token" class="form-input" placeholder="Dapatkan di Webhook Xendit">
+                                        <input type="text" data-key="xendit_callback_token" class="form-input" placeholder="Dapatkan di Webhook Xendit">
                                     </div>
                                 </div>
                             </div>
@@ -647,7 +648,7 @@
                                     <option value="starsender">StarSender</option> 
                                 </select>
                             </div>
-                            <div class="form-group full"><label class="form-label">API Token WhatsApp</label><input type="password" autocomplete="new-password" data-key="wa_token" class="form-input"></div>
+                            <div class="form-group full"><label class="form-label">API Token WhatsApp</label><input type="text" data-key="wa_token" class="form-input"></div>
                         </div>
                     </div>
 
@@ -676,7 +677,7 @@
                                     </div>
                                     <div class="form-group" style="margin: 0;">
                                         <label class="form-label">API Key / Token</label>
-                                        <input type="password" autocomplete="new-password" data-key="mail_api_key" class="form-input" placeholder="Token dari layanan email">
+                                        <input type="text" data-key="mail_api_key" class="form-input" placeholder="Token dari layanan email">
                                     </div>
                                 </div>
                             </div>
@@ -687,13 +688,13 @@
                         <h3 class="settings-title"><i data-lucide="cpu"></i> Integrasi API Lanjutan</h3>
                         <div class="form-grid">
                             <div class="form-group"><label class="form-label">Cloudflare Zone ID</label><input type="text" data-key="cf_zone_id" class="form-input" style="font-family: monospace;"></div>
-                            <div class="form-group"><label class="form-label">Cloudflare API Token</label><input type="password" autocomplete="new-password" data-key="cf_api_token" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group"><label class="form-label">Cloudflare API Token</label><input type="text" data-key="cf_api_token" class="form-input" style="font-family: monospace;"></div>
                             
                             <div class="form-group full" style="border-top: 1px solid var(--slate-200); padding-top: 1rem;"></div>
                             
                             <div class="form-group"><label class="form-label">ImageKit URL Endpoint</label><input type="url" data-key="ik_endpoint" class="form-input" style="font-family: monospace;"></div>
                             <div class="form-group"><label class="form-label">ImageKit Public Key</label><input type="text" data-key="ik_public_key" class="form-input" style="font-family: monospace;"></div>
-                            <div class="form-group full"><label class="form-label">ImageKit Private Key</label><input type="password" autocomplete="new-password" data-key="ik_private_key" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group full"><label class="form-label">ImageKit Private Key</label><input type="text" data-key="ik_private_key" class="form-input" style="font-family: monospace;"></div>
                         </div>
                     </div>
                     

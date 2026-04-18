@@ -2,6 +2,6 @@
 /dashboard   /dashboard.html   200
 /checkout    /checkout.html    200
 /akses       /akses.html       200
-/admin  /admin.html  200
+/admin       /admin.html       200
 /member      /member.html      200
 /* /index.html       200

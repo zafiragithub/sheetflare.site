@@ -322,7 +322,7 @@
         /* =========================================
            MODALS
            ========================================= */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); transition: opacity 0.3s; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); transition: opacity 0.3s; }
         .modal-card { background: white; border-radius: 0.75rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 28rem; padding: 2rem; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid var(--slate-200); position: relative; overflow: hidden; }
         
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; position: relative; z-index: 10; }
@@ -966,7 +966,29 @@
             if (r.prospek && r.prospek.length > 0) {
                 totalLead = r.prospek.length;
                 totalSales = r.prospek.filter(p => p.status === 'Lunas').length;
-                totalOmset = r.prospek.filter(p => p.status === 'Lunas').reduce((sum, p) => sum + (Number(p.harga_produk) || 0), 0);
+                
+                // --- PERBAIKAN FORMULA TOTAL OMSET ---
+                // Jika backend Google Script belum mengirimkan parameter 'harga_produk', 
+                // sistem akan otomatis melacak harga asli dari katalog berdasarkan nama produk.
+                totalOmset = r.prospek.filter(p => p.status === 'Lunas').reduce((sum, p) => {
+                    let nilaiTransaksi = 0;
+                    if (p.harga_produk && Number(p.harga_produk) > 0) {
+                        nilaiTransaksi = Number(p.harga_produk);
+                    } else if (p.tagihan && Number(p.tagihan) > 0) {
+                        nilaiTransaksi = Number(p.tagihan);
+                    } else {
+                        // Fallback: Cari harga di katalog
+                        const allKatalog = [...(r.owned || []), ...(r.available || [])];
+                        const match = allKatalog.find(item => p.produk && p.produk.includes(item.title));
+                        if (match && Number(match.harga) > 0) {
+                            nilaiTransaksi = Number(match.harga);
+                        } else if (Number(p.komisi) > 0) {
+                            // Fallback jika produk dihapus dari katalog tapi ada komisi
+                            nilaiTransaksi = Number(p.komisi) * 3; 
+                        }
+                    }
+                    return sum + nilaiTransaksi;
+                }, 0);
             }
             
             document.getElementById('stat-lead').innerText = totalLead;

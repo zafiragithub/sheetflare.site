@@ -61,6 +61,7 @@
             --brand-blue: #00AAE7;
             --brand-blue-hover: #0092c7;
             --brand-orange: #FF9800;
+            --brand-orange-hover: #e68900;
             
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
             --rose-500: #f43f5e;
@@ -163,7 +164,6 @@
         
         .sidebar-nav { padding: 1rem 1.25rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.15rem; }
         
-        /* Nav Item Category Label */
         .nav-category { font-size: 0.6875rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; padding: 1rem 0.875rem 0.5rem; }
         
         .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.875rem; font-weight: 600; font-size: 0.875rem; border-radius: 0.375rem; transition: all 0.2s; width: 100%; text-align: left; }
@@ -214,7 +214,6 @@
         @media (min-width: 768px) { .dashboard-body { padding: 2rem; } }
         .dashboard-container { max-width: 72rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
 
-        /* Dashboard Stats */
         .stat-grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
         @media (min-width: 1024px) { .stat-grid-4 { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
         
@@ -246,11 +245,11 @@
         .badge-pending { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
         .badge-expired { background: var(--slate-50); color: var(--slate-400); border-color: var(--slate-200); text-decoration: line-through; }
 
-        /* Cards Grid untuk Katalog / Materi */
         .grid-cards { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 768px) { .grid-cards { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .grid-cards { grid-template-columns: repeat(3, 1fr); } }
 
+        /* MATERI SAYA CARD (Existing) */
         .prod-card { background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.2s; }
         .prod-card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--slate-300); }
         
@@ -281,25 +280,56 @@
         .btn-bump:hover { background: var(--brand-orange-hover); }
         .btn-bump svg { width: 1rem; height: 1rem; }
 
+        /* =========================================
+           KATALOG CARD (SCALEV STYLE - SESUAI GAMBAR)
+           ========================================= */
+        .katalog-card { background-color: white; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; }
+        .katalog-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-4px); border-color: var(--slate-300); }
+        
+        .katalog-img-wrap { width: 100%; aspect-ratio: 1 / 1; background-color: var(--slate-100); position: relative; overflow: hidden; border-bottom: 1px solid var(--slate-100); }
+        .katalog-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .katalog-card:hover .katalog-img { transform: scale(1.05); }
+        
+        .katalog-badge { position: absolute; top: 1rem; left: 1rem; z-index: 10; background-color: white; color: var(--slate-900); padding: 0.375rem 0.75rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .katalog-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+        
+        .katalog-title { font-size: 1.125rem; font-weight: 800; color: var(--slate-900); margin-bottom: 0.5rem; line-height: 1.3; }
+        .katalog-desc { font-size: 0.875rem; color: var(--slate-500); margin-bottom: 1.5rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; font-weight: 500; }
+        
+        .katalog-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .katalog-price { font-size: 1.125rem; font-weight: 900; color: var(--slate-900); letter-spacing: -0.025em; }
+        
+        .katalog-action-row { display: flex; gap: 0.5rem; align-items: center; }
+        
+        /* Tombol Share */
+        .btn-share { padding: 0.625rem; border-radius: 0.375rem; border: 1px solid var(--slate-200); color: var(--slate-500); background: white; transition: all 0.2s; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-share:hover { border-color: var(--brand-blue); color: var(--brand-blue); background: var(--blue-50); transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2); }
+        .btn-share svg { width: 1.125rem; height: 1.125rem; pointer-events: none; }
+        
+        /* Tombol Lihat Detail (Warna Oranye) */
+        .btn-lihat-detail { background-color: var(--brand-orange); color: white; padding: 0.625rem 1.25rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.75rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(255, 152, 0, 0.2); border: none; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-lihat-detail:hover { background-color: var(--brand-orange-hover); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(255, 152, 0, 0.3); }
+
         .empty-state { grid-column: 1 / -1; background: white; border: 1px dashed var(--slate-300); padding: 2.5rem; border-radius: 0.5rem; text-align: center; }
         .empty-icon { width: 3rem; height: 3rem; background: var(--slate-100); color: var(--slate-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
         .empty-icon svg { width: 1.5rem; height: 1.5rem; }
         .empty-text { color: var(--slate-500); font-weight: 600; font-size: 0.875rem; }
 
-        .dash-footer { margin-top: 4rem; text-align: center; border-top: 1px solid var(--slate-200); padding-top: 2rem; max-width: 72rem; margin-inline: auto; }
+        .dash-footer { margin-top: 4rem; text-align: center; border-top: 1px solid var(--slate-200); padding: 2rem; max-width: 72rem; margin-inline: auto; }
         .dash-footer p { font-size: 0.625rem; font-weight: 700; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.1em; }
 
         /* =========================================
            MODALS
            ========================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); transition: opacity 0.3s; }
-        .modal-card { background: white; border-radius: 0.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 28rem; padding: 2rem; transition: transform 0.2s; border: 1px solid var(--slate-200); }
+        .modal-card { background: white; border-radius: 0.75rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 28rem; padding: 2rem; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid var(--slate-200); position: relative; overflow: hidden; }
         
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-title { font-size: 1.125rem; font-weight: 800; color: var(--slate-900); }
-        .btn-close { color: var(--slate-400); padding: 0.25rem; border-radius: 0.25rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-close:hover { background: var(--slate-100); color: var(--slate-800); }
-        .btn-close svg { width: 1.25rem; height: 1.25rem; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; position: relative; z-index: 10; }
+        .modal-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: -0.025em; }
+        .btn-close { color: var(--slate-400); padding: 0.25rem; border-radius: 0.25rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; background: white; border: 1px solid transparent; cursor: pointer; }
+        .btn-close:hover { background: var(--rose-50); color: var(--rose-500); border-color: var(--rose-200); transform: rotate(90deg); }
+        .btn-close svg { width: 1.25rem; height: 1.25rem; pointer-events: none;}
 
         .modal-form-group { margin-bottom: 1rem; }
         .modal-form-label { display: block; font-size: 0.6875rem; font-weight: 700; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
@@ -313,20 +343,26 @@
         .btn-modal-save:hover { background: var(--slate-900); }
         .btn-modal-save svg { width: 1rem; height: 1rem; }
 
-        .modal-desc { font-size: 0.875rem; color: var(--slate-500); margin-bottom: 1.5rem; }
-        .aff-link-box { background: white; border: 1px solid var(--slate-200); border-radius: 0.375rem; padding: 1rem; margin-bottom: 1rem; }
-        .aff-link-box.primary { border-color: var(--slate-300); background: var(--slate-50); }
-        .aff-link-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
-        .aff-link-title { font-weight: 700; color: var(--slate-800); font-size: 0.875rem; }
-        .aff-link-icon { color: var(--slate-400); }
-        .aff-link-box.primary .aff-link-icon { color: var(--slate-600); }
-        .aff-link-icon svg { width: 1.25rem; height: 1.25rem; }
+        .modal-desc { font-size: 0.875rem; color: var(--slate-500); margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5; }
+
+        .aff-link-box { background: white; border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1rem; position: relative; overflow: hidden; transition: all 0.2s; }
+        .aff-link-box:hover { border-color: var(--brand-blue); box-shadow: 0 4px 12px -2px rgba(0, 170, 231, 0.15); transform: translateY(-2px); }
         
-        .btn-copy { width: 100%; margin-top: 0.75rem; background: white; border: 1px solid var(--slate-300); color: var(--slate-700); padding: 0.625rem 1rem; border-radius: 0.25rem; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .btn-copy:hover { background: var(--slate-50); }
-        .btn-copy.primary { background: var(--slate-800); color: white; border-color: var(--slate-900); }
-        .btn-copy.primary:hover { background: var(--slate-900); }
-        .btn-copy svg { width: 1rem; height: 1rem; }
+        .aff-link-box.theme-orange { border-left: 4px solid var(--brand-orange); }
+        .aff-link-box.theme-orange .btn-copy { background: var(--brand-orange); color: white; border: none; box-shadow: 0 4px 6px -1px rgba(255, 152, 0, 0.3); }
+        .aff-link-box.theme-orange .btn-copy:hover { background: var(--brand-orange-hover); }
+        .aff-link-box.theme-orange .aff-link-icon { color: var(--brand-orange); background: #fff7ed; padding: 0.5rem; border-radius: 0.5rem; }
+        
+        .aff-link-box.theme-blue { border-left: 4px solid var(--brand-blue); }
+        .aff-link-box.theme-blue .btn-copy { background: var(--brand-blue); color: white; border: none; box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.3); }
+        .aff-link-box.theme-blue .btn-copy:hover { background: var(--brand-blue-hover); }
+        .aff-link-box.theme-blue .aff-link-icon { color: var(--brand-blue); background: var(--blue-50); padding: 0.5rem; border-radius: 0.5rem; }
+
+        .aff-link-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .aff-link-title { font-weight: 800; color: var(--slate-800); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .btn-copy { width: 100%; padding: 0.75rem 1rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+        .btn-copy svg { width: 1rem; height: 1rem; pointer-events: none; }
 
         .skeleton { background: var(--slate-200); background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%); border-radius: 0.25rem; background-size: 200% 100%; animation: 1.5s shine linear infinite; }
         .skel-title { height: 1.25rem; width: 75%; margin-bottom: 0.75rem; }
@@ -338,10 +374,11 @@
 </head>
 <body>
 
+    <div id="toast-container"></div>
+
     <div id="auth-screen">
         <div class="bg-orb bg-orb-1"></div>
         <div class="bg-orb bg-orb-2"></div>
-        <div id="toast-container"></div>
 
         <div class="auth-card">
             <h1 class="auth-title">
@@ -546,14 +583,19 @@
                             <h2 class="section-title">Katalog Produk</h2>
                         </div>
                         <div id="list-available" class="grid-cards">
-                            <div class="card">
-                                <div class="card-badge-wrap"><span class="card-badge avail skeleton" style="width: 5rem; height: 1rem; border: none;"></span></div>
-                                <div class="skeleton skel-title"></div>
-                                <div class="skeleton skel-text"></div>
-                                <div class="skeleton skel-text-short"></div>
-                                <div class="skeleton skel-price"></div>
-                                <div class="card-actions" style="border: none; padding-top: 0;">
-                                    <div class="skeleton skel-btn"></div>
+                            <div class="katalog-card">
+                                <div class="katalog-img-wrap skeleton"></div>
+                                <div class="katalog-body">
+                                    <div class="skeleton skel-title"></div>
+                                    <div class="skeleton skel-text"></div>
+                                    <div class="skeleton skel-text-short"></div>
+                                    <div class="katalog-footer">
+                                        <div class="skeleton skel-price" style="margin-bottom:0; width: 40%;"></div>
+                                        <div class="katalog-action-row" style="width: auto;">
+                                            <div class="skeleton skel-btn" style="margin-bottom:0; width: 2.25rem; height: 2.25rem; border-radius: 0.375rem;"></div>
+                                            <div class="skeleton skel-btn" style="margin-bottom:0; width: 6rem; height: 2.25rem; border-radius: 0.375rem;"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -625,22 +667,22 @@
             <div class="modal-card" id="affiliate-modal-content" style="transform: scale(0.95); opacity: 0;">
                 <div class="modal-header">
                     <h3 class="modal-title">Salin Link Affiliate</h3>
-                    <button onclick="closeAffiliateModal()" class="btn-close"><i data-lucide="x"></i></button>
+                    <button onclick="closeAffiliateModal()" class="btn-close" title="Tutup Modal"><i data-lucide="x"></i></button>
                 </div>
-                <p class="modal-desc">Pilih link promosi yang ingin Anda bagikan untuk mendapatkan komisi.</p>
+                <p class="modal-desc">Pilih link promosi yang ingin Anda bagikan. Anda akan mendapatkan komisi dari setiap penjualan.</p>
                 
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <div class="aff-link-box primary">
+                    <div class="aff-link-box theme-orange">
                         <div class="aff-link-header">
                             <h4 class="aff-link-title">Link Landing Page</h4>
-                            <i data-lucide="layout-template" class="aff-link-icon"></i>
+                            <div class="aff-link-icon"><i data-lucide="layout-template"></i></div>
                         </div>
-                        <button onclick="copySpecificLink('lp')" class="btn-copy primary">Salin Link <i data-lucide="copy"></i></button>
+                        <button onclick="copySpecificLink('lp')" class="btn-copy">Salin Link <i data-lucide="copy"></i></button>
                     </div>
-                    <div class="aff-link-box">
+                    <div class="aff-link-box theme-blue">
                         <div class="aff-link-header">
                             <h4 class="aff-link-title">Link Checkout Instan</h4>
-                            <i data-lucide="shopping-cart" class="aff-link-icon"></i>
+                            <div class="aff-link-icon"><i data-lucide="shopping-cart"></i></div>
                         </div>
                         <button onclick="copySpecificLink('checkout')" class="btn-copy">Salin Link <i data-lucide="copy"></i></button>
                     </div>
@@ -654,6 +696,7 @@
             if(ref) localStorage.setItem('melimpah_affiliate', ref); 
         })();
 
+        // === AUTO-FALLBACK COPY ===
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
             let icon = type === 'error' ? 'x-circle' : (type === 'warning' ? 'alert-triangle' : 'check-circle');
@@ -661,6 +704,58 @@
             container.appendChild(toast); lucide.createIcons({ root: toast });
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        window.tempAffiliateData = { lp_url: '', checkout_url: '' };
+        
+        function openAffiliateModal(productId, lpUrl) {
+            const currentUserId = sessionStorage.getItem('user_id') || 'GUEST'; 
+            let currentUrl = window.location.href; let dir = currentUrl.substring(0, currentUrl.lastIndexOf('/')); if(dir === "" || dir === currentUrl) dir = window.location.origin; 
+            
+            window.tempAffiliateData.checkout_url = `${dir}/checkout?id=${productId}&ref=${currentUserId}`;
+            window.tempAffiliateData.lp_url = (lpUrl && lpUrl.trim() !== "") ? `${dir}/${lpUrl.replace(/^\/|\/$/g, '').trim()}?ref=${currentUserId}` : `${dir}/?ref=${currentUserId}`;
+            
+            const m = document.getElementById('affiliate-modal'); const c = document.getElementById('affiliate-modal-content'); 
+            m.classList.remove('hidden'); void m.offsetWidth; m.style.opacity = '1'; c.style.transform = 'scale(1)'; c.style.opacity = '1';
+        }
+
+        function closeAffiliateModal() { 
+            const m = document.getElementById('affiliate-modal'); const c = document.getElementById('affiliate-modal-content'); 
+            m.style.opacity = '0'; c.style.transform = 'scale(0.95)'; c.style.opacity = '0';
+            setTimeout(() => { m.classList.add('hidden'); }, 300); 
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(`✅ Link berhasil disalin!`, "success");
+                closeAffiliateModal();
+            } catch (err) {
+                showToast(`Gagal menyalin link otomatis.`, "error");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function copySpecificLink(type) { 
+            const linkToCopy = type === 'lp' ? window.tempAffiliateData.lp_url : window.tempAffiliateData.checkout_url;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(linkToCopy).then(() => {
+                    showToast(`✅ Link berhasil disalin!`, "success");
+                    closeAffiliateModal();
+                }).catch(() => {
+                    fallbackCopy(linkToCopy);
+                });
+            } else {
+                fallbackCopy(linkToCopy);
+            }
         }
 
         const DASHBOARD_CACHE_KEY = 'melimpah_dashboard_data';
@@ -826,26 +921,6 @@
             m.style.opacity = '0'; c.style.transform = 'scale(0.95)'; c.style.opacity = '0';
             setTimeout(() => { m.classList.add('hidden'); document.getElementById('input-password-lama').value = ''; document.getElementById('input-password-baru').value = ''; document.getElementById('input-konfirmasi-password').value = ''; }, 200); 
         }
-        
-        window.tempAffiliateData = { lp_url: '', checkout_url: '' };
-        function openAffiliateModal(productId, lpUrl) {
-            const currentUserId = sessionStorage.getItem('user_id') || 'GUEST'; 
-            let currentUrl = window.location.href; let dir = currentUrl.substring(0, currentUrl.lastIndexOf('/')); if(dir === "" || dir === currentUrl) dir = window.location.origin; 
-            window.tempAffiliateData.checkout_url = `${dir}/checkout?id=${productId}&ref=${currentUserId}`;
-            window.tempAffiliateData.lp_url = (lpUrl && lpUrl.trim() !== "") ? `${dir}/${lpUrl.replace(/^\/|\/$/g, '').trim()}?ref=${currentUserId}` : `${dir}/?ref=${currentUserId}`;
-            
-            const m = document.getElementById('affiliate-modal'); const c = document.getElementById('affiliate-modal-content'); 
-            m.classList.remove('hidden'); void m.offsetWidth; m.style.opacity = '1'; c.style.transform = 'scale(1)'; c.style.opacity = '1';
-        }
-        function closeAffiliateModal() { 
-            const m = document.getElementById('affiliate-modal'); const c = document.getElementById('affiliate-modal-content'); 
-            m.style.opacity = '0'; c.style.transform = 'scale(0.95)'; c.style.opacity = '0';
-            setTimeout(() => { m.classList.add('hidden'); }, 200); 
-        }
-        function copySpecificLink(type) { 
-            navigator.clipboard.writeText(type === 'lp' ? window.tempAffiliateData.lp_url : window.tempAffiliateData.checkout_url); 
-            showToast(`Link berhasil disalin!`, "success"); closeAffiliateModal(); 
-        }
 
         async function prosesUpdateRekening(event) {
             if(event) event.preventDefault(); 
@@ -949,26 +1024,32 @@
             if (r.available && r.available.length > 0) {
                 availableContainer.innerHTML = r.available.reverse().map(p => {
                     const targetLink = (p.lp_url && p.lp_url !== "") ? `/${p.lp_url.replace(/^\/|\/$/g, '').trim()}` : `/checkout?id=${p.id}`;
+                    const imgUrl = p.gambar || 'https://ik.imagekit.io/maihfdgfn5/download.png';
+                    
                     return `
-                    <div class="card">
-                        <div class="card-badge-wrap"><span class="card-badge avail"><i data-lucide="tag"></i> Tersedia</span></div>
-                        <h3 class="card-title">${p.title}</h3>
-                        <p class="card-desc">${p.desc}</p>
-                        <span class="card-price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
-                        
-                        <div class="card-actions">
-                            <div class="action-row">
-                                <a href="${targetLink}" class="btn-main" style="background: var(--slate-800);">Beli Sekarang</a>
-                                <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-icon">
-                                    <i data-lucide="share-2"></i>
-                                </button>
+                    <div class="katalog-card">
+                        <div class="katalog-img-wrap">
+                            <span class="katalog-badge">Produk Digital</span>
+                            <img src="${imgUrl}" alt="${p.title}" class="katalog-img" loading="lazy">
+                        </div>
+                        <div class="katalog-body">
+                            <h3 class="katalog-title">${p.title}</h3>
+                            <p class="katalog-desc">${p.desc || 'Akses materi premium dan fitur lengkap kami di sini.'}</p>
+                            <div class="katalog-footer">
+                                <span class="katalog-price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
+                                <div class="katalog-action-row">
+                                    <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-share" title="Bagikan Link Affiliate">
+                                        <i data-lucide="share-2"></i>
+                                    </button>
+                                    <a href="${targetLink}" class="btn-lihat-detail">Lihat Detail</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     `;
                 }).join('');
             } else {
-                availableContainer.innerHTML = `<p class="empty-state" style="border:none; background: transparent;">Katalog kosong.</p>`;
+                availableContainer.innerHTML = `<div class="empty-state"><div class="empty-icon"><i data-lucide="package-x"></i></div><p class="empty-text">Katalog kosong.</p></div>`;
             }
 
             const prospekContainer = document.getElementById('list-prospek');

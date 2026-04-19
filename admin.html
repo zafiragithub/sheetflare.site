@@ -321,13 +321,8 @@
 
         div:where(.swal2-container) { font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        /* Tombol Set Home Page Styling */
-        .btn-set-home {
-            padding: 0.375rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid var(--brand-blue-light); background: var(--brand-blue-light); color: var(--brand-blue);
-        }
-        .btn-set-home:hover {
-            background: var(--brand-blue); color: white; border-color: var(--brand-blue);
-        }
+        .btn-set-home { padding: 0.375rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid var(--brand-blue-light); background: var(--brand-blue-light); color: var(--brand-blue); }
+        .btn-set-home:hover { background: var(--brand-blue); color: white; border-color: var(--brand-blue); }
         .btn-set-home svg { width: 1rem; height: 1rem; }
     </style>
 </head>
@@ -416,6 +411,7 @@
                 <div class="header-user">
                     <span id="sync-status" class="sync-badge">Sync...</span>
                     <span id="admin-name" class="admin-name" style="display:none;">Admin</span>
+                    <div class="admin-avatar"><i data-lucide="user"></i></div>
                     <button onclick="forceSync(false)" class="btn-refresh" title="Refresh Data"><i data-lucide="refresh-cw"></i></button>
                 </div>
             </header>
@@ -680,10 +676,21 @@
                                         <input type="text" data-key="mail_api_key" class="form-input" placeholder="Token dari layanan email">
                                     </div>
                                     <div class="form-group" style="margin: 0;">
-    <label class="form-label">ID List Autoresponder (Khusus Mailketing)</label>
-    <input type="text" data-key="mailketing_list_id" class="form-input" placeholder="Masukkan ID List Mailketing">
-</div>
+                                        <label class="form-label">ID List Autoresponder (Khusus Mailketing)</label>
+                                        <input type="text" data-key="mailketing_list_id" class="form-input" placeholder="Masukkan ID List Mailketing">
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="line-chart"></i> Tracking & Analytics</h3>
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label class="form-label">ID Meta Pixel (Facebook Ads)</label>
+                                <input type="number" data-key="meta_pixel_id" class="form-input" placeholder="Contoh: 2189480848543217">
+                                <p style="font-size: 0.625rem; color: var(--slate-500); margin-top: 0.5rem;">* Kosongkan jika Anda tidak menggunakan iklan Facebook/Meta Ads.</p>
                             </div>
                         </div>
                     </div>
@@ -1491,6 +1498,7 @@
                 if (t === 'lms') titleText = 'LMS Creator';
                 if (t === 'affiliate') titleText = 'Komisi Affiliate';
                 if (t === 'coupons') titleText = 'Manajemen Kupon';
+                if (t === 'settings') titleText = 'Pengaturan Master';
             }
             document.querySelector('.header-title').innerHTML = titleText; 
             

@@ -11,19 +11,48 @@
     <script src="config.js?v=2026"></script>
 
     <script>
+        // Fungsi untuk menyuntikkan Meta Pixel dari Admin Panel
+        function injectMetaPixel(pixelId) {
+            if(!pixelId || pixelId.trim() === "") return;
+            if(window.fbq) return; // Cegah injeksi dobel jika sudah ada
+
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            
+            fbq('init', pixelId);
+            fbq('track', 'PageView');
+            console.log("🔥 Meta Pixel Aktif: " + pixelId);
+        }
+
         (function() {
             const CACHE_KEY = 'melimpah_global_settings';
             let cachedFav = localStorage.getItem('site_favicon');
             if(cachedFav) { let link = document.createElement('link'); link.rel = 'icon'; link.href = cachedFav; document.head.appendChild(link); }
+            
             try {
                 let cachedSet = localStorage.getItem(CACHE_KEY);
-                if(cachedSet) { let d = JSON.parse(cachedSet).data; if(d.site_name) document.title = `Checkout - ${d.site_name}`; }
-            }catch(e){}
+                if(cachedSet) { 
+                    let d = JSON.parse(cachedSet).data; 
+                    if(d.site_name) document.title = `Checkout - ${d.site_name}`; 
+                    if(d.meta_pixel_id) injectMetaPixel(d.meta_pixel_id);
+                }
+            } catch(e){}
             
             if(typeof window.SCRIPT_URL !== 'undefined' || typeof SCRIPT_URL !== 'undefined') {
                 const targetUrl = window.SCRIPT_URL || SCRIPT_URL;
                 fetch(targetUrl, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) }).then(res => res.json()).then(r => {
-                    if(r.status === 'success' && r.data) { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: r.data, time: Date.now() })); if(r.data.site_favicon && cachedFav !== r.data.site_favicon) { localStorage.setItem('site_favicon', r.data.site_favicon); } }
+                    if(r.status === 'success' && r.data) { 
+                        localStorage.setItem(CACHE_KEY, JSON.stringify({ data: r.data, time: Date.now() })); 
+                        if(r.data.site_favicon && cachedFav !== r.data.site_favicon) { localStorage.setItem('site_favicon', r.data.site_favicon); }
+                        // Suntik Pixel dari data terbaru server
+                        if(r.data.meta_pixel_id && !window.fbq) injectMetaPixel(r.data.meta_pixel_id);
+                    }
                 }).catch(e => {});
             }
         })();
@@ -168,14 +197,6 @@
         .btn-wa:hover { background-color: #16a34a; }
         .btn-wa svg { width: 1rem; height: 1rem; }
     </style>
-    
-    <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '2189480848543217'); fbq('track', 'PageView'); 
-    </script>
 </head>
 <body>
 
@@ -494,7 +515,7 @@
         async function loadProduct() {
             if(!productId) { window.location.href = '/'; return; }
             const affId = localStorage.getItem('melimpah_affiliate'); let isFormVisible = false;
-            const forceRefresh = newSearchParams = new URLSearchParams(window.location.search).get('refresh');
+            const forceRefresh = new URLSearchParams(window.location.search).get('refresh');
 
             if (!forceRefresh) {
                 const cachedData = localStorage.getItem('melimpah_product_' + productId);

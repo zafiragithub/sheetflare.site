@@ -245,13 +245,13 @@
         .badge-pending { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
         .badge-expired { background: var(--slate-50); color: var(--slate-400); border-color: var(--slate-200); text-decoration: line-through; }
 
-        /* 🔥 PERUBAHAN GRID MENJADI 4 KOLOM PADA LAYAR BESAR 🔥 */
-        .grid-cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        @media (min-width: 640px) { .grid-cards { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .grid-cards { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } }
-        @media (min-width: 1280px) { .grid-cards { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
+        /* 🔥 GRID KATALOG LEBIH KECIL (4 PER BARIS) 🔥 */
+        .grid-cards { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1rem; }
+        @media (min-width: 640px) { .grid-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .grid-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+        @media (min-width: 1280px) { .grid-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; } }
 
-        /* MATERI SAYA CARD */
+        /* MATERI SAYA CARD (Rata Atas Bawah) */
         .prod-card { background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.2s; }
         .prod-card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--slate-300); }
         
@@ -265,7 +265,7 @@
         .card-desc { font-size: 0.75rem; color: var(--slate-500); margin-bottom: 2rem; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
         .card-price { font-size: 1rem; font-weight: 800; color: var(--slate-900); margin-bottom: 1rem; }
 
-        .card-actions { border-top: 1px solid var(--slate-100); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .card-actions { border-top: 1px solid var(--slate-100); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; margin-top: auto; }
         .action-row { display: flex; gap: 0.5rem; }
         
         .btn-main { flex: 1; background: var(--slate-800); color: white; padding: 0.625rem 1rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background 0.2s; border: none; }
@@ -283,7 +283,7 @@
         .btn-bump svg { width: 1rem; height: 1rem; }
 
         /* =========================================
-           KATALOG CARD (SCALEV STYLE) DIPERPADAT
+           KATALOG CARD (Rata Atas Bawah & 1 Baris Footer)
            ========================================= */
         .katalog-card { background-color: white; border-radius: 0.5rem; border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; }
         .katalog-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-4px); border-color: var(--slate-300); }
@@ -299,18 +299,19 @@
         .katalog-title { font-size: 1rem; font-weight: 800; color: var(--slate-900); margin-bottom: 0.5rem; line-height: 1.3; }
         .katalog-desc { font-size: 0.75rem; color: var(--slate-500); margin-bottom: 1.25rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; font-weight: 500; }
         
-        .katalog-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-wrap: wrap; gap: 0.5rem; }
-        .katalog-price { font-size: 1rem; font-weight: 900; color: var(--slate-900); letter-spacing: -0.025em; }
+        /* Footer dibikin 1 baris paksa */
+        .katalog-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-wrap: nowrap; gap: 0.25rem; overflow: hidden; }
+        .katalog-price { font-size: 0.875rem; font-weight: 900; color: var(--slate-900); letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
         
-        .katalog-action-row { display: flex; gap: 0.5rem; align-items: center; }
+        .katalog-action-row { display: flex; gap: 0.25rem; align-items: center; flex-shrink: 0; }
         
         /* Tombol Share */
-        .btn-share { padding: 0.5rem; border-radius: 0.375rem; border: 1px solid var(--slate-200); color: var(--slate-500); background: white; transition: all 0.2s; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-share { padding: 0.4rem; border-radius: 0.375rem; border: 1px solid var(--slate-200); color: var(--slate-500); background: white; transition: all 0.2s; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .btn-share:hover { border-color: var(--brand-blue); color: var(--brand-blue); background: var(--blue-50); transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2); }
         .btn-share svg { width: 1rem; height: 1rem; pointer-events: none; }
         
-        /* Tombol Lihat Detail (Warna Oranye) */
-        .btn-lihat-detail { background-color: var(--brand-orange); color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.6875rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(255, 152, 0, 0.2); border: none; display: inline-flex; align-items: center; justify-content: center; }
+        /* Tombol Beli */
+        .btn-lihat-detail { background-color: var(--brand-orange); color: white; padding: 0.4rem 0.75rem; border-radius: 0.375rem; font-weight: 800; font-size: 0.6875rem; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(255, 152, 0, 0.2); border: none; display: inline-flex; align-items: center; justify-content: center; }
         .btn-lihat-detail:hover { background-color: var(--brand-orange-hover); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(255, 152, 0, 0.3); }
 
         .empty-state { grid-column: 1 / -1; background: white; border: 1px dashed var(--slate-300); padding: 2.5rem; border-radius: 0.5rem; text-align: center; }
@@ -565,7 +566,7 @@
                             <h2 class="section-title">Materi Saya</h2>
                         </div>
                         <div id="list-owned" class="grid-cards">
-                            <div class="card">
+                            <div class="prod-card">
                                 <div class="card-badge-wrap"><span class="card-badge owned skeleton" style="width: 4rem; height: 1rem; border: none;"></span></div>
                                 <div class="skeleton skel-title"></div>
                                 <div class="skeleton skel-text"></div>
@@ -595,7 +596,7 @@
                                         <div class="skeleton skel-price" style="margin-bottom:0; width: 40%;"></div>
                                         <div class="katalog-action-row" style="width: auto;">
                                             <div class="skeleton skel-btn" style="margin-bottom:0; width: 2.25rem; height: 2.25rem; border-radius: 0.375rem;"></div>
-                                            <div class="skeleton skel-btn" style="margin-bottom:0; width: 6rem; height: 2.25rem; border-radius: 0.375rem;"></div>
+                                            <div class="skeleton skel-btn" style="margin-bottom:0; width: 4rem; height: 2.25rem; border-radius: 0.375rem;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -997,7 +998,7 @@
                     }
 
                     return `
-                    <div class="card">
+                    <div class="prod-card">
                         <div class="card-badge-wrap"><span class="card-badge owned"><i data-lucide="check-circle-2"></i> Aktif</span></div>
                         <h3 class="card-title">${p.title}</h3>
                         <p class="card-desc">${p.desc}</p>
@@ -1044,7 +1045,7 @@
                                     <button onclick="openAffiliateModal('${p.id}', '${p.lp_url || ''}')" class="btn-share" title="Bagikan Link Affiliate">
                                         <i data-lucide="share-2"></i>
                                     </button>
-                                    <a href="${targetLink}" class="btn-lihat-detail">Lihat Detail</a>
+                                    <a href="${targetLink}" class="btn-lihat-detail">Beli</a>
                                 </div>
                             </div>
                         </div>

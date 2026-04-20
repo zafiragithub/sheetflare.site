@@ -64,7 +64,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SheetFlare Admin V13.0 - CMS Edition</title>
+    <title>Aplikasi Kasir Modern Admin V13.0 - CMS Edition</title>
     
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script> 
@@ -331,10 +331,493 @@
     <div id="toast-container"></div>
 
     <div id="login-overlay">
+        <div class="login-bg-shape top"></div>
+        <div class="login-bg-shape bottom"></div>
+        
+        <div class="login-card">
+            <div class="login-logo">
+                <i data-lucide="shield-check" style="width: 2rem; height: 2rem;"></i>
+            </div>
+            <h1>Login Master</h1>
+            <p>Area terbatas khusus pengelola <span class="dyn-site-name font-bold" style="color: var(--brand-blue);">SheetFlare</span>.</p>
+            
+            <form id="form-login">
+                <div class="login-form-group">
+                    <label>Email Master</label>
+                    <div class="login-input-wrap">
+                        <div class="login-input-icon"><i data-lucide="mail"></i></div>
+                        <input type="email" id="adm-email" class="login-input" required>
+                    </div>
+                </div>
+                <div class="login-form-group">
+                    <label>Password</label>
+                    <div class="login-input-wrap">
+                        <div class="login-input-icon"><i data-lucide="lock"></i></div>
+                        <input type="password" id="adm-pass" class="login-input" required style="padding-right: 3.25rem;">
+                        <button type="button" onclick="togglePass()" class="login-btn-toggle"><i data-lucide="eye" id="eye-icon"></i></button>
+                    </div>
+                </div>
+                <button type="submit" id="btn-login" class="btn-login-submit">Masuk Panel</button>
+            </form>
+            
+            <div class="login-footer">
+                <a href="/">&larr; Kembali ke Beranda</a>
+            </div>
         </div>
+    </div>
 
     <div id="admin-main">
+        
+        <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-brand"><i data-lucide="layers"></i> <span class="dyn-site-name">SHEETFLARE</span></span>
+                <button onclick="toggleSidebar()" class="sidebar-close"><i data-lucide="x"></i></button>
+            </div>
+            
+            <nav class="sidebar-nav custom-scroll">
+                <button onclick="switchTab('orders')" id="nav-orders" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</button>
+                <button onclick="switchTab('products')" id="nav-products" class="nav-item"><i data-lucide="package"></i> Produk</button>
+                <button onclick="switchTab('coupons')" id="nav-coupons" class="nav-item"><i data-lucide="ticket"></i> Kupon Diskon</button>
+                
+                <div class="nav-divider"></div>
+                
+                <button onclick="switchTab('affiliate')" id="nav-affiliate" class="nav-item"><i data-lucide="users"></i> Komisi Affiliate</button>
+                <button onclick="switchTab('lms')" id="nav-lms" class="nav-item"><i data-lucide="graduation-cap"></i> Kelas LMS</button>
+                
+                <div class="nav-divider"></div>
+
+                <button onclick="switchTab('pages')" id="nav-pages" class="nav-item"><i data-lucide="file-text"></i> Halaman CMS</button>
+                <button onclick="switchTab('media')" id="nav-media" class="nav-item"><i data-lucide="image"></i> Media Center</button>
+                
+                <div class="nav-divider"></div>
+                <button onclick="switchTab('settings')" id="nav-settings" class="nav-item"><i data-lucide="settings"></i> Pengaturan</button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="/" target="_blank" class="sidebar-link"><i data-lucide="external-link"></i> Kunjungi Website</a>
+                <button onclick="logout()" class="sidebar-logout"><i data-lucide="log-out"></i> Keluar Panel</button>
+            </div>
+        </aside>
+
+        <main class="main-content custom-scroll">
+            
+            <header class="top-header">
+                <div class="header-title-wrap">
+                    <button onclick="toggleSidebar()" class="btn-menu"><i data-lucide="menu"></i></button>
+                    <h2 id="tab-title" class="header-title">Halo, Admin 👋</h2>
+                </div>
+                <div class="header-user">
+                    <span id="sync-status" class="sync-badge">Sync...</span>
+                    <span id="admin-name" class="admin-name" style="display:none;">Admin</span>
+                    <div class="admin-avatar"><i data-lucide="user"></i></div>
+                    <button onclick="forceSync(false)" class="btn-refresh" title="Refresh Data"><i data-lucide="refresh-cw"></i></button>
+                </div>
+            </header>
+
+            <div id="tab-orders" class="tab-content active">
+                <div class="stat-grid">
+                    <div class="stat-card solid-blue">
+                        <p class="stat-label">Est. Gross Revenue <i data-lucide="info" style="width: 14px; height: 14px;"></i></p>
+                        <h3 id="stat-rev" class="stat-value">Rp 0</h3>
+                    </div>
+                    <div class="stat-card solid-orange">
+                        <p class="stat-label">Count <i data-lucide="info" style="width: 14px; height: 14px;"></i></p>
+                        <h3 id="stat-orders" class="stat-value">0</h3>
+                    </div>
+                </div>
+                
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Invoice</th><th>Customer</th><th>Produk</th><th>Status</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="list-orders"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-affiliate" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Pencairan Komisi Affiliate</h3>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%">Affiliate ID</th>
+                                <th style="width: 25%">Detail Member</th>
+                                <th style="width: 25%">Info Rekening</th>
+                                <th style="width: 15%">Saldo Komisi</th>
+                                <th style="width: 20%; text-align: right;">Aksi Panel</th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-affiliates"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-products" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Katalog Produk (<span id="count-prod">0</span>)</h3>
+                    <button onclick="openProdModal()" class="btn-primary">+ Produk Baru</button>
+                </div>
+                <div id="list-products" class="prod-grid"></div>
+            </div>
+
+            <div id="tab-coupons" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Manajemen Kupon Diskon</h3>
+                    <button onclick="openCouponModal()" class="btn-primary">+ Kupon Baru</button>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 20%">Kode Kupon</th><th style="width: 25%">Tipe & Nilai</th><th style="width: 20%">Status</th><th style="width: 20%">Berlaku Untuk</th><th style="width: 15%; text-align: right;">Aksi</th></tr>
+                        </thead>
+                        <tbody id="list-coupons"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-lms" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Materi Kelas LMS</h3>
+                    <button onclick="openLmsModal()" class="btn-primary">+ Setup Kelas Baru</button>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 25%">Produk ID</th><th style="width: 40%">Total Video</th><th style="width: 35%; text-align: right;">Link Sakti & Aksi</th></tr>
+                        </thead>
+                        <tbody id="list-lms"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-pages" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="action-title">Halaman CMS</h3>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button onclick="resetHome()" class="btn-outline"><i data-lucide="rotate-ccw"></i> Reset Beranda ke Default</button>
+                        <button onclick="openPageModal()" class="btn-primary">+ Buat Halaman</button>
+                    </div>
+                </div>
+                <div class="table-wrap custom-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr><th style="width: 35%">Judul Halaman</th><th style="width: 35%">URL Permalinks</th><th style="width: 30%; text-align: right;">Aksi Panel</th></tr>
+                        </thead>
+                        <tbody id="list-pages"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-media" class="tab-content">
+                <div class="media-box">
+                    <h3>Media Center</h3>
+                    <p>Upload file gambar Anda ke CDN ImageKit untuk performa maksimal.</p>
+                    <div class="media-upload-area">
+                        <input type="file" id="media-file" class="media-input">
+                        <button onclick="uploadMedia()" id="btn-upload" class="btn-primary" style="width: auto;">UPLOAD SEKARANG</button>
+                    </div>
+                </div>
+                <div id="media-res-box" class="media-res-box hidden">
+                    <p class="stat-label" style="color: var(--brand-blue); margin-bottom: 0.5rem;">Berhasil Diupload. Silakan copy link di bawah:</p>
+                    <div class="media-res-flex">
+                        <input type="text" id="media-url-res" readonly class="media-res-input">
+                        <button onclick="copyLink()" class="btn-primary" style="width: auto; padding: 1rem;">COPY LINK</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="tab-content">
+                <div class="action-bar">
+                    <h3 class="header-title" style="font-size: 1.5rem;">Master Settings</h3>
+                    <button onclick="triggerPurgeCache()" id="btn-purge" class="btn-outline" style="color: var(--brand-orange); border-color: var(--amber-200); background: var(--amber-50);"><i data-lucide="eraser"></i> Purge CF Cache</button>
+                </div>
+                
+                <form id="admin-settings-form">
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="layout"></i> Umum & Tampilan</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">Nama Website</label><input type="text" data-key="site_name" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">Tagline</label><input type="text" data-key="site_tagline" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">URL Website Utama</label><input type="url" data-key="site_url" class="form-input"></div>
+                            
+                            <div class="form-group"><label class="form-label">URL Logo</label><input type="url" data-key="site_logo" class="form-input"></div>
+                            <div class="form-group"><label class="form-label">URL Favicon</label><input type="url" data-key="site_favicon" class="form-input"></div>
+                            
+                            <input type="hidden" data-key="home_page_slug" id="home-page-slug-input">
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="credit-card"></i> Gerbang Pembayaran</h3>
+                        
+                        <div style="background: var(--slate-50); padding: 1.5rem; border-radius: 0.375rem; border: 1px solid var(--slate-200); margin-bottom: 1.5rem;">
+                            <h4 style="font-size: 0.875rem; font-weight: 800; color: var(--slate-800); margin-bottom: 1rem;">Metode Pembayaran Aktif</h4>
+                            
+                            <div style="margin-bottom: 1.5rem;">
+                                <label class="form-label">Manual Transfer</label>
+                                <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--slate-700);">
+                                    <input type="checkbox" data-key="is_manual_active" class="form-checkbox"> Aktifkan Transfer Bank Manual
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <label class="form-label">Payment Gateway Otomatis (Pilih Salah Satu)</label>
+                                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="duitku" class="form-radio"> Duitku
+                                    </label>
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="tripay" class="form-radio"> Tripay
+                                    </label>
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="xendit" class="form-radio"> Xendit
+                                    </label>
+                                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--slate-700);">
+                                        <input type="radio" name="auto_gateway" data-key="auto_gateway" value="none" class="form-radio"> Nonaktifkan
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 0.375rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Transfer Manual</h4>
+                                <div class="form-grid">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Nama Bank Lokal</label><input type="text" data-key="bank_name" class="form-input" placeholder="Contoh: BCA"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">No Rekening</label><input type="text" data-key="bank_norek" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Atas Nama Bank</label><input type="text" data-key="bank_owner" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Token Moota</label><input type="text" data-key="moota_token" class="form-input" placeholder="*Opsional (Mutasi Otomatis)"></div>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 0.375rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Duitku</h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Merchant Code</label><input type="text" data-key="duitku_merchant_code" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="text" data-key="duitku_api_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Environment</label><select data-key="duitku_env" class="form-select"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 0.375rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Tripay</h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Merchant Code</label><input type="text" data-key="tripay_merchant_code" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">API Key</label><input type="text" data-key="tripay_api_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Private Key</label><input type="text" data-key="tripay_private_key" class="form-input"></div>
+                                    <div class="form-group" style="margin: 0;"><label class="form-label">Environment</label><select data-key="tripay_env" class="form-select"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></div>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 0.375rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial Xendit</h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Secret API Key</label>
+                                        <input type="text" data-key="xendit_api_key" class="form-input" placeholder="xnd_development_...">
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Callback / Verification Token</label>
+                                        <input type="text" data-key="xendit_callback_token" class="form-input" placeholder="Dapatkan di Webhook Xendit">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="message-circle"></i> WhatsApp & Notifikasi</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">No WA Admin</label><input type="number" data-key="wa_admin" class="form-input" placeholder="628123xxxx"></div>
+                            <div class="form-group">
+                                <label class="form-label">Pilih WA Gateway</label>
+                                <select data-key="wa_gateway" class="form-select">
+                                    <option value="onesender">OneSender (Default)</option>
+                                    <option value="fonnte">Fonnte</option>
+                                    <option value="starsender">StarSender</option> 
+                                </select>
+                            </div>
+                            <div class="form-group full"><label class="form-label">API Token WhatsApp</label><input type="text" data-key="wa_token" class="form-input"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="mail"></i> Email Gateway Server</h3>
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label class="form-label">Pilih Provider Email</label>
+                                <select data-key="mail_provider" class="form-select" onchange="toggleEmailFields()">
+                                    <option value="google">Google Mail (Bawaan / Gratis)</option>
+                                    <option value="mailketing">Mailketing API</option>
+                                    <option value="kirimemail">Kirim.Email REST API</option>
+                                </select>
+                                <p style="font-size: 0.625rem; color: var(--slate-500); margin-top: 0.5rem;">* Google gratis tapi limit 100 email/hari.</p>
+                            </div>
+                            
+                            <div class="form-group"><label class="form-label">Nama Pengirim</label><input type="text" data-key="mail_sender_name" class="form-input" placeholder="Sistem SheetFlare"></div>
+                            <div class="form-group"><label class="form-label">Email Pengirim</label><input type="email" data-key="mail_sender_email" class="form-input" placeholder="no-reply@domainanda.com"></div>
+                            
+                            <div id="email-api-box" class="form-group full hidden" style="border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 0.375rem; background: var(--slate-50); margin-top: 0.5rem;">
+                                <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1rem; color: var(--slate-800);">Kredensial API Email</h4>
+                                <div class="form-grid">
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">Username / Akun ID</label>
+                                        <input type="text" data-key="mail_username" class="form-input" placeholder="(Wajib untuk Kirim.Email)">
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">API Key / Token</label>
+                                        <input type="text" data-key="mail_api_key" class="form-input" placeholder="Token dari layanan email">
+                                    </div>
+                                    <div class="form-group" style="margin: 0;">
+                                        <label class="form-label">ID List Autoresponder (Khusus Mailketing)</label>
+                                        <input type="text" data-key="mailketing_list_id" class="form-input" placeholder="Masukkan ID List Mailketing">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="line-chart"></i> Tracking & Analytics</h3>
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label class="form-label">ID Meta Pixel (Facebook Ads)</label>
+                                <input type="number" data-key="meta_pixel_id" class="form-input" placeholder="Contoh: 2189480848543217">
+                                <p style="font-size: 0.625rem; color: var(--slate-500); margin-top: 0.5rem;">* Kosongkan jika Anda tidak menggunakan iklan Facebook/Meta Ads.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-title"><i data-lucide="cpu"></i> Integrasi API Lanjutan</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">Cloudflare Zone ID</label><input type="text" data-key="cf_zone_id" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group"><label class="form-label">Cloudflare API Token</label><input type="text" data-key="cf_api_token" class="form-input" style="font-family: monospace;"></div>
+                            
+                            <div class="form-group full" style="border-top: 1px solid var(--slate-200); padding-top: 1rem;"></div>
+                            
+                            <div class="form-group"><label class="form-label">ImageKit URL Endpoint</label><input type="url" data-key="ik_endpoint" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group"><label class="form-label">ImageKit Public Key</label><input type="text" data-key="ik_public_key" class="form-input" style="font-family: monospace;"></div>
+                            <div class="form-group full"><label class="form-label">ImageKit Private Key</label><input type="text" data-key="ik_private_key" class="form-input" style="font-family: monospace;"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="btn-save-settings" class="btn-dark" style="padding: 1.25rem;"><i data-lucide="save"></i> Simpan Semua Pengaturan</button>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modal-confirm" class="modal-overlay hidden">
+        <div class="modal-card md" style="text-align: center; padding: 2rem;">
+            <div style="width: 3rem; height: 3rem; border-radius: 50%; background: var(--amber-50); color: var(--brand-orange); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;"><i data-lucide="help-circle"></i></div>
+            <h3 class="modal-title" id="confirm-title" style="font-style: normal; margin-bottom: 0.5rem; border: none;">Konfirmasi</h3>
+            <p style="color: var(--slate-500); font-size: 0.875rem; margin-bottom: 2rem;" id="confirm-msg">Yakin ingin melanjutkan tindakan ini?</p>
+            <div style="display: flex; gap: 1rem;">
+                <button id="btn-confirm-cancel" class="btn-outline" style="flex: 1;">Batal</button>
+                <button id="btn-confirm-ok" class="btn-primary" style="flex: 1; background: var(--brand-orange);">Ya, Lanjutkan</button>
+            </div>
         </div>
+    </div>
+
+    <div id="modal-coupon" class="modal-overlay hidden">
+        <div class="modal-card md">
+            <h3 class="modal-title">Setup Kupon</h3>
+            <form id="form-coupon">
+                <input type="hidden" id="c-is-edit">
+                <input type="hidden" id="c-old-code">
+                
+                <div class="form-group">
+                    <label class="form-label">Kode Promo</label>
+                    <input type="text" id="c-code" class="form-input" style="text-transform: uppercase;" placeholder="Misal: DISKON50" required>
+                </div>
+                
+                <div class="form-grid" style="gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Tipe Diskon</label>
+                        <select id="c-type" class="form-select">
+                            <option value="Persen">Persentase (%)</option>
+                            <option value="Nominal">Nominal (Rp)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Nilai Potongan</label>
+                        <input type="number" id="c-val" class="form-input" placeholder="Misal: 50" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Berlaku Untuk Produk</label>
+                    <input type="text" id="c-products" class="form-input" placeholder="Kosongkan u/ semua. (ID: PRD-01)">
+                    <span class="td-sub">*Pisahkan dengan koma jika lebih dari 1</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status Kupon</label>
+                    <select id="c-status" class="form-select">
+                        <option value="Active">Aktif</option>
+                        <option value="Inactive">Nonaktif / Expired</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-coupon')" class="btn-cancel">BATAL</button>
+                    <button type="submit" class="btn-primary">Simpan Kupon</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-prod" class="modal-overlay hidden">
+        <div class="modal-card lg">
+            <h3 class="modal-title">Setup Produk</h3>
+            <form id="form-prod">
+                <input type="hidden" id="p-is-edit">
+                <input type="hidden" id="p-status" value="Active">
+                
+                <div class="form-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;"><label class="form-label">ID Produk</label><input type="text" id="p-id" class="form-input" placeholder="PRD-01" required></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Harga (Rp)</label><input type="number" id="p-harga" class="form-input" placeholder="Harga" required></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Komisi (%)</label><input type="number" id="p-komisi" class="form-input" placeholder="Komisi" required></div>
+                </div>
+                
+                <div class="form-group"><label class="form-label">Nama Produk</label><input type="text" id="p-title" class="form-input" required></div>
+                <div class="form-group"><label class="form-label">Gambar Produk (URL)</label><input type="url" id="p-gambar" class="form-input" placeholder="URL Gambar"></div>
+                <div class="form-group"><label class="form-label">URL Landing Page</label><input type="text" id="p-lp" class="form-input" placeholder="/promo" required></div>
+                <div class="form-group"><label class="form-label">Link Akses Materi</label><input type="text" id="p-url" class="form-input" required></div>
+                <div class="form-group"><label class="form-label">Deskripsi Singkat</label><textarea id="p-desc" class="form-textarea"></textarea></div>
+                
+                <div style="background: var(--slate-50); border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 0.375rem; margin-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.875rem; font-weight: 800; color: var(--slate-800); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="zap" style="width: 1rem; color: var(--brand-orange);"></i> Order Bump (Upsell)</h4>
+                        <select id="p-bump-status" class="form-select" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem;" onchange="toggleBumpFields()">
+                            <option value="Inactive">Nonaktif</option>
+                            <option value="Active">Aktifkan</option>
+                        </select>
+                    </div>
+                    <div id="bump-fields" class="hidden" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <input type="text" id="p-bump-title" class="form-input" placeholder="Judul Penawaran Bump">
+                        <input type="number" id="p-bump-price" class="form-input" placeholder="Harga Bump (Rp)">
+                        <input type="text" id="p-bump-url" class="form-input" placeholder="Link Akses Order Bump">
+                        <textarea id="p-bump-desc" class="form-textarea custom-scroll" placeholder="Kalimat ajakan bump"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-prod')" class="btn-cancel">BATAL</button>
+                    <button type="submit" class="btn-primary">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div id="modal-lms" class="modal-overlay hidden">
         <div class="modal-card lg">
@@ -373,6 +856,11 @@
                 
                 <div class="form-group">
                     <label class="form-label">Deskripsi / Pengumuman Kelas</label>
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="insertAtCursor('lms-desc', '<b>Teks Tebal</b>')" class="btn-toolbar">Tebal</button>
+                        <button type="button" onclick="insertAtCursor('lms-desc', '<i>Teks Miring</i>')" class="btn-toolbar">Miring</button>
+                        <button type="button" onclick="insertAtCursor('lms-desc', '<br>\n')" class="btn-toolbar">Enter</button>
+                    </div>
                     <textarea id="lms-desc" class="editor-textarea custom-scroll" placeholder="Instruksi tambahan..."></textarea>
                 </div>
                 
@@ -384,8 +872,48 @@
         </div>
     </div>
 
+    <div id="modal-page" class="modal-overlay hidden">
+        <div class="modal-card xl">
+            <h3 class="modal-title">Editor Halaman CMS</h3>
+            <form id="form-page">
+                <input type="hidden" id="pg-id">
+                <input type="hidden" id="pg-is-edit">
+                
+                <div class="form-grid" style="margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Judul Halaman</label>
+                        <input type="text" id="pg-title" class="form-input" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">URL Slug (Permalink)</label>
+                        <input type="text" id="pg-slug" class="form-input" style="font-family: monospace; color: var(--brand-blue);" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Editor HTML</label>
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="insertAtCursor('pg-content', '<h2>Subjudul</h2>\n')" class="btn-toolbar">H2</button>
+                        <button type="button" onclick="insertAtCursor('pg-content', '<p>Tulis paragraf disini...</p>\n')" class="btn-toolbar">Paragraf</button>
+                        <button type="button" onclick="insertAtCursor('pg-content', '<b>Teks Tebal</b>')" class="btn-toolbar">Tebal</button>
+                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                            <button type="button" onclick="insertAtCursor('pg-content', '<a href=\'URL_DISINI\'>Nama Link</a>\n')" class="btn-toolbar link">+ Link</button>
+                            <button type="button" onclick="insertAtCursor('pg-content', '<img src=\'URL_GAMBAR\' class=\'w-full my-4\'>\n')" class="btn-toolbar img">+ Gambar</button>
+                        </div>
+                    </div>
+                    <textarea id="pg-content" class="editor-textarea custom-scroll" required></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('modal-page')" class="btn-cancel">BATAL</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="save"></i> Simpan & Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-                function showToast(message, type = 'success') {
+        function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -920,7 +1448,7 @@
         function copyLink() { const c = document.getElementById('media-url-res'); c.select(); document.execCommand('copy'); showToast('Berhasil dicopy!', 'success'); }
         
         function openLmsModal() {
-            document.getElementById('form-lms').reset(); document.getElementById('lms-result-box').classList.add('hidden');
+            document.getElementById('form-lms').reset(); 
             const container = document.getElementById('video-list-container'); container.innerHTML = ''; addVideoInput(); 
             document.getElementById('modal-lms').classList.remove('hidden');
         }
@@ -929,19 +1457,22 @@
         function editLms(p_id) {
             const lms = cachedLms.find(x => x[0] === p_id);
             if (!lms) { showToast('Data kelas tidak ditemukan.', 'error'); return; }
-            document.getElementById('form-lms').reset(); document.getElementById('lms-result-box').classList.add('hidden');
-            document.getElementById('lms-product-id').value = lms[0]; document.getElementById('lms-desc').value = lms[2] || '';
+            document.getElementById('form-lms').reset(); 
+            document.getElementById('lms-product-id').value = lms[0]; 
+            document.getElementById('lms-desc').value = lms[2] || '';
+            
+            // Populating Setting Sertifikat
+            document.getElementById('lms-cert-leader').value = lms[3] || '';
+            document.getElementById('lms-cert-org').value = lms[4] || '';
+            document.getElementById('lms-cert-stamp').value = lms[5] || '';
+
             const container = document.getElementById('video-list-container'); container.innerHTML = '';
             try { 
                 const videos = JSON.parse(lms[1] || "[]"); 
                 if(videos.length > 0) { 
                     videos.forEach(v => addVideoInput(v.title, v.id, v.desc || v.description || '')); 
-                } else { 
-                    addVideoInput(); 
-                } 
-            } catch(e) { 
-                addVideoInput(); 
-            }
+                } else { addVideoInput(); } 
+            } catch(e) { addVideoInput(); }
             document.getElementById('modal-lms').classList.remove('hidden');
         }
 
@@ -963,7 +1494,7 @@
             const linkInput = document.getElementById('lms-generated-link'); linkInput.select(); document.execCommand('copy'); showToast('Link Sakti LMS Berhasil Disalin!', 'success');
         }
 
-        // FUNGSI UPDATE: Mengambil value textarea deskripsi
+        // FUNGSI UPDATE: Menyimpan data sertifikat dan deskripsi video
         document.getElementById('form-lms').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.querySelector('#form-lms button[type="submit"]'); const originalText = btn.innerHTML;
@@ -973,25 +1504,43 @@
             videoItems.forEach(item => { 
                 const title = item.querySelector('.vid-title').value; 
                 const vidId = item.querySelector('.vid-id').value; 
-                const desc = item.querySelector('.vid-desc').value; // Mengambil deskripsi
+                const desc = item.querySelector('.vid-desc').value;
                 if(title && vidId) videosArray.push({ title, id: vidId, desc }); 
             });
             
             if (videosArray.length === 0) { showToast('Minimal harus ada 1 video!', 'warning'); btn.innerHTML = originalText; btn.disabled = false; return; }
-            const p_id = document.getElementById('lms-product-id').value; const descValue = document.getElementById('lms-desc').value;
-            const payload = { action: 'save_lms_materi', product_id: p_id, videos: JSON.stringify(videosArray), desc: descValue };
+            
+            const p_id = document.getElementById('lms-product-id').value; 
+            const descValue = document.getElementById('lms-desc').value;
+            const certLeader = document.getElementById('lms-cert-leader').value;
+            const certOrg = document.getElementById('lms-cert-org').value;
+            const certStamp = document.getElementById('lms-cert-stamp').value;
+
+            const payload = { 
+                action: 'save_lms_materi', 
+                product_id: p_id, 
+                videos: JSON.stringify(videosArray), 
+                desc: descValue,
+                cert_leader: certLeader,
+                cert_organizer: certOrg,
+                cert_stamp: certStamp
+            };
             
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
                 const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }); const r = await res.json();
                 if(r.status === 'success') {
-                    showToast('Materi LMS Tersimpan di Backend!', 'success');
-                    document.getElementById('lms-generated-link').value = `/akses-lms.html?id=${p_id}`; document.getElementById('lms-result-box').classList.remove('hidden');
+                    showToast('Materi & Pengaturan Tersimpan!', 'success');
                     const existingIdx = cachedLms.findIndex(x => x[0] === p_id);
-                    if(existingIdx > -1) { cachedLms[existingIdx][1] = JSON.stringify(videosArray); cachedLms[existingIdx][2] = descValue; } else { cachedLms.push([p_id, JSON.stringify(videosArray), descValue]); }
+                    if(existingIdx > -1) { 
+                        cachedLms[existingIdx] = [p_id, JSON.stringify(videosArray), descValue, certLeader, certOrg, certStamp]; 
+                    } else { 
+                        cachedLms.push([p_id, JSON.stringify(videosArray), descValue, certLeader, certOrg, certStamp]); 
+                    }
+                    closeModal('modal-lms');
                     renderLmsTable(); setTimeout(() => forceSync(true), 1000); 
-                } else { showToast(r.message || 'Gagal menyimpan LMS.', 'error'); }
-            } catch(err) { showToast('Koneksi backend LMS terputus.', 'error'); } finally { btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons(); }
+                } else { showToast(r.message || 'Gagal menyimpan.', 'error'); }
+            } catch(err) { showToast('Koneksi terputus.', 'error'); } finally { btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons(); }
         };
 
         function switchTab(t) { 
@@ -1104,79 +1653,6 @@
         };
 
         window.onload = () => { lucide.createIcons(); if(sessionStorage.getItem('adm_v10')) init(); };
-
-        // UPDATE: Saat Load Edit LMS
-        function editLms(p_id) {
-            const lms = cachedLms.find(x => x[0] === p_id);
-            if (!lms) { showToast('Data kelas tidak ditemukan.', 'error'); return; }
-            document.getElementById('form-lms').reset(); 
-            document.getElementById('lms-product-id').value = lms[0]; 
-            document.getElementById('lms-desc').value = lms[2] || '';
-            
-            // Populating Setting Sertifikat
-            document.getElementById('lms-cert-leader').value = lms[3] || '';
-            document.getElementById('lms-cert-org').value = lms[4] || '';
-            document.getElementById('lms-cert-stamp').value = lms[5] || '';
-
-            const container = document.getElementById('video-list-container'); container.innerHTML = '';
-            try { 
-                const videos = JSON.parse(lms[1] || "[]"); 
-                if(videos.length > 0) { 
-                    videos.forEach(v => addVideoInput(v.title, v.id, v.desc || '')); 
-                } else { addVideoInput(); } 
-            } catch(e) { addVideoInput(); }
-            document.getElementById('modal-lms').classList.remove('hidden');
-        }
-
-        // UPDATE: Saat Submit LMS Save
-        document.getElementById('form-lms').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.querySelector('#form-lms button[type="submit"]'); const originalText = btn.innerHTML;
-            btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1rem; margin-right: 0.5rem;"></i> MENYIMPAN...'; btn.disabled = true; lucide.createIcons();
-            
-            const videoItems = document.querySelectorAll('.video-item'); const videosArray = [];
-            videoItems.forEach(item => { 
-                const title = item.querySelector('.vid-title').value; 
-                const vidId = item.querySelector('.vid-id').value; 
-                const desc = item.querySelector('.vid-desc').value;
-                if(title && vidId) videosArray.push({ title, id: vidId, desc }); 
-            });
-            
-            if (videosArray.length === 0) { showToast('Minimal harus ada 1 video!', 'warning'); btn.innerHTML = originalText; btn.disabled = false; return; }
-            
-            const p_id = document.getElementById('lms-product-id').value; 
-            const descValue = document.getElementById('lms-desc').value;
-            const certLeader = document.getElementById('lms-cert-leader').value;
-            const certOrg = document.getElementById('lms-cert-org').value;
-            const certStamp = document.getElementById('lms-cert-stamp').value;
-
-            // Payload Diperbarui dengan data sertifikat
-            const payload = { 
-                action: 'save_lms_materi', 
-                product_id: p_id, 
-                videos: JSON.stringify(videosArray), 
-                desc: descValue,
-                cert_leader: certLeader,
-                cert_organizer: certOrg,
-                cert_stamp: certStamp
-            };
-            
-            try {
-                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
-                const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }); const r = await res.json();
-                if(r.status === 'success') {
-                    showToast('Materi & Pengaturan Tersimpan!', 'success');
-                    const existingIdx = cachedLms.findIndex(x => x[0] === p_id);
-                    if(existingIdx > -1) { 
-                        cachedLms[existingIdx] = [p_id, JSON.stringify(videosArray), descValue, certLeader, certOrg, certStamp]; 
-                    } else { 
-                        cachedLms.push([p_id, JSON.stringify(videosArray), descValue, certLeader, certOrg, certStamp]); 
-                    }
-                    closeModal('modal-lms');
-                    renderLmsTable(); setTimeout(() => forceSync(true), 1000); 
-                } else { showToast(r.message || 'Gagal menyimpan.', 'error'); }
-            } catch(err) { showToast('Koneksi terputus.', 'error'); } finally { btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons(); }
-        };
     </script>
 </body>
 </html>

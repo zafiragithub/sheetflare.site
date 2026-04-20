@@ -4,17 +4,23 @@
     <script>
         const isUser = sessionStorage.getItem('user_email');
         const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
-        if (!isUser && !isAdmin) { window.location.replace('/login'); }
+        if (!isUser && !isAdmin) {
+            window.location.replace('/login');
+        }
     </script>
 
     <link rel="preconnect" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+
     <script src="config.js?v=2026"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     
     <script>
-    (function() {
+        (function() {
             window.waAdminGlobal = '';
             
             function applyBrandSettings(data) {
@@ -235,26 +241,92 @@
 <body>
 
     <div id="toast-container"></div>
-    <div id="loader"><i data-lucide="loader" class="animate-spin"></i><p class="animate-pulse">Memverifikasi Akses...</p></div>
+
+    <div id="loader">
+        <i data-lucide="loader" class="animate-spin"></i>
+        <p class="animate-pulse">Memverifikasi Akses...</p>
+    </div>
+
+    <header class="header hidden" id="header-ui">
+        <div class="header-left">
+            <a href="/member" class="btn-back">
+                <i data-lucide="arrow-left"></i> <span>Dashboard</span>
+            </a>
+            <div class="header-divider"></div>
+            <div>
+                <p class="header-info-sub">Sedang Dipelajari</p>
+                <h1 id="header-product-id" class="header-info-title">Memuat Data...</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-wrapper hidden" id="main-ui">
+        <div class="content-area custom-scroll">
+            <div class="video-wrapper-bg">
+                <div class="video-container">
+                    <iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="info-container">
+                <div class="info-header">
+                    <div>
+                        <h2 id="lms-title" class="video-title">Pilih video di playlist</h2>
+                    </div>
+                    <button id="btn-cert" class="btn-certificate hidden" onclick="downloadCertificate()">
+                        <i data-lucide="award"></i> Cetak Sertifikat
+                    </button>
+                </div>
+
+                <div class="desc-box">
+                    <h3 class="desc-box-title"><i data-lucide="file-text"></i> Keterangan Video</h3>
+                    <div id="video-desc" class="desc-content">
+                        <i>Pilih video untuk melihat keterangan.</i>
+                    </div>
+                </div>
+
+                <div class="desc-box">
+                    <h3 class="desc-box-title"><i data-lucide="book-open"></i> Deskripsi Kelas Umum</h3>
+                    <div id="lms-desc" class="desc-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="playlist-sidebar">
+            <div class="playlist-header">
+                <h3 class="playlist-title">Kurikulum</h3>
+                <span id="video-count" class="playlist-count">0 Video</span>
+            </div>
+            <div id="video-playlist" class="playlist-scroll custom-scroll"></div>
+        </aside>
+    </main>
 
     <div id="cert-wrapper">
         <div id="certificate-template" style="width: 1000px; height: 700px; padding: 40px; text-align: center; background: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; position: relative; color: #1e293b; overflow: hidden;">
+            
             <div style="position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 3px solid #00AAE7; z-index: 1;"></div>
             <div style="position: absolute; top: 22px; left: 22px; right: 22px; bottom: 22px; border: 1px solid #cbd5e1; z-index: 1;"></div>
             
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.03; z-index: 1;">
+                <svg width="450" height="450" viewBox="0 0 24 24" fill="none" stroke="#00AAE7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+
             <div style="position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                
                 <div style="margin-bottom: 30px;">
                     <h1 style="font-family: 'Playfair Display', serif; font-size: 56px; color: #0f172a; margin: 0; letter-spacing: 6px; text-transform: uppercase;">Sertifikat</h1>
                     <h2 style="font-family: 'Playfair Display', serif; font-size: 22px; color: #00AAE7; margin: 5px 0 0 0; letter-spacing: 8px; text-transform: uppercase;">Penyelesaian Kelas</h2>
                 </div>
 
                 <p style="font-size: 16px; color: #64748b; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Diberikan Dengan Bangga Kepada:</p>
+                
                 <h2 id="cert-name" style="font-family: 'Playfair Display', serif; font-size: 48px; color: #0f172a; margin: 0 0 25px 0; border-bottom: 2px solid #e2e8f0; display: inline-block; padding: 0 50px 10px 50px; font-weight: 800; font-style: italic;">Nama Peserta</h2>
                 
                 <p style="font-size: 16px; color: #64748b; margin: 10px 0 10px 0; max-width: 700px; line-height: 1.6;">Atas dedikasi dan keberhasilannya dalam menyelesaikan seluruh rangkaian materi pembelajaran eksklusif pada kelas:</p>
+                
                 <h3 id="cert-course" style="font-size: 26px; color: #00AAE7; margin: 15px 0 50px 0; font-weight: 800; max-width: 800px; text-transform: uppercase;">Nama Kelas Ecourse</h3>
                 
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 85%; margin-top: auto; padding-bottom: 10px; position: relative;">
+                    
                     <div style="text-align: center; width: 220px;">
                         <p id="cert-date" style="font-size: 16px; color: #0f172a; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid #94a3b8; padding-bottom: 5px;"></p>
                         <p style="font-size: 14px; color: #64748b; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 1px;">Tanggal Kelulusan</p>
@@ -272,11 +344,27 @@
                         <p style="font-size: 16px; color: #0f172a; font-weight: 800; margin: 0;" id="cert-val-org">Penyelenggara Resmi</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
     <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if(!container) return alert(message);
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'check-circle';
+            if (type === 'error') icon = 'x-circle';
+            if (type === 'warning') icon = 'alert-triangle';
+            toast.innerHTML = `<i data-lucide="${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            if(typeof lucide !== 'undefined') lucide.createIcons({ root: toast });
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
         // INISIALISASI VARIABEL GLOBAL
         let globalVideos = [];
         let watchedVideos = new Set(); 
@@ -285,25 +373,112 @@
         async function verifyAndLoad() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            // Logika verifikasi akses sama seperti sebelumnya...
+            const userEmail = sessionStorage.getItem('user_email');
+            const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
+
+            if (!userEmail && !isAdmin) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Sesi login berakhir. Silakan login kembali.", "error");
+                setTimeout(() => { window.location.replace('/login'); }, 2000);
+                return;
+            }
+
+            if (!productId) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Link materi tidak valid (ID Produk hilang).", "error");
+                setTimeout(() => { window.location.replace('/dashboard'); }, 2000);
+                return;
+            }
 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const payloadEmail = (isAdmin && !userEmail) ? "" : userEmail;
+
                 const res = await fetch(targetUrl, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'get_lms_materi', email: userEmail, product_id: productId })
+                    body: JSON.stringify({ action: 'get_lms_materi', email: payloadEmail, product_id: productId })
                 });
+                
                 const r = await res.json();
 
                 if (r.status === 'success') {
+                    document.getElementById('header-product-id').innerText = "Produk: " + r.data.product_id;
+                    document.getElementById('lms-desc').innerHTML = r.data.desc || "<i>Belum ada deskripsi untuk kelas ini.</i>";
+                    
                     // Update Variabel Setting Sertifikat dari Database
                     if(r.data.cert_leader) certSettings.leader = r.data.cert_leader;
                     if(r.data.cert_organizer) certSettings.organizer = r.data.cert_organizer;
                     if(r.data.cert_stamp) certSettings.stamp = r.data.cert_stamp;
                     
-                    // ... Render Video dan Info Kelas
+                    globalVideos = r.data.videos;
+                    document.getElementById('video-count').innerText = globalVideos.length + " Video";
+                    
+                    if (globalVideos.length > 0) {
+                        renderPlaylist();
+                        playVideo(0); 
+                    } else {
+                        document.getElementById('video-playlist').innerHTML = `<p style="font-size: 0.75rem; color: var(--slate-400); text-align: center; margin-top: 2.5rem;">Belum ada video ditambahkan.</p>`;
+                    }
+
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('header-ui').classList.remove('hidden');
+                    document.getElementById('main-ui').classList.remove('hidden');
+                    lucide.createIcons();
+                } else {
+                    document.getElementById('loader').style.display = 'none';
+                    showToast("Akses Ditolak: " + r.message, "error");
+                    setTimeout(() => window.location.replace('/dashboard'), 2500);
                 }
-            } catch (e) { }
+            } catch (e) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Terjadi kesalahan sistem saat memverifikasi data.", "error");
+                setTimeout(() => window.location.replace('/dashboard'), 2500);
+            }
+        }
+
+        function renderPlaylist() {
+            const container = document.getElementById('video-playlist');
+            let html = '';
+            globalVideos.forEach((vid, index) => {
+                html += `
+                <button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item">
+                    <i data-lucide="play-circle" class="module-icon" id="icon-${index}"></i>
+                    <div class="module-text-wrap">
+                        <h5 class="module-title">${vid.title}</h5>
+                        <p class="module-session">Sesi ${index + 1}</p>
+                    </div>
+                </button>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function playVideo(index) {
+            const vid = globalVideos[index];
+            if(!vid) return;
+
+            document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`;
+            document.getElementById('lms-title').innerText = vid.title;
+
+            const videoDescHTML = vid.description || vid.desc || "<i>Tidak ada keterangan tambahan untuk video sesi ini.</i>";
+            document.getElementById('video-desc').innerHTML = videoDescHTML;
+
+            document.querySelectorAll('.module-item').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`vid-btn-${index}`);
+            if(activeBtn) { activeBtn.classList.add('active'); }
+            
+            watchedVideos.add(index);
+            const iconEl = document.getElementById(`icon-${index}`);
+            if(iconEl) {
+                iconEl.setAttribute('data-lucide', 'check-circle');
+                activeBtn.classList.add('watched');
+            }
+
+            if (watchedVideos.size === globalVideos.length && globalVideos.length > 0) {
+                document.getElementById('btn-cert').classList.remove('hidden');
+            }
+
+            lucide.createIcons();
         }
 
         // FUNGSI UPDATE: Memanggil input dengan SweetAlert
@@ -361,8 +536,14 @@
                 showToast("Sertifikat berhasil diunduh!", "success");
             }).catch(err => {
                 showToast("Gagal mengunduh sertifikat.", "error");
+                console.error(err);
             });
         }
+
+        window.onload = () => {
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            verifyAndLoad();
+        };
     </script>
 </body>
 </html>

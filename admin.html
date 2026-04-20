@@ -833,7 +833,7 @@
                         <label class="form-label" style="margin: 0;">Daftar Video / Kurikulum</label>
                         <button type="button" onclick="addVideoInput()" class="badge active" style="border: none; cursor: pointer;">+ Tambah Video</button>
                     </div>
-                    <div id="video-list-container" class="custom-scroll" style="max-height: 16rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                    <div id="video-list-container" class="custom-scroll" style="max-height: 20rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;"></div>
                     <span class="td-sub" style="margin-top: 0.75rem;">*ID YouTube adalah kode acak setelah `v=`.</span>
                 </div>
                 
@@ -1444,21 +1444,37 @@
             document.getElementById('modal-lms').classList.remove('hidden');
         }
 
+        // FUNGSI UPDATE: Memanggil keterangan saat mengedit
         function editLms(p_id) {
             const lms = cachedLms.find(x => x[0] === p_id);
             if (!lms) { showToast('Data kelas tidak ditemukan.', 'error'); return; }
             document.getElementById('form-lms').reset(); document.getElementById('lms-result-box').classList.add('hidden');
             document.getElementById('lms-product-id').value = lms[0]; document.getElementById('lms-desc').value = lms[2] || '';
             const container = document.getElementById('video-list-container'); container.innerHTML = '';
-            try { const videos = JSON.parse(lms[1] || "[]"); if(videos.length > 0) { videos.forEach(v => addVideoInput(v.title, v.id)); } else { addVideoInput(); } } catch(e) { addVideoInput(); }
+            try { 
+                const videos = JSON.parse(lms[1] || "[]"); 
+                if(videos.length > 0) { 
+                    videos.forEach(v => addVideoInput(v.title, v.id, v.desc || v.description || '')); 
+                } else { 
+                    addVideoInput(); 
+                } 
+            } catch(e) { 
+                addVideoInput(); 
+            }
             document.getElementById('modal-lms').classList.remove('hidden');
         }
 
-        function addVideoInput(title = '', id = '') {
+        // FUNGSI UPDATE: Menambahkan form Textarea Deskripsi
+        function addVideoInput(title = '', id = '', desc = '') {
             const container = document.getElementById('video-list-container'); const div = document.createElement('div');
             div.style.cssText = 'background: white; border: 1px solid var(--slate-200); padding: 1rem; border-radius: 0.375rem; position: relative;';
             div.className = 'video-item';
-            div.innerHTML = `<button type="button" onclick="this.parentElement.remove()" class="btn-icon rose" style="position: absolute; top: 0.5rem; right: 0.5rem; border:none; background:transparent;" title="Hapus Video"><i data-lucide="trash-2"></i></button><input type="text" placeholder="Judul Video (Misal: Bab 1 - Mindset)" class="form-input vid-title" style="margin-bottom: 0.5rem;" value="${title}" required><input type="text" placeholder="ID YouTube (Misal: dQw4w9WgXcQ)" class="form-input vid-id" style="background: var(--slate-50); font-family: monospace;" value="${id}" required>`;
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="btn-icon rose" style="position: absolute; top: 0.5rem; right: 0.5rem; border:none; background:transparent;" title="Hapus Video"><i data-lucide="trash-2"></i></button>
+                <input type="text" placeholder="Judul Video (Misal: Bab 1 - Mindset)" class="form-input vid-title" style="margin-bottom: 0.5rem; padding-right: 2.5rem;" value="${title}" required>
+                <input type="text" placeholder="ID YouTube (Misal: dQw4w9WgXcQ)" class="form-input vid-id" style="background: var(--slate-50); font-family: monospace; margin-bottom: 0.5rem;" value="${id}" required>
+                <textarea placeholder="Keterangan / Deskripsi khusus video ini (Opsional)..." class="form-textarea custom-scroll vid-desc" style="min-height: 60px;">${desc}</textarea>
+            `;
             container.appendChild(div); lucide.createIcons(); container.scrollTop = container.scrollHeight;
         }
 
@@ -1466,15 +1482,24 @@
             const linkInput = document.getElementById('lms-generated-link'); linkInput.select(); document.execCommand('copy'); showToast('Link Sakti LMS Berhasil Disalin!', 'success');
         }
 
+        // FUNGSI UPDATE: Mengambil value textarea deskripsi
         document.getElementById('form-lms').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.querySelector('#form-lms button[type="submit"]'); const originalText = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="loader" class="animate-spin" style="width: 1rem; margin-right: 0.5rem;"></i> MENYIMPAN...'; btn.disabled = true; lucide.createIcons();
+            
             const videoItems = document.querySelectorAll('.video-item'); const videosArray = [];
-            videoItems.forEach(item => { const title = item.querySelector('.vid-title').value; const vidId = item.querySelector('.vid-id').value; if(title && vidId) videosArray.push({ title, id: vidId }); });
+            videoItems.forEach(item => { 
+                const title = item.querySelector('.vid-title').value; 
+                const vidId = item.querySelector('.vid-id').value; 
+                const desc = item.querySelector('.vid-desc').value; // Mengambil deskripsi
+                if(title && vidId) videosArray.push({ title, id: vidId, desc }); 
+            });
+            
             if (videosArray.length === 0) { showToast('Minimal harus ada 1 video!', 'warning'); btn.innerHTML = originalText; btn.disabled = false; return; }
             const p_id = document.getElementById('lms-product-id').value; const descValue = document.getElementById('lms-desc').value;
             const payload = { action: 'save_lms_materi', product_id: p_id, videos: JSON.stringify(videosArray), desc: descValue };
+            
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
                 const res = await fetch(targetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }); const r = await res.json();

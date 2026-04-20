@@ -1,344 +1,460 @@
-bos tolong ditambahkan keterangan pada setiap video lms dan jika sudah selesai bisa cetak sertifikat dalam bentuk pdf: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-    <script>
-        const isUser = sessionStorage.getItem('user_email');
-        const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
-        if (!isUser && !isAdmin) {
-            window.location.replace('/login');
-        }
-    </script>
+    <script>
+        const isUser = sessionStorage.getItem('user_email');
+        const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
+        if (!isUser && !isAdmin) {
+            window.location.replace('/login');
+        }
+    </script>
 
-    <link rel="preconnect" href="https://script.google.com">
-    <link rel="dns-prefetch" href="https://script.google.com">
-    <link rel="preconnect" href="https://script.googleusercontent.com">
-    <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://script.googleusercontent.com">
 
-    <script src="config.js?v=2026"></script>
-    
-    <script>
-        (function() {
-            window.waAdminGlobal = '';
-            
-            function applyBrandSettings(data) {
-                if(data.site_favicon) {
-                    let link = document.querySelector("link[rel~='icon']");
-                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
-                    link.href = data.site_favicon;
-                }
-                if(data.wa_admin) window.waAdminGlobal = data.wa_admin;
-                
-                if(data.site_name) {
-                    if (!document.title.includes(data.site_name)) {
-                        document.title = "Ruang Belajar - " + data.site_name;
-                    }
-                    const updateDomElements = () => {
-                        document.querySelectorAll('.dyn-site-name').forEach(el => { el.innerText = data.site_name; });
-                    };
-                    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', updateDomElements); } else { updateDomElements(); }
-                }
-            }
+    <script src="config.js?v=2026"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        (function() {
+            window.waAdminGlobal = '';
+            
+            function applyBrandSettings(data) {
+                if(data.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+                    link.href = data.site_favicon;
+                }
+                if(data.wa_admin) window.waAdminGlobal = data.wa_admin;
+                
+                if(data.site_name) {
+                    if (!document.title.includes(data.site_name)) {
+                        document.title = "Ruang Belajar - " + data.site_name;
+                    }
+                    const updateDomElements = () => {
+                        document.querySelectorAll('.dyn-site-name').forEach(el => { el.innerText = data.site_name; });
+                    };
+                    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', updateDomElements); } else { updateDomElements(); }
+                }
+            }
 
-            const cachedStr = localStorage.getItem('melimpah_global_settings');
-            if (cachedStr) {
-                try { applyBrandSettings(JSON.parse(cachedStr).data); } catch(e){}
-            }
+            const cachedStr = localStorage.getItem('melimpah_global_settings');
+            if (cachedStr) {
+                try { applyBrandSettings(JSON.parse(cachedStr).data); } catch(e){}
+            }
 
-            window.addEventListener('DOMContentLoaded', () => {
-                if(typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL !== 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI' && SCRIPT_URL !== '') {
-                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
-                    .then(res => res.json())
-                    .then(r => {
-                        if(r.status === 'success') {
-                            localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() }));
-                            applyBrandSettings(r.data); 
-                        }
-                    }).catch(e => console.log('Sync skipped.'));
-                }
-            });
-        })();
-    </script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruang Belajar - SheetFlare</title>
-    
-    <script src="https://unpkg.com/lucide@latest" defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --brand-blue: #00AAE7;
-            --brand-blue-hover: #0092c7;
-            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-800: #1e293b; --slate-900: #0f172a;
-            --rose-500: #f43f5e; --amber-500: #f59e0b;
-            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe;
-        }
+            window.addEventListener('DOMContentLoaded', () => {
+                if(typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL !== 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI' && SCRIPT_URL !== '') {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
+                    .then(res => res.json())
+                    .then(r => {
+                        if(r.status === 'success') {
+                            localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() }));
+                            applyBrandSettings(r.data); 
+                        }
+                    }).catch(e => console.log('Sync skipped.'));
+                }
+            });
+        })();
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Belajar - SheetFlare</title>
+    
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --brand-blue: #00AAE7;
+            --brand-blue-hover: #0092c7;
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-800: #1e293b; --slate-900: #0f172a;
+            --rose-500: #f43f5e; --amber-500: #f59e0b;
+            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe;
+        }
 
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-900); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; height: 100vh; width: 100vw; }
-        a { text-decoration: none; color: inherit; }
-        button { cursor: pointer; border: none; background: none; font-family: inherit; outline: none; }
-        .hidden { display: none !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--slate-100); color: var(--slate-900); overflow: hidden; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; outline: none; }
+        .hidden { display: none !important; }
 
-        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .animate-spin { animation: spin 1s linear infinite; }
-        @keyframes pulse { 50% { opacity: 0.5; } }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 0.375rem; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { background-color: var(--slate-800); }
-        .toast.error { background-color: var(--rose-500); }
-        .toast.warning { background-color: var(--amber-500); }
-        .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 0.375rem; font-size: 13px; font-weight: 700; color: white; opacity: 0; transform: translateY(20px); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 350px; line-height: 1.4; pointer-events: auto; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background-color: var(--slate-800); }
+        .toast.error { background-color: var(--rose-500); }
+        .toast.warning { background-color: var(--amber-500); }
+        .toast svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
 
-        #loader { position: fixed; inset: 0; background: white; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--brand-blue); transition: opacity 0.3s; }
-        #loader svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; }
-        #loader p { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-800); }
+        #loader { position: fixed; inset: 0; background: white; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--brand-blue); transition: opacity 0.3s; }
+        #loader svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; }
+        #loader p { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-800); }
 
-        .header { background: white; border-bottom: 1px solid var(--slate-200); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; z-index: 30; flex-shrink: 0; }
-        @media (min-width: 768px) { .header { padding: 1rem 1.5rem; } }
-        
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .btn-back { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: white; border: 1px solid var(--slate-200); border-radius: 0.375rem; color: var(--slate-600); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
-        @media (min-width: 768px) { .btn-back { padding: 0.5rem 1rem; } }
-        .btn-back:hover { background: var(--slate-50); color: var(--slate-900); border-color: var(--slate-300); }
-        .btn-back svg { width: 1rem; height: 1rem; }
-        .btn-back span { display: none; }
-        @media (min-width: 768px) { .btn-back span { display: inline; } }
-        
-        .header-divider { width: 1px; height: 2rem; background: var(--slate-200); display: none; }
-        @media (min-width: 768px) { .header-divider { display: block; } }
-        
-        .header-info-sub { font-size: 0.625rem; font-weight: 800; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.125rem; }
-        .header-info-title { font-size: 0.875rem; font-weight: 800; color: var(--slate-900); line-height: 1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        @media (min-width: 768px) { .header-info-title { font-size: 1rem; max-width: 400px; } }
+        .header { background: white; border-bottom: 1px solid var(--slate-200); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; z-index: 30; flex-shrink: 0; }
+        @media (min-width: 768px) { .header { padding: 1rem 1.5rem; } }
+        
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .btn-back { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: white; border: 1px solid var(--slate-200); border-radius: 0.375rem; color: var(--slate-600); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
+        @media (min-width: 768px) { .btn-back { padding: 0.5rem 1rem; } }
+        .btn-back:hover { background: var(--slate-50); color: var(--slate-900); border-color: var(--slate-300); }
+        .btn-back svg { width: 1rem; height: 1rem; }
+        .btn-back span { display: none; }
+        @media (min-width: 768px) { .btn-back span { display: inline; } }
+        
+        .header-divider { width: 1px; height: 2rem; background: var(--slate-200); display: none; }
+        @media (min-width: 768px) { .header-divider { display: block; } }
+        
+        .header-info-sub { font-size: 0.625rem; font-weight: 800; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.125rem; }
+        .header-info-title { font-size: 0.875rem; font-weight: 800; color: var(--slate-900); line-height: 1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @media (min-width: 768px) { .header-info-title { font-size: 1rem; max-width: 400px; } }
 
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        @media (min-width: 1024px) { .main-wrapper { flex-direction: row; } }
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        @media (min-width: 1024px) { .main-wrapper { flex-direction: row; } }
 
-        .content-area { width: 100%; height: 100%; overflow-y: auto; background: var(--slate-100); position: relative; padding-bottom: 5rem; }
-        @media (min-width: 1024px) { .content-area { width: 70%; padding-bottom: 0; } }
-        @media (min-width: 1280px) { .content-area { width: 75%; } }
+        .content-area { width: 100%; height: 100%; overflow-y: auto; background: var(--slate-100); position: relative; padding-bottom: 5rem; }
+        @media (min-width: 1024px) { .content-area { width: 70%; padding-bottom: 0; } }
+        @media (min-width: 1280px) { .content-area { width: 75%; } }
 
-        .video-wrapper-bg { width: 100%; background: var(--slate-900); display: flex; justify-content: center; align-items: center; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.3); }
-        @media (min-width: 768px) { .video-wrapper-bg { padding: 2rem 0; } }
-        @media (min-width: 1024px) { .video-wrapper-bg { padding: 2.5rem 0; } }
-        
-        .video-container { width: 100%; max-width: 56rem; aspect-ratio: 16 / 9; position: relative; overflow: hidden; background: black; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
-        @media (min-width: 768px) { .video-container { border-radius: 0.5rem; } }
-        .video-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .video-wrapper-bg { width: 100%; background: var(--slate-900); display: flex; justify-content: center; align-items: center; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.3); }
+        @media (min-width: 768px) { .video-wrapper-bg { padding: 2rem 0; } }
+        @media (min-width: 1024px) { .video-wrapper-bg { padding: 2.5rem 0; } }
+        
+        .video-container { width: 100%; max-width: 56rem; aspect-ratio: 16 / 9; position: relative; overflow: hidden; background: black; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
+        @media (min-width: 768px) { .video-container { border-radius: 0.5rem; } }
+        .video-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-        .info-container { padding: 1.5rem; max-width: 64rem; margin: 0 auto; }
-        @media (min-width: 768px) { .info-container { padding: 2.5rem; } }
-        
-        .info-header { display: flex; flex-direction: column; gap: 1rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
-        @media (min-width: 768px) { .info-header { flex-direction: row; align-items: flex-start; justify-content: space-between; } }
-        .video-title { font-size: 1.25rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem; }
-        @media (min-width: 768px) { .video-title { font-size: 1.5rem; } }
+        .info-container { padding: 1.5rem; max-width: 64rem; margin: 0 auto; }
+        @media (min-width: 768px) { .info-container { padding: 2.5rem; } }
+        
+        .info-header { display: flex; flex-direction: column; gap: 1rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+        @media (min-width: 768px) { .info-header { flex-direction: row; align-items: center; justify-content: space-between; } }
+        .video-title { font-size: 1.25rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem; }
+        @media (min-width: 768px) { .video-title { font-size: 1.5rem; margin-bottom: 0; } }
 
-        .desc-box { background: white; border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        @media (min-width: 768px) { .desc-box { padding: 2rem; } }
-        .desc-box-title { font-size: 0.75rem; font-weight: 800; color: var(--slate-800); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .desc-box-title svg { width: 1.125rem; height: 1.125rem; color: var(--brand-blue); }
-        .desc-content { font-size: 0.875rem; color: var(--slate-600); line-height: 1.6; }
-        @media (min-width: 768px) { .desc-content { font-size: 0.9375rem; } }
-        
-        .playlist-sidebar { width: 100%; height: 40vh; background: white; border-top: 1px solid var(--slate-200); display: flex; flex-direction: column; z-index: 20; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
-        @media (min-width: 1024px) { .playlist-sidebar { width: 30%; height: 100%; border-top: none; border-left: 1px solid var(--slate-200); box-shadow: -4px 0 6px -1px rgba(0,0,0,0.03); } }
-        @media (min-width: 1280px) { .playlist-sidebar { width: 25%; } }
-        
-        .playlist-header { padding: 1.25rem; border-bottom: 1px solid var(--slate-200); background: white; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
-        .playlist-title { font-weight: 800; color: var(--slate-900); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem; }
-        .playlist-count { background: var(--slate-100); color: var(--slate-600); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; border: 1px solid var(--slate-200); }
-        
-        .playlist-scroll { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; padding-bottom: 2.5rem; }
-        
-        .module-item { width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.375rem; display: flex; align-items: flex-start; gap: 0.75rem; transition: all 0.2s; border: 1px solid transparent; background: white; }
-        .module-item:hover { background-color: var(--slate-50); border-color: var(--slate-200); }
-        .module-item.active { background-color: var(--blue-50); border-color: var(--blue-100); border-left: 3px solid var(--brand-blue); }
-        
-        .module-icon { width: 1.25rem; height: 1.25rem; color: var(--slate-400); margin-top: 0.125rem; flex-shrink: 0; transition: color 0.2s; }
-        .module-item.active .module-icon { color: var(--brand-blue); }
-        
-        .module-text-wrap { display: flex; flex-direction: column; }
-        .module-title { font-weight: 700; color: var(--slate-700); font-size: 0.875rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
-        .module-item.active .module-title { color: var(--slate-900); }
-        
-        .module-session { font-size: 0.625rem; color: var(--slate-500); font-weight: 600; margin-top: 0.25rem; }
-    </style>
+        .desc-box { background: white; border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        @media (min-width: 768px) { .desc-box { padding: 2rem; } }
+        .desc-box-title { font-size: 0.75rem; font-weight: 800; color: var(--slate-800); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .desc-box-title svg { width: 1.125rem; height: 1.125rem; color: var(--brand-blue); }
+        .desc-content { font-size: 0.875rem; color: var(--slate-600); line-height: 1.6; }
+        @media (min-width: 768px) { .desc-content { font-size: 0.9375rem; } }
+        
+        .playlist-sidebar { width: 100%; height: 40vh; background: white; border-top: 1px solid var(--slate-200); display: flex; flex-direction: column; z-index: 20; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
+        @media (min-width: 1024px) { .playlist-sidebar { width: 30%; height: 100%; border-top: none; border-left: 1px solid var(--slate-200); box-shadow: -4px 0 6px -1px rgba(0,0,0,0.03); } }
+        @media (min-width: 1280px) { .playlist-sidebar { width: 25%; } }
+        
+        .playlist-header { padding: 1.25rem; border-bottom: 1px solid var(--slate-200); background: white; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
+        .playlist-title { font-weight: 800; color: var(--slate-900); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem; }
+        .playlist-count { background: var(--slate-100); color: var(--slate-600); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.625rem; font-weight: 700; border: 1px solid var(--slate-200); }
+        
+        .playlist-scroll { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; padding-bottom: 2.5rem; }
+        
+        .module-item { width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.375rem; display: flex; align-items: flex-start; gap: 0.75rem; transition: all 0.2s; border: 1px solid transparent; background: white; }
+        .module-item:hover { background-color: var(--slate-50); border-color: var(--slate-200); }
+        .module-item.active { background-color: var(--blue-50); border-color: var(--blue-100); border-left: 3px solid var(--brand-blue); }
+        
+        .module-icon { width: 1.25rem; height: 1.25rem; color: var(--slate-400); margin-top: 0.125rem; flex-shrink: 0; transition: color 0.2s; }
+        .module-item.active .module-icon { color: var(--brand-blue); }
+        .module-item.watched .module-icon { color: #10b981; } /* Hijau jika sudah ditonton */
+        
+        .module-text-wrap { display: flex; flex-direction: column; }
+        .module-title { font-weight: 700; color: var(--slate-700); font-size: 0.875rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
+        .module-item.active .module-title { color: var(--slate-900); }
+        
+        .module-session { font-size: 0.625rem; color: var(--slate-500); font-weight: 600; margin-top: 0.25rem; }
+
+        /* Tombol Cetak Sertifikat */
+        .btn-certificate {
+            background-color: var(--brand-blue);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2);
+        }
+        .btn-certificate:hover { background-color: var(--brand-blue-hover); transform: translateY(-1px); }
+        .btn-certificate:active { transform: translateY(0); }
+
+        /* Template Sertifikat Tersembunyi */
+        #cert-wrapper {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            visibility: hidden;
+            z-index: -100;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
+    <div id="toast-container"></div>
 
-    <div id="loader">
-        <i data-lucide="loader" class="animate-spin"></i>
-        <p class="animate-pulse">Memverifikasi Akses...</p>
-    </div>
+    <div id="loader">
+        <i data-lucide="loader" class="animate-spin"></i>
+        <p class="animate-pulse">Memverifikasi Akses...</p>
+    </div>
 
-    <header class="header hidden" id="header-ui">
-        <div class="header-left">
-            <a href="/member" class="btn-back">
-                <i data-lucide="arrow-left"></i> <span>Dashboard</span>
-            </a>
-            <div class="header-divider"></div>
-            <div>
-                <p class="header-info-sub">Sedang Dipelajari</p>
-                <h1 id="header-product-id" class="header-info-title">Memuat Data...</h1>
-            </div>
-        </div>
-    </header>
+    <header class="header hidden" id="header-ui">
+        <div class="header-left">
+            <a href="/member" class="btn-back">
+                <i data-lucide="arrow-left"></i> <span>Dashboard</span>
+            </a>
+            <div class="header-divider"></div>
+            <div>
+                <p class="header-info-sub">Sedang Dipelajari</p>
+                <h1 id="header-product-id" class="header-info-title">Memuat Data...</h1>
+            </div>
+        </div>
+    </header>
 
-    <main class="main-wrapper hidden" id="main-ui">
-        <div class="content-area custom-scroll">
-            <div class="video-wrapper-bg">
-                <div class="video-container">
-                    <iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe>
-                </div>
-            </div>
-            <div class="info-container">
-                <div class="info-header">
-                    <div>
-                        <h2 id="lms-title" class="video-title">Pilih video di playlist</h2>
-                    </div>
-                </div>
-                <div class="desc-box">
-                    <h3 class="desc-box-title"><i data-lucide="book-open"></i> Deskripsi Kelas</h3>
-                    <div id="lms-desc" class="desc-content"></div>
-                </div>
-            </div>
-        </div>
+    <main class="main-wrapper hidden" id="main-ui">
+        <div class="content-area custom-scroll">
+            <div class="video-wrapper-bg">
+                <div class="video-container">
+                    <iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="info-container">
+                <div class="info-header">
+                    <div>
+                        <h2 id="lms-title" class="video-title">Pilih video di playlist</h2>
+                    </div>
+                    <button id="btn-cert" class="btn-certificate hidden" onclick="downloadCertificate()">
+                        <i data-lucide="award"></i> Cetak Sertifikat
+                    </button>
+                </div>
 
-        <aside class="playlist-sidebar">
-            <div class="playlist-header">
-                <h3 class="playlist-title">Kurikulum</h3>
-                <span id="video-count" class="playlist-count">0 Video</span>
-            </div>
-            <div id="video-playlist" class="playlist-scroll custom-scroll"></div>
-        </aside>
-    </main>
+                <div class="desc-box">
+                    <h3 class="desc-box-title"><i data-lucide="file-text"></i> Keterangan Video</h3>
+                    <div id="video-desc" class="desc-content">
+                        <i>Pilih video untuk melihat keterangan.</i>
+                    </div>
+                </div>
 
-    <script>
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            if(!container) return alert(message);
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            let icon = 'check-circle';
-            if (type === 'error') icon = 'x-circle';
-            if (type === 'warning') icon = 'alert-triangle';
-            toast.innerHTML = `<i data-lucide="${icon}"></i> <span>${message}</span>`;
-            container.appendChild(toast);
-            if(typeof lucide !== 'undefined') lucide.createIcons({ root: toast });
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
-        }
+                <div class="desc-box">
+                    <h3 class="desc-box-title"><i data-lucide="book-open"></i> Deskripsi Kelas Umum</h3>
+                    <div id="lms-desc" class="desc-content"></div>
+                </div>
+            </div>
+        </div>
 
-        let globalVideos = [];
+        <aside class="playlist-sidebar">
+            <div class="playlist-header">
+                <h3 class="playlist-title">Kurikulum</h3>
+                <span id="video-count" class="playlist-count">0 Video</span>
+            </div>
+            <div id="video-playlist" class="playlist-scroll custom-scroll"></div>
+        </aside>
+    </main>
 
-        async function verifyAndLoad() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-            const userEmail = sessionStorage.getItem('user_email');
-            const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
+    <div id="cert-wrapper">
+        <div id="certificate-template" style="width: 1000px; height: 700px; padding: 50px; text-align: center; border: 15px solid #00AAE7; background: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; position: relative;">
+            <div style="border: 2px solid #cbd5e1; height: 100%; padding: 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
+                <h1 style="font-size: 48px; color: #1e293b; margin-bottom: 10px; letter-spacing: 2px;">SERTIFIKAT KELULUSAN</h1>
+                <p style="font-size: 18px; color: #64748b; margin-bottom: 40px; text-transform: uppercase;">Diberikan dengan bangga kepada:</p>
+                
+                <h2 id="cert-name" style="font-size: 40px; color: #0f172a; margin-bottom: 30px; border-bottom: 3px solid #00AAE7; display: inline-block; padding-bottom: 10px; font-weight: 800;">Email Pengguna</h2>
+                
+                <p style="font-size: 18px; color: #64748b; margin-bottom: 20px;">Atas partisipasi dan keberhasilannya dalam menyelesaikan kelas:</p>
+                <h3 id="cert-course" style="font-size: 32px; color: #00AAE7; margin-bottom: 50px; font-weight: 800;">Nama Kelas</h3>
+                
+                <p id="cert-date" style="font-size: 16px; color: #94a3b8; font-weight: 600;"></p>
+                
+                <div style="margin-top: 50px; display: flex; justify-content: center; gap: 200px;">
+                    <div>
+                        <div style="border-bottom: 1px solid #1e293b; width: 200px; margin-bottom: 10px;"></div>
+                        <p style="font-size: 14px; color: #1e293b; font-weight: 700;">Instruktur / Manajemen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            if (!userEmail && !isAdmin) {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Sesi login berakhir. Silakan login kembali.", "error");
-                setTimeout(() => { window.location.replace('/login'); }, 2000);
-                return;
-            }
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if(!container) return alert(message);
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'check-circle';
+            if (type === 'error') icon = 'x-circle';
+            if (type === 'warning') icon = 'alert-triangle';
+            toast.innerHTML = `<i data-lucide="${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            if(typeof lucide !== 'undefined') lucide.createIcons({ root: toast });
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
 
-            if (!productId) {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Link materi tidak valid (ID Produk hilang).", "error");
-                setTimeout(() => { window.location.replace('/dashboard'); }, 2000);
-                return;
-            }
+        let globalVideos = [];
+        let watchedVideos = new Set(); // Menyimpan progress video yang sudah dilihat
 
-            try {
-                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
-                const payloadEmail = (isAdmin && !userEmail) ? "" : userEmail;
+        async function verifyAndLoad() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const userEmail = sessionStorage.getItem('user_email');
+            const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
 
-                const res = await fetch(targetUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'get_lms_materi', email: payloadEmail, product_id: productId })
-                });
-                
-                const r = await res.json();
+            if (!userEmail && !isAdmin) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Sesi login berakhir. Silakan login kembali.", "error");
+                setTimeout(() => { window.location.replace('/login'); }, 2000);
+                return;
+            }
 
-                if (r.status === 'success') {
-                    document.getElementById('header-product-id').innerText = "Produk: " + r.data.product_id;
-                    document.getElementById('lms-desc').innerHTML = r.data.desc || "<i>Belum ada deskripsi untuk kelas ini.</i>";
-                    
-                    globalVideos = r.data.videos;
-                    document.getElementById('video-count').innerText = globalVideos.length + " Video";
-                    
-                    if (globalVideos.length > 0) {
-                        renderPlaylist();
-                        playVideo(0); 
-                    } else {
-                        document.getElementById('video-playlist').innerHTML = `<p style="font-size: 0.75rem; color: var(--slate-400); text-align: center; margin-top: 2.5rem;">Belum ada video ditambahkan.</p>`;
-                    }
+            if (!productId) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Link materi tidak valid (ID Produk hilang).", "error");
+                setTimeout(() => { window.location.replace('/dashboard'); }, 2000);
+                return;
+            }
 
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('header-ui').classList.remove('hidden');
-                    document.getElementById('main-ui').classList.remove('hidden');
-                    lucide.createIcons();
-                } else {
-                    document.getElementById('loader').style.display = 'none';
-                    showToast("Akses Ditolak: " + r.message, "error");
-                    setTimeout(() => window.location.replace('/dashboard'), 2500);
-                }
-            } catch (e) {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Terjadi kesalahan sistem saat memverifikasi data.", "error");
-                setTimeout(() => window.location.replace('/dashboard'), 2500);
-            }
-        }
+            try {
+                const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
+                const payloadEmail = (isAdmin && !userEmail) ? "" : userEmail;
 
-        function renderPlaylist() {
-            const container = document.getElementById('video-playlist');
-            let html = '';
-            globalVideos.forEach((vid, index) => {
-                html += `
-                <button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item">
-                    <i data-lucide="play-circle" class="module-icon"></i>
-                    <div class="module-text-wrap">
-                        <h5 class="module-title">${vid.title}</h5>
-                        <p class="module-session">Sesi ${index + 1}</p>
-                    </div>
-                </button>
-                `;
-            });
-            container.innerHTML = html;
-        }
+                const res = await fetch(targetUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'get_lms_materi', email: payloadEmail, product_id: productId })
+                });
+                
+                const r = await res.json();
 
-        function playVideo(index) {
-            const vid = globalVideos[index];
-            if(!vid) return;
+                if (r.status === 'success') {
+                    document.getElementById('header-product-id').innerText = "Produk: " + r.data.product_id;
+                    document.getElementById('lms-desc').innerHTML = r.data.desc || "<i>Belum ada deskripsi untuk kelas ini.</i>";
+                    
+                    globalVideos = r.data.videos;
+                    document.getElementById('video-count').innerText = globalVideos.length + " Video";
+                    
+                    if (globalVideos.length > 0) {
+                        renderPlaylist();
+                        playVideo(0); 
+                    } else {
+                        document.getElementById('video-playlist').innerHTML = `<p style="font-size: 0.75rem; color: var(--slate-400); text-align: center; margin-top: 2.5rem;">Belum ada video ditambahkan.</p>`;
+                    }
 
-            document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`;
-            document.getElementById('lms-title').innerText = vid.title;
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('header-ui').classList.remove('hidden');
+                    document.getElementById('main-ui').classList.remove('hidden');
+                    lucide.createIcons();
+                } else {
+                    document.getElementById('loader').style.display = 'none';
+                    showToast("Akses Ditolak: " + r.message, "error");
+                    setTimeout(() => window.location.replace('/dashboard'), 2500);
+                }
+            } catch (e) {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Terjadi kesalahan sistem saat memverifikasi data.", "error");
+                setTimeout(() => window.location.replace('/dashboard'), 2500);
+            }
+        }
 
-            document.querySelectorAll('.module-item').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById(`vid-btn-${index}`);
-            if(activeBtn) { activeBtn.classList.add('active'); }
-            
-            lucide.createIcons();
-        }
+        function renderPlaylist() {
+            const container = document.getElementById('video-playlist');
+            let html = '';
+            globalVideos.forEach((vid, index) => {
+                html += `
+                <button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item">
+                    <i data-lucide="play-circle" class="module-icon" id="icon-${index}"></i>
+                    <div class="module-text-wrap">
+                        <h5 class="module-title">${vid.title}</h5>
+                        <p class="module-session">Sesi ${index + 1}</p>
+                    </div>
+                </button>
+                `;
+            });
+            container.innerHTML = html;
+        }
 
-        window.onload = () => {
-            if(typeof lucide !== 'undefined') lucide.createIcons();
-            verifyAndLoad();
-        };
-    </script>
+        function playVideo(index) {
+            const vid = globalVideos[index];
+            if(!vid) return;
+
+            // Memperbarui Video Frame dan Judul
+            document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`;
+            document.getElementById('lms-title').innerText = vid.title;
+
+            // Memperbarui Keterangan Video Spesifik (asumsi property dari backend bernama description/desc)
+            const videoDescHTML = vid.description || vid.desc || "<i>Tidak ada keterangan tambahan untuk video sesi ini.</i>";
+            document.getElementById('video-desc').innerHTML = videoDescHTML;
+
+            // Update UI Sidebar
+            document.querySelectorAll('.module-item').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`vid-btn-${index}`);
+            if(activeBtn) { activeBtn.classList.add('active'); }
+            
+            // Lacak Progress & Ubah ikon jika sudah ditonton
+            watchedVideos.add(index);
+            const iconEl = document.getElementById(`icon-${index}`);
+            if(iconEl) {
+                iconEl.setAttribute('data-lucide', 'check-circle');
+                activeBtn.classList.add('watched');
+            }
+
+            // Tampilkan Tombol Sertifikat Jika Semua Video Sudah Ditonton
+            if (watchedVideos.size === globalVideos.length && globalVideos.length > 0) {
+                document.getElementById('btn-cert').classList.remove('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        function downloadCertificate() {
+            showToast("Menyiapkan PDF Sertifikat...", "success");
+            
+            // Ambil data untuk sertifikat
+            const userEmail = sessionStorage.getItem('user_email') || "Peserta Kelas";
+            const courseName = document.getElementById('header-product-id').innerText.replace("Produk: ", "");
+            const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Masukkan data ke template HTML tersembunyi
+            document.getElementById('cert-name').innerText = userEmail;
+            document.getElementById('cert-course').innerText = courseName;
+            document.getElementById('cert-date').innerText = "Diberikan pada tanggal: " + today;
+
+            const element = document.getElementById('certificate-template');
+
+            // Konfigurasi pembuatan PDF
+            const opt = {
+                margin:       0,
+                filename:     `Sertifikat_${courseName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'px', format: [1000, 700], orientation: 'landscape' }
+            };
+
+            // Generate dan Save
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast("Sertifikat berhasil diunduh!", "success");
+            }).catch(err => {
+                showToast("Gagal mengunduh sertifikat.", "error");
+                console.error(err);
+            });
+        }
+
+        window.onload = () => {
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            verifyAndLoad();
+        };
+    </script>
 </body>
 </html>

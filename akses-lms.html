@@ -4,9 +4,7 @@
     <script>
         const isUser = sessionStorage.getItem('user_email');
         const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
-        if (!isUser && !isAdmin) {
-            window.location.replace('/login');
-        }
+        if (!isUser && !isAdmin) { window.location.replace('/login'); }
     </script>
 
     <link rel="preconnect" href="https://script.google.com">
@@ -18,49 +16,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    
-    <script>
-        (function() {
-            window.waAdminGlobal = '';
-            
-            function applyBrandSettings(data) {
-                if(data.site_favicon) {
-                    let link = document.querySelector("link[rel~='icon']");
-                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
-                    link.href = data.site_favicon;
-                }
-                if(data.wa_admin) window.waAdminGlobal = data.wa_admin;
-                
-                if(data.site_name) {
-                    if (!document.title.includes(data.site_name)) {
-                        document.title = "Ruang Belajar - " + data.site_name;
-                    }
-                    const updateDomElements = () => {
-                        document.querySelectorAll('.dyn-site-name').forEach(el => { el.innerText = data.site_name; });
-                    };
-                    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', updateDomElements); } else { updateDomElements(); }
-                }
-            }
-
-            const cachedStr = localStorage.getItem('melimpah_global_settings');
-            if (cachedStr) {
-                try { applyBrandSettings(JSON.parse(cachedStr).data); } catch(e){}
-            }
-
-            window.addEventListener('DOMContentLoaded', () => {
-                if(typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL !== 'ISI_DENGAN_LINK_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI' && SCRIPT_URL !== '') {
-                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
-                    .then(res => res.json())
-                    .then(r => {
-                        if(r.status === 'success') {
-                            localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() }));
-                            applyBrandSettings(r.data); 
-                        }
-                    }).catch(e => console.log('Sync skipped.'));
-                }
-            });
-        })();
-    </script>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -113,11 +68,6 @@
         @media (min-width: 768px) { .btn-back { padding: 0.5rem 1rem; } }
         .btn-back:hover { background: var(--slate-50); color: var(--slate-900); border-color: var(--slate-300); }
         .btn-back svg { width: 1rem; height: 1rem; }
-        .btn-back span { display: none; }
-        @media (min-width: 768px) { .btn-back span { display: inline; } }
-        
-        .header-divider { width: 1px; height: 2rem; background: var(--slate-200); display: none; }
-        @media (min-width: 768px) { .header-divider { display: block; } }
         
         .header-info-sub { font-size: 0.625rem; font-weight: 800; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.125rem; }
         .header-info-title { font-size: 0.875rem; font-weight: 800; color: var(--slate-900); line-height: 1; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -128,14 +78,11 @@
 
         .content-area { width: 100%; height: 100%; overflow-y: auto; background: var(--slate-100); position: relative; padding-bottom: 5rem; }
         @media (min-width: 1024px) { .content-area { width: 70%; padding-bottom: 0; } }
-        @media (min-width: 1280px) { .content-area { width: 75%; } }
 
         .video-wrapper-bg { width: 100%; background: var(--slate-900); display: flex; justify-content: center; align-items: center; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.3); }
         @media (min-width: 768px) { .video-wrapper-bg { padding: 2rem 0; } }
-        @media (min-width: 1024px) { .video-wrapper-bg { padding: 2.5rem 0; } }
         
         .video-container { width: 100%; max-width: 56rem; aspect-ratio: 16 / 9; position: relative; overflow: hidden; background: black; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
-        @media (min-width: 768px) { .video-container { border-radius: 0.5rem; } }
         .video-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
         .info-container { padding: 1.5rem; max-width: 64rem; margin: 0 auto; }
@@ -144,18 +91,14 @@
         .info-header { display: flex; flex-direction: column; gap: 1rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
         @media (min-width: 768px) { .info-header { flex-direction: row; align-items: center; justify-content: space-between; } }
         .video-title { font-size: 1.25rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.5rem; }
-        @media (min-width: 768px) { .video-title { font-size: 1.5rem; margin-bottom: 0; } }
 
         .desc-box { background: white; border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
-        @media (min-width: 768px) { .desc-box { padding: 2rem; } }
         .desc-box-title { font-size: 0.75rem; font-weight: 800; color: var(--slate-800); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
         .desc-box-title svg { width: 1.125rem; height: 1.125rem; color: var(--brand-blue); }
         .desc-content { font-size: 0.875rem; color: var(--slate-600); line-height: 1.6; }
-        @media (min-width: 768px) { .desc-content { font-size: 0.9375rem; } }
         
-        .playlist-sidebar { width: 100%; height: 40vh; background: white; border-top: 1px solid var(--slate-200); display: flex; flex-direction: column; z-index: 20; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); }
-        @media (min-width: 1024px) { .playlist-sidebar { width: 30%; height: 100%; border-top: none; border-left: 1px solid var(--slate-200); box-shadow: -4px 0 6px -1px rgba(0,0,0,0.03); } }
-        @media (min-width: 1280px) { .playlist-sidebar { width: 25%; } }
+        .playlist-sidebar { width: 100%; height: 40vh; background: white; border-top: 1px solid var(--slate-200); display: flex; flex-direction: column; z-index: 20; }
+        @media (min-width: 1024px) { .playlist-sidebar { width: 30%; height: 100%; border-top: none; border-left: 1px solid var(--slate-200); } }
         
         .playlist-header { padding: 1.25rem; border-bottom: 1px solid var(--slate-200); background: white; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
         .playlist-title { font-weight: 800; color: var(--slate-900); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem; }
@@ -172,61 +115,20 @@
         .module-item.watched .module-icon { color: #10b981; } 
         
         .module-text-wrap { display: flex; flex-direction: column; }
-        .module-title { font-weight: 700; color: var(--slate-700); font-size: 0.875rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
+        .module-title { font-weight: 700; color: var(--slate-700); font-size: 0.875rem; line-height: 1.3; transition: color 0.2s; }
         .module-item.active .module-title { color: var(--slate-900); }
-        
         .module-session { font-size: 0.625rem; color: var(--slate-500); font-weight: 600; margin-top: 0.25rem; }
 
-        /* Tombol Cetak Sertifikat */
-        .btn-certificate {
-            background-color: var(--brand-blue);
-            color: white;
-            padding: 0.625rem 1.25rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2);
-        }
+        .btn-certificate { background-color: var(--brand-blue); color: white; padding: 0.625rem 1.25rem; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.2s; box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2); }
         .btn-certificate:hover { background-color: var(--brand-blue-hover); transform: translateY(-1px); }
-        .btn-certificate:active { transform: translateY(0); }
 
-        /* Template Sertifikat Tersembunyi */
-        #cert-wrapper {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            visibility: hidden;
-            z-index: -100;
-        }
+        #cert-wrapper { position: absolute; left: -9999px; top: -9999px; visibility: hidden; z-index: -100; }
 
-        /* Desain CSS Stempel Digital (agar aman dari CORS) */
-        .cert-stamp {
-            width: 130px; height: 130px; 
-            border: 5px solid rgba(225, 29, 72, 0.7); 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            transform: rotate(-15deg); 
-            position: absolute; left: 50%; bottom: 0px; 
-            transform: translateX(-50%) rotate(-15deg);
-            z-index: 1;
-        }
-        .cert-stamp-inner {
-            border: 2px solid rgba(225, 29, 72, 0.7); 
-            border-radius: 50%; 
-            width: 110px; height: 110px; 
-            display: flex; align-items: center; justify-content: center; 
-            text-align: center;
-        }
-        .cert-stamp-text {
-            color: rgba(225, 29, 72, 0.9); 
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 900; font-size: 14px; 
-            text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;
-        }
+        /* Desain Sertifikat 2 Penandatangan */
+        .cert-stamp { width: 130px; height: 130px; border: 5px solid rgba(225, 29, 72, 0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: rotate(-15deg); position: absolute; left: 50%; bottom: 0px; transform: translateX(-50%) rotate(-15deg); z-index: 1; }
+        .cert-stamp-inner { border: 2px solid rgba(225, 29, 72, 0.7); border-radius: 50%; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .cert-stamp-text { color: rgba(225, 29, 72, 0.9); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
+        
         .cert-signature {
             font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;
             font-size: 42px; color: #1e293b; 
@@ -234,7 +136,7 @@
             position: relative; z-index: 2; 
             transform: rotate(-5deg);
             display: inline-block;
-            white-space: nowrap; /* 🔥 Tambahan ini agar teks dipaksa 1 baris */
+            white-space: nowrap; 
         }
         div:where(.swal2-container) { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
@@ -242,17 +144,11 @@
 <body>
 
     <div id="toast-container"></div>
-
-    <div id="loader">
-        <i data-lucide="loader" class="animate-spin"></i>
-        <p class="animate-pulse">Memverifikasi Akses...</p>
-    </div>
+    <div id="loader"><i data-lucide="loader" class="animate-spin"></i><p class="animate-pulse">Memuat Materi...</p></div>
 
     <header class="header hidden" id="header-ui">
         <div class="header-left">
-            <a href="/member" class="btn-back">
-                <i data-lucide="arrow-left"></i> <span>Dashboard</span>
-            </a>
+            <a href="/member" class="btn-back"><i data-lucide="arrow-left"></i> <span>Dashboard</span></a>
             <div class="header-divider"></div>
             <div>
                 <p class="header-info-sub">Sedang Dipelajari</p>
@@ -263,28 +159,18 @@
 
     <main class="main-wrapper hidden" id="main-ui">
         <div class="content-area custom-scroll">
-            <div class="video-wrapper-bg">
-                <div class="video-container">
-                    <iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe>
-                </div>
-            </div>
+            <div class="video-wrapper-bg"><div class="video-container"><iframe id="video-frame" class="video-iframe" src="" allowfullscreen></iframe></div></div>
             <div class="info-container">
                 <div class="info-header">
-                    <div>
-                        <h2 id="lms-title" class="video-title">Pilih video di playlist</h2>
-                    </div>
+                    <div><h2 id="lms-title" class="video-title">Pilih video di playlist</h2></div>
                     <button id="btn-cert" class="btn-certificate hidden" onclick="downloadCertificate()">
                         <i data-lucide="award"></i> Cetak Sertifikat
                     </button>
                 </div>
-
                 <div class="desc-box">
                     <h3 class="desc-box-title"><i data-lucide="file-text"></i> Keterangan Video</h3>
-                    <div id="video-desc" class="desc-content">
-                        <i>Pilih video untuk melihat keterangan.</i>
-                    </div>
+                    <div id="video-desc" class="desc-content"><i>Pilih video untuk melihat keterangan.</i></div>
                 </div>
-
                 <div class="desc-box">
                     <h3 class="desc-box-title"><i data-lucide="book-open"></i> Deskripsi Kelas Umum</h3>
                     <div id="lms-desc" class="desc-content"></div>
@@ -303,49 +189,47 @@
 
     <div id="cert-wrapper">
         <div id="certificate-template" style="width: 1000px; height: 700px; padding: 40px; text-align: center; background: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; position: relative; color: #1e293b; overflow: hidden;">
-            
             <div style="position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 3px solid #00AAE7; z-index: 1;"></div>
             <div style="position: absolute; top: 22px; left: 22px; right: 22px; bottom: 22px; border: 1px solid #cbd5e1; z-index: 1;"></div>
             
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.03; z-index: 1;">
-                <svg width="450" height="450" viewBox="0 0 24 24" fill="none" stroke="#00AAE7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-
             <div style="position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-                
                 <div style="margin-bottom: 30px;">
                     <h1 style="font-family: 'Playfair Display', serif; font-size: 56px; color: #0f172a; margin: 0; letter-spacing: 6px; text-transform: uppercase;">Sertifikat</h1>
                     <h2 style="font-family: 'Playfair Display', serif; font-size: 22px; color: #00AAE7; margin: 5px 0 0 0; letter-spacing: 8px; text-transform: uppercase;">Penyelesaian Kelas</h2>
                 </div>
 
                 <p style="font-size: 16px; color: #64748b; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Diberikan Dengan Bangga Kepada:</p>
-                
-                <h2 id="cert-name" style="font-family: 'Playfair Display', serif; font-size: 48px; color: #0f172a; margin: 0 0 25px 0; border-bottom: 2px solid #e2e8f0; display: inline-block; padding: 0 50px 10px 50px; font-weight: 800; font-style: italic;">Nama Peserta</h2>
+                <h2 id="cert-name" style="font-family: 'Playfair Display', serif; font-size: 48px; color: #0f172a; margin: 0 0 25px 0; border-bottom: 2px solid #e2e8f0; display: inline-block; padding: 0 50px 10px 50px; font-weight: 800; font-style: italic; white-space: nowrap;">Nama Peserta</h2>
                 
                 <p style="font-size: 16px; color: #64748b; margin: 10px 0 10px 0; max-width: 700px; line-height: 1.6;">Atas dedikasi dan keberhasilannya dalam menyelesaikan seluruh rangkaian materi pembelajaran eksklusif pada kelas:</p>
-                
                 <h3 id="cert-course" style="font-size: 26px; color: #00AAE7; margin: 15px 0 50px 0; font-weight: 800; max-width: 800px; text-transform: uppercase;">Nama Kelas Ecourse</h3>
                 
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 85%; margin-top: auto; padding-bottom: 10px; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 90%; margin-top: auto; padding-bottom: 20px; position: relative;">
                     
-                    <div style="text-align: center; width: 220px;">
-                        <p id="cert-date" style="font-size: 16px; color: #0f172a; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid #94a3b8; padding-bottom: 5px;"></p>
-                        <p style="font-size: 14px; color: #64748b; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 1px;">Tanggal Kelulusan</p>
+                    <div style="text-align: center; width: 220px; position: relative;">
+                        <div class="cert-signature" id="cert-val-sign1">Nama1</div>
+                        <div style="border-bottom: 1px solid #94a3b8; width: 100%; margin-bottom: 5px;"></div>
+                        <p style="font-size: 16px; color: #0f172a; font-weight: 800; margin: 0; white-space: nowrap;" id="cert-val-leader1">Nama Lengkap 1</p>
+                        <p style="font-size: 12px; color: #64748b; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 1px;" id="cert-val-role1">Jabatan 1</p>
                     </div>
 
-                    <div class="cert-stamp">
-                        <div class="cert-stamp-inner">
-                            <span class="cert-stamp-text" id="cert-val-stamp">STEMPEL<br>RESMI</span>
+                    <div style="text-align: center; position: relative; width: 150px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 150px;">
+                        <p id="cert-date" style="font-size: 14px; color: #0f172a; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid #94a3b8; padding-bottom: 5px;"></p>
+                        <div class="cert-stamp" style="position: relative; left: auto; transform: rotate(-15deg); bottom: 0;">
+                            <div class="cert-stamp-inner">
+                                <span class="cert-stamp-text" id="cert-val-stamp">STEMPEL<br>RESMI</span>
+                            </div>
                         </div>
                     </div>
 
                     <div style="text-align: center; width: 220px; position: relative;">
-                        <div class="cert-signature" id="cert-val-leader">Instruktur</div>
+                        <div class="cert-signature" id="cert-val-sign2">Nama2</div>
                         <div style="border-bottom: 1px solid #94a3b8; width: 100%; margin-bottom: 5px;"></div>
-                        <p style="font-size: 16px; color: #0f172a; font-weight: 800; margin: 0; white-space: nowrap;" id="cert-val-org">Penyelenggara Resmi</p>
+                        <p style="font-size: 16px; color: #0f172a; font-weight: 800; margin: 0; white-space: nowrap;" id="cert-val-leader2">Nama Lengkap 2</p>
+                        <p style="font-size: 12px; color: #64748b; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 1px;" id="cert-val-role2">Jabatan 2</p>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
@@ -353,7 +237,6 @@
     <script>
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
-            if(!container) return alert(message);
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             let icon = 'check-circle';
@@ -361,15 +244,39 @@
             if (type === 'warning') icon = 'alert-triangle';
             toast.innerHTML = `<i data-lucide="${icon}"></i> <span>${message}</span>`;
             container.appendChild(toast);
-            if(typeof lucide !== 'undefined') lucide.createIcons({ root: toast });
+            lucide.createIcons({ root: toast });
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        // INISIALISASI VARIABEL GLOBAL
         let globalVideos = [];
         let watchedVideos = new Set(); 
-        let certSettings = { leader: "Instruktur", organizer: "Penyelenggara", stamp: "STEMPEL RESMI" };
+        // Default Sertifikat dengan 2 Penandatangan
+        let certSettings = { leader1: "Instruktur Utama", role1: "Tutor", leader2: "Pimpinan PT", role2: "Direktur", stamp: "STEMPEL RESMI" };
+
+        (function() {
+            function applyBrandSettings(data) {
+                if(data.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+                    link.href = data.site_favicon;
+                }
+                if(data.site_name) {
+                    if (!document.title.includes(data.site_name)) { document.title = "Ruang Belajar - " + data.site_name; }
+                    const updateDomElements = () => { document.querySelectorAll('.dyn-site-name').forEach(el => { el.innerText = data.site_name; }); };
+                    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', updateDomElements); } else { updateDomElements(); }
+                }
+            }
+            const cachedStr = localStorage.getItem('melimpah_global_settings');
+            if (cachedStr) { try { applyBrandSettings(JSON.parse(cachedStr).data); } catch(e){} }
+            window.addEventListener('DOMContentLoaded', () => {
+                if(typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL !== '') {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_global_settings' }) })
+                    .then(res => res.json())
+                    .then(r => { if(r.status === 'success') { localStorage.setItem('melimpah_global_settings', JSON.stringify({ data: r.data, time: Date.now() })); applyBrandSettings(r.data); } }).catch(e => {});
+                }
+            });
+        })();
 
         async function verifyAndLoad() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -377,19 +284,8 @@
             const userEmail = sessionStorage.getItem('user_email');
             const isAdmin = sessionStorage.getItem('adm_v10') === 'true' || localStorage.getItem('melimpah_admin_data') !== null;
 
-            if (!userEmail && !isAdmin) {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Sesi login berakhir. Silakan login kembali.", "error");
-                setTimeout(() => { window.location.replace('/login'); }, 2000);
-                return;
-            }
-
-            if (!productId) {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Link materi tidak valid (ID Produk hilang).", "error");
-                setTimeout(() => { window.location.replace('/dashboard'); }, 2000);
-                return;
-            }
+            if (!userEmail && !isAdmin) { return; }
+            if (!productId) { return; }
 
             try {
                 const targetUrl = window.SCRIPT_URL || (typeof SCRIPT_URL !== 'undefined' ? SCRIPT_URL : null);
@@ -399,57 +295,40 @@
                     method: 'POST',
                     body: JSON.stringify({ action: 'get_lms_materi', email: payloadEmail, product_id: productId })
                 });
-                
                 const r = await res.json();
 
                 if (r.status === 'success') {
                     document.getElementById('header-product-id').innerText = "Produk: " + r.data.product_id;
                     document.getElementById('lms-desc').innerHTML = r.data.desc || "<i>Belum ada deskripsi untuk kelas ini.</i>";
                     
-                    // Update Variabel Setting Sertifikat dari Database
-                    if(r.data.cert_leader) certSettings.leader = r.data.cert_leader;
-                    if(r.data.cert_organizer) certSettings.organizer = r.data.cert_organizer;
+                    // Assign variables dari Backend GS yang baru
+                    if(r.data.cert_leader1) certSettings.leader1 = r.data.cert_leader1;
+                    if(r.data.cert_role1) certSettings.role1 = r.data.cert_role1;
+                    if(r.data.cert_leader2) certSettings.leader2 = r.data.cert_leader2;
+                    if(r.data.cert_role2) certSettings.role2 = r.data.cert_role2;
                     if(r.data.cert_stamp) certSettings.stamp = r.data.cert_stamp;
                     
                     globalVideos = r.data.videos;
                     document.getElementById('video-count').innerText = globalVideos.length + " Video";
                     
-                    if (globalVideos.length > 0) {
-                        renderPlaylist();
-                        playVideo(0); 
-                    } else {
-                        document.getElementById('video-playlist').innerHTML = `<p style="font-size: 0.75rem; color: var(--slate-400); text-align: center; margin-top: 2.5rem;">Belum ada video ditambahkan.</p>`;
-                    }
-
+                    if (globalVideos.length > 0) { renderPlaylist(); playVideo(0); }
+                    
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('header-ui').classList.remove('hidden');
                     document.getElementById('main-ui').classList.remove('hidden');
                     lucide.createIcons();
                 } else {
                     document.getElementById('loader').style.display = 'none';
-                    showToast("Akses Ditolak: " + r.message, "error");
-                    setTimeout(() => window.location.replace('/dashboard'), 2500);
+                    showToast(r.message, "error");
                 }
-            } catch (e) {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Terjadi kesalahan sistem saat memverifikasi data.", "error");
-                setTimeout(() => window.location.replace('/dashboard'), 2500);
-            }
+            } catch (e) { }
         }
 
         function renderPlaylist() {
             const container = document.getElementById('video-playlist');
             let html = '';
             globalVideos.forEach((vid, index) => {
-                html += `
-                <button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item">
-                    <i data-lucide="play-circle" class="module-icon" id="icon-${index}"></i>
-                    <div class="module-text-wrap">
-                        <h5 class="module-title">${vid.title}</h5>
-                        <p class="module-session">Sesi ${index + 1}</p>
-                    </div>
-                </button>
-                `;
+                html += `<button onclick="playVideo(${index})" id="vid-btn-${index}" class="module-item"><i data-lucide="play-circle" class="module-icon" id="icon-${index}"></i><div class="module-text-wrap"><h5 class="module-title">${vid.title}</h5><p class="module-session">Sesi ${index + 1}</p></div></button>`;
             });
             container.innerHTML = html;
         }
@@ -460,9 +339,7 @@
 
             document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vid.id}?rel=0&modestbranding=1&autoplay=1`;
             document.getElementById('lms-title').innerText = vid.title;
-
-            const videoDescHTML = vid.description || vid.desc || "<i>Tidak ada keterangan tambahan untuk video sesi ini.</i>";
-            document.getElementById('video-desc').innerHTML = videoDescHTML;
+            document.getElementById('video-desc').innerHTML = vid.description || vid.desc || "<i>Tidak ada keterangan tambahan.</i>";
 
             document.querySelectorAll('.module-item').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`vid-btn-${index}`);
@@ -470,41 +347,39 @@
             
             watchedVideos.add(index);
             const iconEl = document.getElementById(`icon-${index}`);
-            if(iconEl) {
-                iconEl.setAttribute('data-lucide', 'check-circle');
-                activeBtn.classList.add('watched');
-            }
+            if(iconEl) { iconEl.setAttribute('data-lucide', 'check-circle'); activeBtn.classList.add('watched'); }
 
             if (watchedVideos.size === globalVideos.length && globalVideos.length > 0) {
                 document.getElementById('btn-cert').classList.remove('hidden');
             }
-
             lucide.createIcons();
         }
 
-        // FUNGSI UPDATE: Memanggil input dengan SweetAlert
+        // Fungsi Untuk Ambil Nama Depan Saja (Untuk Tanda Tangan Cursive)
+        function getFirstName(fullName) {
+            if (!fullName) return "Signature";
+            return fullName.trim().split(/\s+/)[0]; 
+        }
+
         async function downloadCertificate() {
             let savedName = localStorage.getItem('sheetflare_member_name') || "";
             
-            // Menggunakan SweetAlert2 untuk input nama peserta
             const { value: inputName } = await Swal.fire({
                 title: 'Cetak Sertifikat 🎓',
                 text: 'Masukkan nama lengkap Anda yang ingin ditampilkan pada sertifikat:',
                 input: 'text',
                 inputValue: savedName,
                 icon: 'info',
-                inputPlaceholder: 'Ketik nama lengkap di sini...',
+                inputPlaceholder: 'Ketik nama lengkap...',
                 showCancelButton: true,
                 confirmButtonColor: '#00AAE7',
                 cancelButtonColor: '#94a3b8',
-                confirmButtonText: 'Lanjut Cetak',
+                confirmButtonText: 'Cetak Sekarang',
                 cancelButtonText: 'Batal',
-                inputValidator: (value) => {
-                    if (!value) { return 'Nama lengkap tidak boleh kosong!' }
-                }
+                inputValidator: (value) => { if (!value) { return 'Nama lengkap tidak boleh kosong!' } }
             });
 
-            if (!inputName) return; // Batal mencetak
+            if (!inputName) return; 
 
             localStorage.setItem('sheetflare_member_name', inputName.trim());
             showToast("Menyiapkan PDF Sertifikat...", "success");
@@ -512,19 +387,23 @@
             const courseName = document.getElementById('header-product-id').innerText.replace("Produk: ", "");
             const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            // Suntikkan data dinamis ke dalam template
+            // Mengisi Data HTML Template
             document.getElementById('cert-name').innerText = inputName.trim();
             document.getElementById('cert-course').innerText = courseName;
             document.getElementById('cert-date').innerText = today;
             
-            // Pengaturan dari Admin Panel
-            document.getElementById('cert-val-leader').innerText = certSettings.leader;
-            document.getElementById('cert-val-org').innerText = certSettings.organizer;
-            // Ubah spasi jadi enter (br) agar stempel bentuk melingkar lebih rapi
+            // Mengisi Data 2 Penandatangan (Diambil dari var certSettings hasil GS Backend)
+            document.getElementById('cert-val-sign1').innerText = getFirstName(certSettings.leader1);
+            document.getElementById('cert-val-leader1').innerText = certSettings.leader1;
+            document.getElementById('cert-val-role1').innerText = certSettings.role1;
+            
+            document.getElementById('cert-val-sign2').innerText = getFirstName(certSettings.leader2);
+            document.getElementById('cert-val-leader2').innerText = certSettings.leader2;
+            document.getElementById('cert-val-role2').innerText = certSettings.role2;
+
             document.getElementById('cert-val-stamp').innerHTML = certSettings.stamp.replace(/\s+/g, '<br>');
 
             const element = document.getElementById('certificate-template');
-
             const opt = {
                 margin:       0,
                 filename:     `Sertifikat_${courseName.replace(/\s+/g, '_')}.pdf`,
@@ -537,14 +416,10 @@
                 showToast("Sertifikat berhasil diunduh!", "success");
             }).catch(err => {
                 showToast("Gagal mengunduh sertifikat.", "error");
-                console.error(err);
             });
         }
 
-        window.onload = () => {
-            if(typeof lucide !== 'undefined') lucide.createIcons();
-            verifyAndLoad();
-        };
+        window.onload = () => { if(typeof lucide !== 'undefined') lucide.createIcons(); verifyAndLoad(); };
     </script>
 </body>
 </html>

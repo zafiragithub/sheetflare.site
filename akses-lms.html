@@ -234,6 +234,7 @@
             position: relative; z-index: 2; 
             transform: rotate(-5deg);
             display: inline-block;
+            white-space: nowrap; /* 🔥 Tambahan ini agar teks dipaksa 1 baris */
         }
         div:where(.swal2-container) { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
@@ -341,7 +342,7 @@
                     <div style="text-align: center; width: 220px; position: relative;">
                         <div class="cert-signature" id="cert-val-leader">Instruktur</div>
                         <div style="border-bottom: 1px solid #94a3b8; width: 100%; margin-bottom: 5px;"></div>
-                        <p style="font-size: 16px; color: #0f172a; font-weight: 800; margin: 0;" id="cert-val-org">Penyelenggara Resmi</p>
+                        <p style="font-size: 16px; color: #0f172a; font-weight: 800; margin: 0; white-space: nowrap;" id="cert-val-org">Penyelenggara Resmi</p>
                     </div>
                 </div>
 

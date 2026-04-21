@@ -1,0 +1,63 @@
+<!-- ================= PRICING (SUDAH DISEDERHANAKAN) ================= -->
+<section id="pricing" class="px-6 py-24 bg-slate-50 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto relative z-10">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+                Investasi Sekali, Milik Anda Selamanya
+            </h2>
+            <p class="text-slate-500 text-lg">
+                Tanpa biaya bulanan. Tanpa ribet. Langsung siap pakai.
+            </p>
+        </div>
+
+        <!-- SINGLE PACKAGE -->
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-10 border-4 border-indigo-500 relative shadow-2xl shadow-indigo-900/30 text-center">
+
+                <!-- Badge -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-6 py-1.5 rounded-b-xl font-black text-xs uppercase tracking-widest shadow-md">
+                    BEST DEAL 🔥
+                </div>
+
+                <h3 class="text-2xl font-black text-white mt-6 mb-2">
+                    Lisensi Whitelabel
+                </h3>
+
+                <p class="text-slate-400 font-bold line-through mb-1">
+                    Harga Normal: Rp 1.500.000
+                </p>
+
+                <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500 mb-8 tracking-tighter">
+                    <span class="text-2xl align-top text-amber-300">Rp</span>147.000
+                </div>
+
+                <!-- FEATURES -->
+                <ul class="space-y-4 mb-10 text-sm text-white text-left max-w-md mx-auto">
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Akses Source Code SheetFlare</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> CMS & Landing Page Custom</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> LMS E-Course Premium</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Integrasi Payment (Duitku, Tripay, Xendit, Moota)</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Integrasi WA & Email Otomatis</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Sistem Afiliasi Otomatis</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Bebas Whitelabel 100%</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Bebas Jual Ulang Berkali-kali</li>
+                    <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i> Tanpa Batas Domain</li>
+                </ul>
+
+                <!-- CTA -->
+                <a href="javascript:void(0)" 
+                   onclick="openSFCheckout('https://ratakan.com/cart/direct/2026042014050173288522E07329943AF1')" 
+                   class="block w-full bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 text-slate-900 py-4 rounded-xl font-black text-center uppercase tracking-widest btn-glow">
+                   
+                   🔥 Beli Sekarang
+                </a>
+
+                <p class="text-xs text-slate-400 mt-4">
+                    Tanpa biaya bulanan • Akses selamanya
+                </p>
+
+            </div>
+        </div>
+    </div>
+</section>

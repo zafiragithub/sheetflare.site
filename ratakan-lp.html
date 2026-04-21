@@ -1,536 +1,525 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>SheetFlare - Web Membership & CMS Auto-Pilot</title>
-    <meta name="description" content="Revolusi sistem penjualan produk digital menggunakan 100% Google Sheets + Cloudflare. Buat halaman dinamis dan kelola membership tanpa bayar server.">
-    <link rel="canonical" href="https://sheetflare.site/">
+/**
+ * SheetFlare Core Backend System (Cloudflare D1 Edition)
+ * File Utama: src/index.js - THE BULLETPROOF BINDER (v26.0)
+ * Mengatasi D1_TYPE_ERROR: Type 'undefined' secara permanen di seluruh endpoint.
+ */
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://sheetflare.site/">
-    <meta property="og:title" content="SheetFlare - Web Membership & CMS Auto-Pilot">
-    <meta property="og:description" content="Revolusi sistem penjualan produk digital menggunakan 100% Google Sheets + Cloudflare.">
-    <meta property="og:image" content="https://ik.imagekit.io/maihfdgfn5/download.png">
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, x-callback-token, x-callback-signature, x-duitku-signature",
+  "Access-Control-Max-Age": "86400",
+};
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lite-youtube-embed/0.3.3/lite-yt-embed.min.css">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lite-youtube-embed/0.3.3/lite-yt-embed.min.js" defer></script>
-
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        
-        /* Animasi Muncul (Reveal) */
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        
-        /* Animasi Khusus Tombol CTA */
-        .btn-glow { box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); transition: all 0.3s ease; }
-        .btn-glow:hover { box-shadow: 0 0 40px rgba(251, 191, 36, 0.8); transform: translateY(-3px); }
-        
-        /* FAQ Accordion */
-        .faq-answer { max-height: 0; overflow: hidden; transition: all 0.4s ease-out; opacity: 0; }
-        .faq-answer.show { opacity: 1; padding-top: 1.5rem; padding-bottom: 1.5rem; }
-    </style>
-
-    <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      
-      fbq('init', '2189480848543217'); 
-      fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2189480848543217&ev=PageView&noscript=1"/></noscript>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [{
-    "@type": "Question",
-    "name": "Apakah saya harus bayar hosting lagi?",
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Tidak! Salah satu keunggulan utama SheetFlare adalah Anda menggunakan infrastruktur Serverless. Frontend menggunakan Cloudflare Pages dan Backend menggunakan Google Sheets yang keduanya 100% Gratis."
-    }
-  }, {
-    "@type": "Question",
-    "name": "Apakah pemula bisa menginstallnya?",
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Sangat bisa! Kami menyertakan dokumentasi video dan teks langkah demi langkah (step-by-step) yang sangat mudah dipahami oleh orang awam yang tidak mengerti coding sekalipun."
-    }
-  }, {
-    "@type": "Question",
-    "name": "Apakah Harus menggunakan Moota / Duitku?",
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Tidak wajib. Integrasi Moota atau Duitku hanya opsional jika Anda ingin verifikasi pembayaran berjalan 100% otomatis 24 jam. Kami juga menyediakan opsi 'Aktivasi Manual Transfer Bank' yang bisa Anda setujui 1-klik melalui Dashboard Admin."
-    }
-  }]
+function jsonRes(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status: status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" }
+  });
 }
-</script>
-</head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden pb-20 md:pb-0">
 
-    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 z-[100] md:hidden flex items-center justify-between shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-        <div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Harga Lisensi</p>
-            <p class="text-lg font-black text-slate-900 leading-none">Rp 147.000</p>
-        </div>
-        <a href="#pricing" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-indigo-200 animate-pulse">Ambil Diskon</a>
-    </div>
+// ==========================================
+// 1. CRYPTO & HELPERS
+// ==========================================
+async function getGlobalSettings(env) {
+  try {
+    const { results } = await env.DB.prepare("SELECT * FROM settings").all();
+    const sObj = {}; 
+    if(results) results.forEach(s => sObj[s.kunci] = s.nilai); 
+    return sObj;
+  } catch(e) { return {}; }
+}
 
-    <section class="relative bg-gradient-to-br from-indigo-700 via-slate-900 to-slate-900 text-white px-6 pt-20 pb-24 md:pt-32 md:pb-32 text-center overflow-hidden rounded-b-[3rem] shadow-2xl mb-16">
-        <div class="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30"></div>
-        <div class="absolute -top-24 -right-24 w-72 h-72 bg-indigo-500/30 rounded-full blur-[100px]"></div>
-        <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-500/20 rounded-full blur-[100px]"></div>
+function md5(str) {
+  var k=[],i=0;for(;i<64;){k[i]=0|Math.abs(Math.sin(++i))*4294967296;}
+  var calcMD5=function(str){var b,c,d,j,x=[],str2=unescape(encodeURI(str)),a=str2.length,h=[b=1732584193,c=-271733879,~b,~c],i=0;for(;i<=a;)x[i>>2]|=(str2.charCodeAt(i)||128)<<8*(i++%4);x[str=a+8>>6<<4|14]=a*8;for(i=0;i<str;i+=16){a=h,j=0;for(;j<64;){a=[d=a[3],(b=a[1]|0)+((d=a[0]+[b&(c=a[2])|~b&d,d&b|~d&c,b^c^d,c^(b|~d)][a=j>>4]+(k[j]+(x[[j,5*j+1,3*j+5,7*j][a]%16+i]|0)))<<(a=[7,12,17,22,5,9,14,20,4,11,16,23,6,10,15,21][4*a+j++%4])|d>>>32-a),b,c];}for(j=4;j;)h[--j]=h[j]+a[j];}str="";for(;j<32;)str+=(h[j>>3]>>((1^j++&3)*8)&255).toString(16).padStart(2,"0");return str;}
+  return calcMD5(str);
+}
 
-        <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center reveal">
-            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest mb-8 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> SheetFlare Premium V13
-            </div>
-            
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-8 leading-tight max-w-4xl mx-auto">
-                Ubah Google Sheets Jadi Web <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500">CMS & Membership</span> Auto-Pilot!
-            </h1>
-            
-            <p class="text-lg md:text-xl text-indigo-100 mb-10 leading-relaxed max-w-3xl opacity-90 mx-auto">
-                Satu sistem untuk dua kebutuhan! Buat halaman <strong>Landing Page</strong> dinamis sesuka hati, SEKALIGUS kelola <strong>Sistem Penjualan E-Course</strong> otomatis tanpa pusing bayar tagihan server bulanan.
-            </p>
+async function safeAll(env, query, params = []) {
+  try { const { results } = await env.DB.prepare(query).bind(...params).all(); return results || []; } 
+  catch (e) { console.error("SQL Error: " + query, e.message); return []; }
+}
 
-            <a href="#pricing" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 text-slate-900 px-10 py-5 rounded-2xl font-black text-sm md:text-base uppercase tracking-[0.2em] btn-glow group w-full sm:w-auto z-20 relative">
-                Bongkar Source Code-nya <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-            </a>
+// ==========================================
+// 2. NOTIFICATIONS (WA & EMAIL)
+// ==========================================
+async function sendWA(settings, target, message) {
+  if (!target || String(target).trim() === "") return;
+  let num = String(target).replace(/\D/g, '');
+  if (num.startsWith('0')) num = '62' + num.substring(1);
+  else if (num.startsWith('8')) num = '62' + num;
+  
+  const gateway = String(settings.wa_gateway || 'onesender').trim().toLowerCase();
+  const token = String(settings.wa_token || "").trim();
+  if (!token) return;
 
-            <div class="w-full mt-16 md:mt-24 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden shadow-[0_0_80px_rgba(79,70,229,0.5)] border border-slate-700 bg-slate-900 reveal group cursor-pointer relative z-10" style="transition-delay: 200ms;">
-                <div class="bg-slate-800/80 backdrop-blur-sm px-5 py-3 flex items-center gap-2 border-b border-slate-700/50">
-                    <div class="w-3 h-3 rounded-full bg-red-500 shadow-inner"></div>
-                    <div class="w-3 h-3 rounded-full bg-amber-500 shadow-inner"></div>
-                    <div class="w-3 h-3 rounded-full bg-emerald-500 shadow-inner"></div>
-                    <div class="ml-4 text-[10px] md:text-xs text-slate-400 font-mono tracking-widest font-medium opacity-70">spotadmin.dashboard</div>
-                </div>
-                <div class="overflow-hidden bg-slate-800 aspect-video flex items-center justify-center">
-                    <img src="https://ik.imagekit.io/maihfdgfn5/download.png" alt="Preview SheetFlare Admin Dashboard" width="1280" height="720" loading="lazy" decoding="async" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100">
-                </div>
-            </div>
-            
-        </div>
-    </section>
+  try {
+    if (gateway === 'fonnte') {
+      await fetch("https://api.fonnte.com/send", { method: 'POST', headers: { 'Authorization': token }, body: new URLSearchParams({ target: num, message }) });
+    } else if (gateway === 'starsender') {
+      await fetch("https://starsender.online/api/sendText", { method: 'POST', headers: { 'apikey': token, 'Authorization': token, 'Content-Type': 'application/json' }, body: JSON.stringify({ tujuan: num, message: message }) });
+    } else {
+      await fetch("https://wa4318.cloudwa.my.id/api/v1/messages", { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify({ recipient_type: "individual", to: num, type: "text", text: { body: message } }) });
+    }
+  } catch (e) { console.error("WA Error"); }
+}
 
-    <section class="px-6 py-16 max-w-6xl mx-auto">
-        <div class="text-center mb-16 reveal">
-            <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">Jujur Saja, Masih Capek Mengalami Ini?</h2>
-            <p class="text-slate-500 text-lg">Jangan biarkan tagihan & batasan teknis menghambat omset bisnis digital Anda.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all reveal" style="transition-delay: 100ms;">
-                <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="server-crash" class="w-7 h-7"></i></div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Hosting Mahal</h3>
-                <p class="text-slate-500 text-sm leading-relaxed">Pusing setiap bulan/tahun harus bayar sewa VPS atau langganan platform membership yang harganya terus naik?</p>
-            </div>
-            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all reveal" style="transition-delay: 200ms;">
-                <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="code" class="w-7 h-7"></i></div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Plugin Ribet</h3>
-                <p class="text-slate-500 text-sm leading-relaxed">Website gampang error, database nyangkut, dan konflik plugin WordPress yang bikin stress seharian?</p>
-            </div>
-            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all reveal" style="transition-delay: 300ms;">
-                <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="moon" class="w-7 h-7"></i></div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Capek Kasir Manual</h3>
-                <p class="text-slate-500 text-sm leading-relaxed">Harus cek mutasi bank manual jam 2 pagi dan ngirim akses satu-satu ke pembeli yang transfer?</p>
-            </div>
-            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all reveal" style="transition-delay: 400ms;">
-                <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="hourglass" class="w-7 h-7"></i></div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Website Lemot</h3>
-                <p class="text-slate-500 text-sm leading-relaxed">Pengunjung kabur gara-gara loading halaman produk dan checkout muter-muter kelamaan? Konversi hancur!</p>
-            </div>
-        </div>
-    </section>
+async function addToAutoresponder(settings, nama, email) {
+  const provider = String(settings.mail_provider || '').trim().toLowerCase();
+  const apiKey = String(settings.mail_api_key || '').trim();
+  const listId = String(settings.mailketing_list_id || '').trim();
 
-    <section class="px-6 py-20 bg-white border-t border-slate-100 mt-10">
-        <div class="max-w-5xl mx-auto"><style>
-        /* Animasi Overlay & Pop-up Modal */
-        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUpModal { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .sf-modal-overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px);
-            z-index: 99999; display: none; align-items: flex-end; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease;
+  if (provider === 'mailketing' && apiKey !== "" && listId !== "") {
+    try {
+      await fetch("https://api.mailketing.co.id/api/v1/add-subscriber", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ api_token: apiKey, list_id: listId, name: nama, email: email }) });
+    } catch(e) {}
+  }
+}
+
+// ==========================================
+// 3. PAYMENT GATEWAYS
+// ==========================================
+async function createTripay(inv, amount, body, settings) {
+  const url = settings.tripay_env === 'production' ? "https://tripay.co.id/api/transaction/create" : "https://tripay.co.id/api-sandbox/transaction/create";
+  const sigStr = settings.tripay_merchant_code + inv + amount;
+  const keyData = new TextEncoder().encode(settings.tripay_private_key);
+  const msgData = new TextEncoder().encode(sigStr);
+  const cryptoKey = await crypto.subtle.importKey('raw', keyData, {name: 'HMAC', hash: 'SHA-256'}, false, ['sign']);
+  const sigBuf = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+  const signature = Array.from(new Uint8Array(sigBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  const res = await fetch(url, { method: "POST", headers: { "Authorization": "Bearer " + settings.tripay_api_key, "Content-Type": "application/json" }, body: JSON.stringify({ method: String(body.payment_channel || ""), merchant_ref: inv, amount: amount, customer_name: String(body.nama || ""), customer_email: String(body.email || ""), customer_phone: String(body.whatsapp || ""), order_items: [{ name: String(body.nama_produk || ""), price: amount, quantity: 1 }], return_url: String(settings.site_url || ""), signature: signature }) });
+  const data = await res.json(); if(data.success) return data.data.checkout_url; throw new Error(data.message || "Tripay API Error");
+}
+
+async function createXendit(inv, amount, body, settings) {
+  const auth = btoa(settings.xendit_api_key + ":");
+  const res = await fetch("https://api.xendit.co/v2/invoices", { method: "POST", headers: { "Authorization": "Basic " + auth, "Content-Type": "application/json" }, body: JSON.stringify({ external_id: inv, amount: amount, payer_email: String(body.email || ""), description: "Pesanan " + String(body.nama_produk || ""), customer: { given_names: String(body.nama || ""), email: String(body.email || ""), mobile_number: String(body.whatsapp || "") }, items: [{ name: String(body.nama_produk || ""), price: amount, quantity: 1 }], success_redirect_url: String(settings.site_url || "") }) });
+  const data = await res.json(); if(data.invoice_url) return data.invoice_url; throw new Error(data.message || "Xendit API Error");
+}
+
+async function createDuitku(inv, amount, body, settings) {
+  const url = settings.duitku_env === 'production' ? "https://passport.duitku.com/webapi/api/merchant/v2/inquiry" : "https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry";
+  const signature = md5(settings.duitku_merchant_code + inv + amount + settings.duitku_api_key);
+  const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ merchantCode: settings.duitku_merchant_code, paymentAmount: amount, paymentMethod: String(body.payment_channel || ""), merchantOrderId: inv, productDetails: "Pesanan " + String(body.nama_produk || ""), email: String(body.email || ""), phoneNumber: String(body.whatsapp || ""), customerVaName: String(body.nama || ""), callbackUrl: String(settings.site_url || "") + "/api/callback", returnUrl: String(settings.site_url || "") + "/dashboard", signature: signature, itemDetails: [{ name: String(body.nama_produk || ""), price: amount, quantity: 1 }] }) });
+  const data = await res.json(); if(data.paymentUrl) return data.paymentUrl; throw new Error(data.statusMessage || "Duitku API Error");
+}
+
+// ==========================================
+// 4. DATA FETCHERS (ADMIN & MEMBER)
+// ==========================================
+async function handleGetAdminData(env, settings) {
+  const orders = await safeAll(env, "SELECT * FROM orders ORDER BY rowid DESC");
+  const products = await safeAll(env, "SELECT * FROM access_rules");
+  const lms = await safeAll(env, "SELECT * FROM lms");
+  const coupons = await safeAll(env, "SELECT * FROM coupons");
+  const pages = await safeAll(env, "SELECT * FROM pages");
+  const users = await safeAll(env, "SELECT * FROM users");
+
+  let totalRev = 0;
+  orders.forEach(o => { if (o.status === 'Lunas' || o.status === 'Success') totalRev += (Number(o.harga_total) || 0); });
+
+  const affMap = {};
+  users.forEach(u => { affMap[u.email] = { id: u.id_user || u.id || '', name: u.nama || '', email: u.email || '', wa: u.whatsapp || '', rekening: u.info_rekening || '', komisi: 0 }; });
+  orders.forEach(o => {
+    if (o.status === 'Lunas' || o.status === 'Success') {
+      for (let k in affMap) { if (affMap[k].email === o.affiliate || String(affMap[k].id) === String(o.affiliate)) { affMap[k].komisi += (Number(o.komisi) || 0); } }
+    }
+  });
+
+  return jsonRes({
+    status: 'success',
+    stats: { users: users.length, orders: orders.length, rev: totalRev },
+    orders: orders.map(o => [o.invoice, o.email, o.nama, o.whatsapp, o.id_produk, o.nama_produk, o.harga_total, o.status, o.tanggal_order, o.affiliate, o.komisi, o.domain || ""]),
+    products: products.map(p => [p.id_produk, p.title, p.desc || p.deskripsi, p.url_akses || p.url, p.harga, p.status, p.lp_url, p.komisi, p.bump_status, p.bump_title, p.bump_price, p.bump_desc, p.bump_url, p.gambar]),
+    lms: lms.map(l => [l.id_produk || l.product_id, l.videos, l.deskripsi || l.desc, l.cert_leader1, l.cert_role1, l.cert_leader2, l.cert_role2, l.cert_stamp]),
+    coupons: coupons.map(c => [c.kode_promo || c.code, c.tipe || c.type, c.nilai || c.val, c.status, c.berlaku_untuk_prod || c.products]),
+    pages: pages.map(pg => [pg.id, pg.slug, pg.title, pg.content]),
+    affiliates: Object.values(affMap).filter(a => a.komisi > 0),
+    settings: settings
+  });
+}
+
+async function handleGetMemberProducts(env, body, settings) {
+  const email = String(body.email || "").trim().toLowerCase();
+  const rules = await safeAll(env, "SELECT * FROM access_rules");
+  const orders = await safeAll(env, "SELECT * FROM orders");
+  const users = await safeAll(env, "SELECT * FROM users");
+
+  let uId = "NO_ID_MATCH"; 
+  const me = users.find(u => String(u.email).toLowerCase() === email);
+  if (me && me.id_user) uId = String(me.id_user).trim();
+  else if (me && me.id) uId = String(me.id).trim();
+
+  let lunasMap = {}; let totalKomisi = 0; let dataProspek = [];
+  
+  if (email && email !== "") {
+    orders.forEach(r => {
+      const orderEmail = String(r.email).trim().toLowerCase();
+      const statusOrder = String(r.status).trim();
+      const affiliateData = String(r.affiliate).trim();
+      
+      if (orderEmail === email && (statusOrder === 'Lunas' || statusOrder === 'Success')) {
+        const pId = String(r.id_produk).trim().toUpperCase();
+        if (!lunasMap[pId]) lunasMap[pId] = r.nama_produk; else lunasMap[pId] += " | " + r.nama_produk;
+      }
+      
+      if (affiliateData !== "" && affiliateData !== "-" && affiliateData !== "null") {
+        if (affiliateData === uId || affiliateData === email) {
+          if (statusOrder === 'Lunas' || statusOrder === 'Success') { totalKomisi += Number(r.komisi || 0); }
+          let tglStr = r.tanggal_order; 
+          try { if (tglStr) { const d = new Date(tglStr); if (!isNaN(d.getTime())) { tglStr = ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear(); } } } catch(e) {}
+          dataProspek.push({ tanggal: tglStr || "-", nama: r.nama, produk: r.nama_produk, status: r.status, komisi: Number(r.komisi || 0), harga_produk: Number(r.harga_total || 0) });
         }
-        .sf-modal-overlay.sf-active { display: flex; animation: fadeInOverlay 0.3s forwards; }
+      }
+    });
+  }
+
+  let owned = [], available = [];
+  rules.forEach(r => {
+    if (String(r.status).trim() === 'Active') {
+      const pId = String(r.id_produk).trim().toUpperCase();
+      const bumpTitle = String(r.bump_title || "").trim();
+      let hasAccess = false; let hasBumpAccess = false;
+      
+      if (lunasMap[pId]) {
+        hasAccess = true;
+        if (bumpTitle !== "" && lunasMap[pId].toLowerCase().includes(bumpTitle.toLowerCase())) hasBumpAccess = true;
+      }
+      if (Number(r.harga || 0) === 0) hasAccess = true;
+
+      const pObj = { id: pId, title: r.title, nama: r.title, desc: r.desc || r.deskripsi, url: hasAccess ? (r.url_akses || r.url) : '#', harga: r.harga, access: hasAccess, lp_url: r.lp_url || "", bump_access: hasBumpAccess, bump_title: hasBumpAccess ? bumpTitle : "", bump_url: hasBumpAccess ? r.bump_url : "", gambar: r.gambar || "", komisi: r.komisi };
+      
+      if (hasAccess && email) owned.push(pObj); else available.push(pObj);
+    }
+  });
+
+  return jsonRes({ status: 'success', data: settings, owned, available, total_komisi: totalKomisi, prospek: dataProspek.reverse() });
+}
+
+// ==========================================
+// 5. THE MAIN ROUTER
+// ==========================================
+export default {
+  async fetch(request, env) {
+    if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+    try {
+      const body = await request.json();
+      const action = String(body.action || "");
+      const settings = await getGlobalSettings(env);
+
+      switch (action) {
+        // --- AUTH & USER ---
+        case 'login':
+          const loginEmail = String(body.email || "").trim().toLowerCase();
+          const loginPass = String(body.password || "");
+          const u = await env.DB.prepare("SELECT * FROM users WHERE LOWER(email) = ? AND password = ?").bind(loginEmail, loginPass).first();
+          if (!u) return jsonRes({ status: 'error', message: 'Gagal Login: Cek kembali email/password' });
+          return jsonRes({ status: 'success', data: { id: u.id_user || u.id || '', nama: u.nama || '', email: u.email || '', role: u.role || 'member', wa: u.whatsapp || '' } });
+
+        case 'admin_login':
+          const admEmail = String(body.email || "").trim().toLowerCase();
+          const admPass = String(body.password || "");
+          const adm = await env.DB.prepare("SELECT * FROM users WHERE LOWER(email) = ? AND password = ? AND (role = 'Admin' OR role = 'admin')").bind(admEmail, admPass).first();
+          return adm ? jsonRes({ status: 'success', data: { id: adm.id_user || adm.id || '', nama: adm.nama || '', email: adm.email || '' } }) : jsonRes({ status: 'error', message: 'Akses Ditolak.' });
+
+        case 'register_member':
+          const regEmail = String(body.email || "").trim().toLowerCase();
+          const regPass = String(body.password || "");
+          const regNama = String(body.nama || "");
+          const regWa = String(body.whatsapp || "");
+          const regAff = String(body.affiliate || "-");
+          const exist = await env.DB.prepare("SELECT email FROM users WHERE LOWER(email) = ?").bind(regEmail).first();
+          if(exist) return jsonRes({ status: 'error', message: 'Email sudah terdaftar! Silakan langsung Login.' });
+          
+          try {
+            await env.DB.prepare(`INSERT INTO users (id_user, email, password, nama, role, tanggal_daftar, whatsapp, affiliate) VALUES (?, ?, ?, ?, 'member', ?, ?, ?)`).bind('USR-'+Date.now(), regEmail, regPass, regNama, new Date().toISOString(), regWa, regAff).run();
+            try { await addToAutoresponder(settings, regNama, regEmail); } catch(e){}
+            return jsonRes({ status: 'success', message: 'Akun berhasil dibuat' });
+          } catch(err) {
+            await env.DB.prepare(`INSERT INTO users (email, password, nama, role, whatsapp, affiliate) VALUES (?, ?, ?, 'member', ?, ?)`).bind(regEmail, regPass, regNama, regWa, regAff).run();
+            return jsonRes({ status: 'success', message: 'Akun berhasil dibuat (Fallback Mode)' });
+          }
+
+        case 'change_password':
+          const pwdEmail = String(body.email || "").trim().toLowerCase();
+          const pwdOld = String(body.old_password || "");
+          const pwdNew = String(body.new_password || "");
+          const check = await env.DB.prepare("SELECT email FROM users WHERE LOWER(email) = ? AND password = ?").bind(pwdEmail, pwdOld).first();
+          if(!check) return jsonRes({status: 'error', message: 'Password lama salah!'});
+          await env.DB.prepare("UPDATE users SET password = ? WHERE LOWER(email) = ?").bind(pwdNew, pwdEmail).run();
+          return jsonRes({ status: 'success', message: 'Password berhasil diubah' });
+
+        case 'update_rekening':
+          const rekEmail = String(body.email || "").trim().toLowerCase();
+          const rekDetail = `${String(body.bank || "")} - ${String(body.norek || "")} (a.n ${String(body.nama || "")})`;
+          await env.DB.prepare("UPDATE users SET info_rekening = ? WHERE LOWER(email) = ?").bind(rekDetail, rekEmail).run();
+          return jsonRes({ status: 'success', message: 'Data rekening berhasil disimpan!' });
+
+        // --- FETCHERS ---
+        case 'get_global_settings': return jsonRes({ status: 'success', data: settings });
+        case 'get_admin_data': return await handleGetAdminData(env, settings);
+        case 'get_products': return await handleGetMemberProducts(env, body, settings);
         
-        .sf-modal-content {
-            width: 100%; max-width: 480px; height: 90vh;
-            background: #f8fafc; border-radius: 28px 28px 0 0;
-            position: relative; overflow: hidden; box-shadow: 0 -20px 40px rgba(0,0,0,0.2);
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .sf-modal-overlay.sf-active .sf-modal-content { animation: slideUpModal 0.4s forwards; }
-        
-        @media (min-width: 640px) {
-            .sf-modal-overlay { align-items: center; }
-            .sf-modal-content { height: 85vh; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        }
-        
-        .sf-close-btn {
-            position: absolute; top: 16px; right: 16px; width: 36px; height: 36px;
-            background: white; border-radius: 50%; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; color: #475569; z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s ease;
-        }
-        .sf-close-btn:hover { background: #fee2e2; color: #ef4444; transform: scale(1.1); }
-        
-        #sf-checkout-iframe { width: 100%; height: 100%; border: none; background: #f8fafc; }
-    </style>
+        case 'get_product': 
+          const gpId = String(body.id || body.id_produk || "").toUpperCase();
+          const pRow = await env.DB.prepare("SELECT * FROM access_rules WHERE id_produk = ?").bind(gpId).first();
+          if (!pRow) return jsonRes({ status: 'error', message: 'Produk tidak ditemukan' });
+          const pDataObj = { id: pRow.id_produk, title: pRow.title, nama: pRow.title, desc: pRow.desc || pRow.deskripsi, url: pRow.url_akses || pRow.url, harga: pRow.harga, lp_url: pRow.lp_url, gambar: pRow.gambar, komisi: pRow.komisi, bump_status: pRow.bump_status, bump_title: pRow.bump_title, bump_price: pRow.bump_price, bump_desc: pRow.bump_desc, bump_url: pRow.bump_url };
+          let affName = "";
+          const affIdReq = String(body.aff_id || "");
+          if (affIdReq !== "" && affIdReq !== "GUEST" && affIdReq !== "-") {
+            const affUser = await env.DB.prepare("SELECT nama FROM users WHERE id_user = ?").bind(affIdReq).first();
+            if(affUser) affName = affUser.nama;
+          }
+          return jsonRes({ status: 'success', data: pDataObj, payment: settings, aff_name: affName });
 
-    <div id="sf-checkout-modal" class="sf-modal-overlay">
-        <div class="sf-modal-content">
-            <button class="sf-close-btn" onclick="closeSFCheckout()" title="Tutup">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <iframe id="sf-checkout-iframe" src=""></iframe>
-        </div>
-    </div>
-
-    <script>
-        // Fungsi Buka Pop-up
-        function openSFCheckout(url) {
-            const iframe = document.getElementById('sf-checkout-iframe');
-            const modal = document.getElementById('sf-checkout-modal');
-            
-            const finalUrl = url.includes('?') ? url + '&iframe=true' : url + '?iframe=true';
-            
-            iframe.src = finalUrl;
-            modal.classList.add('sf-active');
-            document.body.style.overflow = 'hidden'; 
-        }
-        
-        // Fungsi Tutup Pop-up
-        function closeSFCheckout() {
-            const modal = document.getElementById('sf-checkout-modal');
-            const iframe = document.getElementById('sf-checkout-iframe');
-            
-            modal.classList.remove('sf-active');
-            document.body.style.overflow = 'auto'; 
-            
-            setTimeout(() => { iframe.src = ''; }, 400); 
-        }
-
-        // ROBOT PEMBAJAK LINK OTOMATIS
-        document.addEventListener('DOMContentLoaded', () => {
-            const checkoutLinks = document.querySelectorAll('a[href*="/checkout?id="]');
-            
-            checkoutLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault(); 
-                    openSFCheckout(this.href); 
-                });
-            });
-        });
-    </script>
-    <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-6 leading-tight">Mulai Bangun Kekaisaran Digital Anda<br>Dengan <span class="text-indigo-600">Teknologi God Mode!</span> 🚀</h2>
-                <p class="text-slate-500 leading-relaxed text-lg max-w-3xl mx-auto">
-                    SheetFlare bukan sekadar script membership biasa. Ini adalah sistem web membership hanya untuk produk digital berbasis Google Sheets dengan biaya operasional <strong>Rp 0 / bulan!</strong>
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                <div class="col-span-1 md:col-span-2 flex gap-5 bg-gradient-to-r from-indigo-50 to-blue-50 p-8 rounded-3xl border border-indigo-100 group reveal">
-                    <div class="w-14 h-14 bg-white text-indigo-600 rounded-2xl flex items-center justify-center shrink-0 shadow-md group-hover:scale-110 transition-transform"><i data-lucide="zap" class="w-7 h-7"></i></div>
-                    <div>
-                        <h4 class="font-black text-slate-800 text-lg mb-2">1. Speed Dewa (0 Detik Loading)</h4>
-                        <p class="text-slate-600 text-sm leading-relaxed">Dibangun dengan arsitektur Single Page Application (SPA) dan teknologi <strong>RAM Cache Google</strong>. Checkout & Member Area terbuka instan tanpa loading layar putih!</p>
-                    </div>
-                </div>
-                
-                <div class="flex gap-5 p-6 rounded-3xl border border-slate-100 bg-slate-50 hover:border-indigo-200 transition-colors group reveal">
-                    <div class="w-14 h-14 bg-white text-indigo-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="bot" class="w-7 h-7"></i></div>
-                    <div>
-                        <h4 class="font-black text-slate-800 text-lg mb-2">2. Robot Kasir 100% Auto-Pilot</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed">Pembeli checkout ➡️ Transfer ➡️ Sistem Duitku membaca mutasi ➡️ LUNAS ➡️ Akses & Notif WA dikirim diam-diam di background.</p>
-                    </div>
-                </div>
-                <div class="flex gap-5 p-6 rounded-3xl border border-slate-100 bg-slate-50 hover:border-indigo-200 transition-colors group reveal">
-                    <div class="w-14 h-14 bg-white text-indigo-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="w-7 h-7"></i></div>
-                    <div>
-                        <h4 class="font-black text-slate-800 text-lg mb-2">3. LMS E-Course Creator</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed">Punya produk video edukasi? Buat kurikulum kelas (bab per bab) semudah menyalin link YouTube. Terlindungi & rapi di Member Area.</p>
-                    </div>
-                </div>
-                <div class="flex gap-5 p-6 rounded-3xl border border-slate-100 bg-slate-50 hover:border-indigo-200 transition-colors group reveal">
-                    <div class="w-14 h-14 bg-white text-indigo-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="pie-chart" class="w-7 h-7"></i></div>
-                    <div>
-                        <h4 class="font-black text-slate-800 text-lg mb-2">4. Sistem Afiliasi Otomatis</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed">Ubah pembeli jadi pasukan sales! Dilengkapi tracking referral canggih. Komisi dihitung otomatis setiap ada penjualan sukses.</p>
-                    </div>
-                </div>
-                <div class="flex gap-5 p-6 rounded-3xl border border-slate-100 bg-slate-50 hover:border-indigo-200 transition-colors group reveal">
-                    <div class="w-14 h-14 bg-white text-indigo-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="tag" class="w-7 h-7"></i></div>
-                    <div>
-                        <h4 class="font-black text-slate-800 text-lg mb-2">5. Full White-Label (Bebas Jual)</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed">Gunakan brand Anda sendiri. Sangat cocok untuk ditawarkan kembali (Jasa Pembuatan Web) ke klien dengan margin 100% milik Anda.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center reveal pt-8 border-t border-slate-100">
-                <h3 class="text-2xl font-black text-slate-900 mb-8">Lihat Kehebatan Sistem Ini Beraksi!</h3>
-                <div class="relative w-full max-w-4xl mx-auto rounded-[2rem] overflow-hidden shadow-2xl border-4 border-slate-100 bg-slate-900 p-2 aspect-video">
-                    <lite-youtube 
-                        videoid="Ce6o6QCGqiE" 
-                        playlabel="Lihat Demo SheetFlare"
-                        class="w-full h-full rounded-[1.5rem]"
-                        style="max-width: 100%; border-radius: 1.5rem;">
-                    </lite-youtube>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="px-6 py-24 bg-indigo-50 border-y border-indigo-100 relative">
-        <div class="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-200/50 via-transparent to-transparent pointer-events-none"></div>
-        <div class="max-w-5xl mx-auto relative z-10 reveal">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Coba Langsung <span class="text-indigo-600">Live Demo!</span></h2>
-                <p class="text-slate-600 text-lg max-w-2xl mx-auto">Jangan beli kucing dalam karung. Silakan login ke dalam sistem dan rasakan sendiri betapa mudah dan cepatnya SheetFlare bekerja.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div class="bg-white p-8 md:p-10 rounded-3xl border border-indigo-100 shadow-xl shadow-indigo-100/50 relative overflow-hidden group hover:-translate-y-2 transition-transform">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-blue-500"></div>
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
-                            <i data-lucide="layout-dashboard" class="w-7 h-7"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-800">Panel Admin</h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Master Control</p>
-                        </div>
-                    </div>
-                    <div class="space-y-4 mb-8">
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 mb-1">Link Login:</p>
-                            <a href="https://sheetflare.site/admin" target="_blank" class="text-sm font-mono text-indigo-600 hover:underline font-bold break-all">sheetflare.site/admin</a>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 mb-1">Email:</p>
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 font-mono text-sm text-slate-800 font-bold select-all cursor-text">adminsheetflare@gmail.com</div>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 mb-1">Password:</p>
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 font-mono text-sm text-slate-800 font-bold select-all cursor-text">rahasia123</div>
-                        </div>
-                    </div>
-                    <a href="https://sheetflare.site/admin" target="_blank" class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-colors shadow-lg shadow-indigo-200">
-                        Coba Login Admin <i data-lucide="external-link" class="w-4 h-4"></i>
-                    </a>
-                </div>
-
-                <div class="bg-white p-8 md:p-10 rounded-3xl border border-emerald-100 shadow-xl shadow-emerald-100/50 relative overflow-hidden group hover:-translate-y-2 transition-transform">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
-                            <i data-lucide="users" class="w-7 h-7"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-800">Member Area</h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tampilan Pembeli</p>
-                        </div>
-                    </div>
-                    <div class="space-y-4 mb-8">
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 mb-1">Link Login:</p>
-                            <a href="https://sheetflare.site/login" target="_blank" class="text-sm font-mono text-emerald-600 hover:underline font-bold break-all">sheetflare.site/login</a>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 mb-1">Email:</p>
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 font-mono text-sm text-slate-800 font-bold select-all cursor-text">membersheetflare@gmail.com</div>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 mb-1">Password:</p>
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 font-mono text-sm text-slate-800 font-bold select-all cursor-text">rahasia123</div>
-                        </div>
-                    </div>
-                    <a href="https://sheetflare.site/login" target="_blank" class="flex items-center justify-center gap-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-center py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-colors shadow-lg shadow-emerald-200">
-                        Coba Login Member <i data-lucide="external-link" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing" class="px-6 py-24 bg-slate-50 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto relative z-10">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Investasi Sekali, <br>Milik Anda Selamanya</h2>
-                <p class="text-slate-500 text-lg">Tanpa biaya perpanjangan, tanpa biaya server bulanan.</p>
-            </div>
-
-            <div class="grid grid-cols-1 gap-8 items-center max-w-lg mx-auto">
-                <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-10 border-4 border-indigo-500 relative shadow-2xl shadow-indigo-900/30 z-10 reveal">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 px-6 py-1.5 rounded-b-xl font-black text-xs uppercase tracking-widest shadow-md">
-                        Paling Laris 🔥
-                    </div>
-                    <h3 class="text-2xl font-black text-white mb-2 mt-4">Lisensi Whitelabel</h3>
-                    <p class="text-slate-400 font-bold line-through mb-1">Harga Normal: Rp 1.500.000</p>
-                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500 mb-8 tracking-tighter">
-                        <span class="text-2xl align-top text-amber-300">Rp</span> 147.000
-                    </div>
-                    
-                    <ul class="space-y-4 mb-10 text-sm text-white font-medium">
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> Akses Source Code SheetFlare</li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> Fitur Order Bump & Kupon Diskon</li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> Verifikasi Pembayaran Otomatis</li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> Sistem Afiliasi Otomatis</li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Fitur CMS & Beranda Custom</strong></li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Fitur LMS E-Course Premium</strong></li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Integrasi Duitku Payment Gateway</strong></li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Bebas Hak Whitelabel 100%</strong></li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Gunakan Nama Brand Sendiri</strong></li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Bebas Jual Kembali Berkali-kali</strong></li>
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400 shrink-0"></i> <strong>Tanpa Batasan Jumlah Domain</strong></li>
-                    </ul>
-                    <a href="https://ratakan.com/cart/direct/2026042014050173288522E07329943AF1" class="block w-full bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 text-slate-900 py-4 rounded-xl font-black text-center uppercase tracking-widest btn-glow">
-                        Ambil Lisensi Whitelabel
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section class="px-6 py-20 bg-white border-t border-slate-100">
-        <div class="max-w-3xl mx-auto reveal">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Tanya Jawab Seputar SheetFlare</h2>
-            </div>
-
-            <div class="space-y-4">
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden faq-item cursor-pointer">
-                    <div class="p-6 flex justify-between items-center hover:bg-slate-100 transition-colors">
-                        <h4 class="font-bold text-slate-800 pr-4">Apakah saya harus bayar hosting lagi?</h4>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon flex-shrink-0 transition-transform"></i>
-                    </div>
-                    <div class="faq-answer border-t border-slate-200 text-sm text-slate-600 leading-relaxed bg-white">
-                        <div class="px-6">
-                            Tidak! Salah satu keunggulan utama SheetFlare adalah Anda menggunakan infrastruktur Serverless. Frontend menggunakan Cloudflare Pages dan Backend menggunakan Google Sheets yang keduanya 100% Gratis.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden faq-item cursor-pointer">
-                    <div class="p-6 flex justify-between items-center hover:bg-slate-100 transition-colors">
-                        <h4 class="font-bold text-slate-800 pr-4">Apakah pemula bisa menginstallnya?</h4>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon flex-shrink-0 transition-transform"></i>
-                    </div>
-                    <div class="faq-answer border-t border-slate-200 text-sm text-slate-600 leading-relaxed bg-white">
-                        <div class="px-6">
-                            Sangat bisa! Kami menyertakan dokumentasi video dan teks langkah demi langkah (step-by-step) yang sangat mudah dipahami oleh orang awam yang tidak mengerti coding sekalipun.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden faq-item cursor-pointer">
-                    <div class="p-6 flex justify-between items-center hover:bg-slate-100 transition-colors">
-                        <h4 class="font-bold text-slate-800 pr-4">Apakah Harus menggunakan Moota / Duitku?</h4>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-icon flex-shrink-0 transition-transform"></i>
-                    </div>
-                    <div class="faq-answer border-t border-slate-200 text-sm text-slate-600 leading-relaxed bg-white">
-                        <div class="px-6">
-                            Tidak wajib. Integrasi Moota atau Duitku hanya opsional jika Anda ingin verifikasi pembayaran berjalan 100% otomatis 24 jam. Kami juga menyediakan opsi "Aktivasi Manual Transfer Bank" yang bisa Anda setujui 1-klik melalui Dashboard Admin.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-slate-900 text-slate-400 py-16 border-t border-slate-800 text-center relative z-10">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="flex items-center justify-center gap-2 mb-4">
-                <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
-                <span class="text-white font-black text-xl tracking-tighter">SheetFlare</span>
-            </div>
-            <p class="text-[10px] font-bold uppercase tracking-widest opacity-60">
-                &copy; 2026 SheetFlare Engine. All Rights Reserved.
-            </p>
-        </div>
-    </footer>
-
-    <a href="https://wa.me/6282124984382" target="_blank" rel="noopener noreferrer" class="fixed bottom-[80px] md:bottom-10 right-6 md:right-10 bg-[#25D366] text-white p-4 rounded-full shadow-[0_10px_20px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50 flex items-center justify-center animate-bounce">
-        <i data-lucide="message-circle" class="w-8 h-8"></i>
-    </a>
-
-    <script>
-        // Tangkap Affiliate dari URL
-        (function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('ref');
-            if(ref) { localStorage.setItem('melimpah_affiliate', ref); }
-        })();
-
-        // Animasi Muncul (Reveal) saat di scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => { 
-                if (e.isIntersecting) { 
-                    e.target.classList.add('active'); 
-                    observer.unobserve(e.target);
-                } 
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
-
-        // FAQ Accordion Logika (Lebih Smooth)
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const answer = item.querySelector('.faq-answer');
-                const icon = item.querySelector('.faq-icon');
-                const isActive = answer.classList.contains('show');
-
-                // Tutup semua FAQ
-                document.querySelectorAll('.faq-answer').forEach(ans => {
-                    ans.style.maxHeight = null;
-                    ans.classList.remove('show');
-                });
-                document.querySelectorAll('.faq-icon').forEach(ic => ic.style.transform = 'rotate(0deg)');
-
-                // Buka yang di klik
-                if (!isActive) {
-                    answer.classList.add('show');
-                    answer.style.maxHeight = answer.scrollHeight + 50 + "px";
-                    icon.style.transform = 'rotate(180deg)';
-                }
-            });
-        });
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            } else {
-                setTimeout(() => {
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                }, 500);
+        case 'get_lms_materi': 
+          const emailLms = String(body.email || "").toLowerCase();
+          const idProdLms = String(body.product_id || body.id_produk || "").toUpperCase();
+          let canAccess = false;
+          
+          if (!emailLms) canAccess = true;
+          else {
+            const checkProd = await env.DB.prepare("SELECT harga FROM access_rules WHERE id_produk = ?").bind(idProdLms).first();
+            if(checkProd && Number(checkProd.harga) === 0) canAccess = true;
+            else {
+              const checkOrder = await env.DB.prepare("SELECT invoice FROM orders WHERE LOWER(email) = ? AND id_produk = ? AND (status = 'Lunas' OR status = 'Success')").bind(emailLms, idProdLms).first();
+              if (checkOrder || String(body.role || "") === 'Admin') canAccess = true;
             }
-        });
-    </script>
-</body>
-</html>
+          }
+          if(!canAccess) return jsonRes({ status: 'error', message: 'Anda belum memiliki akses atau pesanan belum lunas.' });
+          
+          const lmsRow = await env.DB.prepare("SELECT * FROM lms WHERE id_produk = ? OR product_id = ?").bind(idProdLms, idProdLms).first();
+          if (!lmsRow) return jsonRes({ status: 'error', message: 'Database LMS belum siap.' });
+          
+          let parsedVideos = []; try { parsedVideos = JSON.parse(lmsRow.videos || "[]"); } catch(e){}
+          return jsonRes({ status: 'success', data: { product_id: idProdLms, videos: parsedVideos, desc: lmsRow.deskripsi || lmsRow.desc || "", cert_leader1: lmsRow.cert_leader1 || "Instruktur Utama", cert_role1: lmsRow.cert_role1 || "Tutor", cert_leader2: lmsRow.cert_leader2 || "Pimpinan PT", cert_role2: lmsRow.cert_role2 || "Direktur", cert_stamp: lmsRow.cert_stamp || "STEMPEL RESMI" } });
+
+        // --- CMS & DATA MUTATION (THE BULLETPROOF BINDERS) ---
+        case 'save_product':
+          const p_id = String(body.id || body.id_produk || "");
+          const p_title = String(body.title || "");
+          const p_desc = String(body.desc || body.deskripsi || "");
+          const p_url = String(body.url_akses || body.url || "");
+          const p_harga = Number(body.harga) || 0;
+          const p_status = String(body.status || "Active");
+          const p_lp = String(body.lp_url || "");
+          const p_komisi = Number(body.komisi) || 0;
+          const p_bump_status = String(body.bump_status || "Inactive");
+          const p_bump_title = String(body.bump_title || "");
+          const p_bump_price = Number(body.bump_price) || 0;
+          const p_bump_desc = String(body.bump_desc || "");
+          const p_bump_url = String(body.bump_url || "");
+          const p_gambar = String(body.gambar || "");
+          const p_is_edit = String(body.is_edit) === "true";
+
+          try {
+            if (p_is_edit) { 
+              await env.DB.prepare("UPDATE access_rules SET title=?, deskripsi=?, url_akses=?, harga=?, status=?, lp_url=?, komisi=?, bump_status=?, bump_title=?, bump_price=?, bump_desc=?, bump_url=?, gambar=? WHERE id_produk=?").bind(p_title, p_desc, p_url, p_harga, p_status, p_lp, p_komisi, p_bump_status, p_bump_title, p_bump_price, p_bump_desc, p_bump_url, p_gambar, p_id).run(); 
+            } else { 
+              await env.DB.prepare("INSERT INTO access_rules (id_produk, title, deskripsi, url_akses, harga, status, lp_url, komisi, bump_status, bump_title, bump_price, bump_desc, bump_url, gambar) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(p_id, p_title, p_desc, p_url, p_harga, p_status, p_lp, p_komisi, p_bump_status, p_bump_title, p_bump_price, p_bump_desc, p_bump_url, p_gambar).run(); 
+            }
+            return jsonRes({ status: 'success' });
+          } catch(e) {
+            if (p_is_edit) { 
+              await env.DB.prepare("UPDATE access_rules SET title=?, desc=?, url=?, harga=?, status=?, lp_url=?, komisi=?, bump_status=?, bump_title=?, bump_price=?, bump_desc=?, bump_url=?, gambar=? WHERE id_produk=?").bind(p_title, p_desc, p_url, p_harga, p_status, p_lp, p_komisi, p_bump_status, p_bump_title, p_bump_price, p_bump_desc, p_bump_url, p_gambar, p_id).run(); 
+            } else { 
+              await env.DB.prepare("INSERT INTO access_rules (id_produk, title, desc, url, harga, status, lp_url, komisi, bump_status, bump_title, bump_price, bump_desc, bump_url, gambar) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(p_id, p_title, p_desc, p_url, p_harga, p_status, p_lp, p_komisi, p_bump_status, p_bump_title, p_bump_price, p_bump_desc, p_bump_url, p_gambar).run(); 
+            }
+            return jsonRes({ status: 'success' });
+          }
+
+        case 'save_page':
+          const pg_id = String(body.id || 'PG-'+Date.now());
+          const pg_slug = String(body.slug || "").toLowerCase().replace(/^\/|\/$/g, '');
+          const pg_title = String(body.title || "");
+          const pg_content = String(body.content || "");
+          await env.DB.prepare("INSERT OR REPLACE INTO pages (id, slug, title, content) VALUES (?,?,?,?)").bind(pg_id, pg_slug, pg_title, pg_content).run();
+          return jsonRes({ status: 'success' });
+
+        case 'delete_page':
+          await env.DB.prepare("DELETE FROM pages WHERE id = ?").bind(String(body.id || "")).run();
+          return jsonRes({ status: 'success', message: 'Halaman dihapus' });
+
+        case 'save_coupon':
+          const cp_code = String(body.code || body.kode_promo || "").toUpperCase();
+          const cp_type = String(body.type || body.tipe || "Nominal");
+          const cp_val = Number(body.val || body.nilai) || 0;
+          const cp_status = String(body.status || "Active");
+          const cp_prod = String(body.products || body.berlaku_untuk_prod || "All");
+          try {
+            await env.DB.prepare("INSERT OR REPLACE INTO coupons (kode_promo, tipe, nilai, status, berlaku_untuk_prod) VALUES (?,?,?,?,?)").bind(cp_code, cp_type, cp_val, cp_status, cp_prod).run();
+            return jsonRes({ status: 'success' });
+          } catch(e) {
+            await env.DB.prepare("INSERT OR REPLACE INTO coupons (code, type, val, status, products) VALUES (?,?,?,?,?)").bind(cp_code, cp_type, cp_val, cp_status, cp_prod).run();
+            return jsonRes({ status: 'success' });
+          }
+
+        case 'delete_coupon':
+          const del_cp = String(body.code || body.kode_promo || "").toUpperCase();
+          await env.DB.prepare("DELETE FROM coupons WHERE kode_promo = ? OR code = ?").bind(del_cp, del_cp).run();
+          return jsonRes({ status: 'success', message: 'Kupon dihapus' });
+
+        case 'save_lms_materi':
+          const lms_id = String(body.product_id || body.id_produk || "").toUpperCase();
+          const lms_vid = String(body.videos || "[]");
+          const lms_desc = String(body.desc || body.deskripsi || "");
+          const lms_c1 = String(body.cert_leader1 || "");
+          const lms_r1 = String(body.cert_role1 || "");
+          const lms_c2 = String(body.cert_leader2 || "");
+          const lms_r2 = String(body.cert_role2 || "");
+          const lms_st = String(body.cert_stamp || "");
+          try {
+            await env.DB.prepare("INSERT OR REPLACE INTO lms (id_produk, videos, deskripsi, cert_leader1, cert_role1, cert_leader2, cert_role2, cert_stamp) VALUES (?,?,?,?,?,?,?,?)").bind(lms_id, lms_vid, lms_desc, lms_c1, lms_r1, lms_c2, lms_r2, lms_st).run();
+            return jsonRes({ status: 'success', message: 'Materi LMS disimpan' });
+          } catch(e) {
+            await env.DB.prepare("INSERT OR REPLACE INTO lms (product_id, videos, desc, cert_leader1, cert_role1, cert_leader2, cert_role2, cert_stamp) VALUES (?,?,?,?,?,?,?,?)").bind(lms_id, lms_vid, lms_desc, lms_c1, lms_r1, lms_c2, lms_r2, lms_st).run();
+            return jsonRes({ status: 'success', message: 'Materi LMS disimpan' });
+          }
+
+        case 'update_settings':
+          for (const [k, v] of Object.entries(body.payload || {})) { 
+            await env.DB.prepare("INSERT OR REPLACE INTO settings (kunci, nilai) VALUES (?, ?)").bind(String(k || ""), String(v || "")).run(); 
+          }
+          return jsonRes({ status: 'success' });
+
+        // --- CHECKOUT & TRANSACTION (BULLETPROOF BINDER) ---
+        case 'validate_coupon':
+          const couponReq = String(body.code || body.kode_promo || "").trim().toUpperCase();
+          const reqProdId = String(body.id_produk || body.id || "").toUpperCase();
+          const cp = await env.DB.prepare("SELECT * FROM coupons WHERE kode_promo = ? OR code = ?").bind(couponReq, couponReq).first();
+          if(!cp || String(cp.status || "").trim() !== 'Active') return jsonRes({ status: 'error', message: 'Kupon tidak ditemukan / sudah kadaluarsa.' });
+          
+          const vProds = String(cp.berlaku_untuk_prod || cp.products || "All").trim();
+          if (vProds.toLowerCase() !== 'all' && vProds !== "") {
+             if (!vProds.split(',').map(s => s.trim().toUpperCase()).includes(reqProdId)) return jsonRes({ status: 'error', message: 'Kupon ini tidak berlaku untuk produk ini.' });
+          }
+          
+          let disc = 0; let bHarga = parseFloat(body.harga) || 0; let cTipe = String(cp.tipe || cp.type).trim(); let cNilai = parseFloat(cp.nilai || cp.val);
+          if (cTipe === 'Persen') disc = (bHarga * cNilai) / 100; else disc = cNilai;
+          if (disc > bHarga) disc = bHarga;
+          return jsonRes({ status: 'success', message: 'Kupon berhasil diterapkan!', code: cp.kode_promo || cp.code, discount: disc });
+
+        case 'create_order':
+          const coProdId = String(body.id_produk || "").trim().toUpperCase();
+          const pDb = await env.DB.prepare("SELECT * FROM access_rules WHERE id_produk = ?").bind(coProdId).first();
+          if(!pDb) return jsonRes({status: 'error', message: 'Produk Error'});
+          
+          let pKomisiPersen = parseFloat(pDb.komisi || 0);
+          let bTitle = pDb.bump_title || ""; let bPrice = 0; let bUrl = pDb.bump_url || "";
+          if (String(body.take_bump) === "true" && String(pDb.bump_status) === 'Active') { bPrice = Number(pDb.bump_price || 0); }
+          
+          let hAsli = parseFloat(body.harga) || 0; let cDisc = 0; let appCoup = String(body.kupon || "").trim().toUpperCase();
+          if (appCoup !== "") {
+             const cx = await env.DB.prepare("SELECT * FROM coupons WHERE (kode_promo = ? OR code = ?) AND status = 'Active'").bind(appCoup, appCoup).first();
+             if (cx) {
+               const allowed = String(cx.berlaku_untuk_prod || cx.products || "All").trim();
+               let ok = true;
+               if(allowed.toLowerCase() !== 'all' && allowed !== "") { if(!allowed.split(',').map(s=>s.trim().toUpperCase()).includes(coProdId)) ok = false; }
+               if(ok) {
+                 let t = String(cx.tipe || cx.type).trim(); let v = parseFloat(cx.nilai || cx.val);
+                 cDisc = (t === 'Persen') ? (hAsli * v) / 100 : v;
+                 if(cDisc > hAsli) cDisc = hAsli;
+               }
+             }
+          }
+
+          const finalPriceBase = hAsli - cDisc;
+          let finalName = String(body.nama_produk || "");
+          if(cDisc > 0) finalName += ` (Diskon: ${appCoup})`;
+          if(bPrice > 0) finalName += " + " + bTitle;
+
+          const kodeUnik = (finalPriceBase + bPrice) > 0 ? Math.floor(Math.random() * 900) + 100 : 0;
+          const hargaTotalUnik = finalPriceBase + bPrice + kodeUnik;
+          const affInput = String(body.affiliate || "-");
+          const komisiNominal = (affInput !== "-") ? ((finalPriceBase + bPrice) * pKomisiPersen) / 100 : 0;
+          
+          const coEmail = String(body.email || "").toLowerCase();
+          const coNama = String(body.nama || "");
+          const coWa = String(body.whatsapp || "");
+
+          let isNewUser = true; let tempPass = Math.random().toString(36).slice(-6);
+          const existUsr = await env.DB.prepare("SELECT password FROM users WHERE LOWER(email) = ?").bind(coEmail).first();
+          if (existUsr) { isNewUser = false; tempPass = existUsr.password; }
+          else {
+            try {
+              await env.DB.prepare("INSERT INTO users (id_user, email, password, nama, role, tanggal_daftar, whatsapp) VALUES (?,?,?,?,'member',?,?)").bind('USR-'+Date.now(), coEmail, tempPass, coNama, new Date().toISOString(), coWa).run();
+            } catch(e) {
+              await env.DB.prepare("INSERT INTO users (email, password, nama, role, whatsapp) VALUES (?,?,?,'member',?)").bind(coEmail, tempPass, coNama, coWa).run();
+            }
+            try { await addToAutoresponder(settings, coNama, coEmail); } catch(e){}
+          }
+
+          let inv = 'INV-' + Math.floor(10000 + Math.random() * 90000);
+          let statOrd = (hargaTotalUnik === 0) ? 'Lunas' : 'Pending';
+          
+          await env.DB.prepare("INSERT INTO orders (invoice, email, nama, whatsapp, id_produk, nama_produk, harga_total, status, tanggal_order, affiliate, komisi) VALUES (?,?,?,?,?,?,?,?,?,?,?)").bind(inv, coEmail, coNama, coWa, coProdId, finalName, hargaTotalUnik, statOrd, new Date().toISOString(), affInput, komisiNominal).run();
+
+          const bNotif = { inv, nama: coNama, nama_produk: finalName, tagihan: hargaTotalUnik, whatsapp: coWa, email: coEmail, login_url: String(settings.site_url || "") + "/member", pass: tempPass };
+
+          if (statOrd === 'Lunas') {
+            await sendWA(settings, bNotif.whatsapp, `🎉 *AKSES BERHASIL DIBUKA!* 🎉\n\nHalo Kak *${bNotif.nama}*, salam hangat dari ${settings.site_name || "Admin"}! 👋\n\nTerima kasih pesanan Anda telah diproses:\n📦 *Produk:* ${bNotif.nama_produk}\n🔖 *Invoice:* #${bNotif.inv}\n\n🚀 *Masuk ke Member Area untuk akses materi:*\n🌐 *Link Login Utama:* ${bNotif.login_url}\n\n---\n🔐 *INFO AKUN*\n✉️ *Email:* ${bNotif.email}\n🔑 *Password:* ${bNotif.pass}\n\nTerima kasih! 🙏`);
+            return jsonRes({ status: 'success', invoice: inv, tagihan: 0, is_new_user: isNewUser, password: isNewUser ? tempPass : null });
+          }
+
+          let paymentUrl = "#";
+          const payMet = String(body.metode_pembayaran || 'duitku');
+          
+          if (payMet === 'manual' || payMet === 'none') {
+            await sendWA(settings, bNotif.whatsapp, `Halo Kak *${bNotif.nama}*! 👋\n\nTerima kasih pesanan produk:\n📦 *${bNotif.nama_produk}*\n🔖 *Invoice:* #${bNotif.inv}\n💰 *Total:* Rp ${Number(bNotif.tagihan).toLocaleString('id-ID')}\n\n⚠️ _(Penting: Transfer *TEPAT* hingga 3 digit terakhir)_\n\n🏦 *Bank:* ${settings.bank_name || "-"}\n💳 *No. Rek:* ${settings.bank_norek || "-"}\n👤 *A.n:* ${settings.bank_owner || "-"}\n\n*Mohon balas pesan ini dengan bukti transfer agar bisa segera diverifikasi.*`);
+            return jsonRes({ status: 'success', invoice: inv, tagihan: hargaTotalUnik, is_new_user: isNewUser, password: isNewUser ? tempPass : null, bank_name: settings.bank_name, bank_norek: settings.bank_norek, bank_owner: settings.bank_owner });
+          } else {
+             try {
+                 if (payMet === 'tripay') paymentUrl = await createTripay(inv, hargaTotalUnik, body, settings);
+                 else if (payMet === 'xendit') paymentUrl = await createXendit(inv, hargaTotalUnik, body, settings);
+                 else if (payMet === 'duitku') paymentUrl = await createDuitku(inv, hargaTotalUnik, body, settings);
+                 
+                 await sendWA(settings, bNotif.whatsapp, `Halo Kak *${bNotif.nama}* 👋\n\nTerima kasih telah memesan:\n📦 *${bNotif.nama_produk}*\n\n🔖 *Invoice:* #${bNotif.inv}\n💰 *Total:* Rp ${Number(bNotif.tagihan).toLocaleString('id-ID')}\n\n💳 *BAYAR DI LINK BERIKUT:*\n${paymentUrl}\n\n---\n🔐 *AKUN MEMBER*\n🌐 *Login:* ${bNotif.login_url}\n✉️ *Email:* ${bNotif.email}\n🔑 *Password:* ${bNotif.pass}`);
+             } catch (gatewayErr) {
+                 await env.DB.prepare("DELETE FROM orders WHERE invoice = ?").bind(inv).run();
+                 return jsonRes({ status: 'error', message: gatewayErr.message });
+             }
+             return jsonRes({ status: 'success', invoice: inv, tagihan: hargaTotalUnik, payment_url: paymentUrl, is_new_user: isNewUser, password: isNewUser ? tempPass : null });
+          }
+
+        case 'update_order_status':
+          await env.DB.prepare("UPDATE orders SET status = 'Lunas' WHERE invoice = ?").bind(String(body.id || body.invoice || "")).run();
+          return jsonRes({ status: 'success' });
+
+        case 'reset_commission':
+          const aff_target = String(body.aff_id || "");
+          await env.DB.prepare("UPDATE orders SET komisi = 0 WHERE (affiliate = ? OR affiliate = (SELECT email FROM users WHERE id_user = ?)) AND (status = 'Lunas' OR status = 'Success')").bind(aff_target, aff_target).run();
+          return jsonRes({ status: 'success', message: 'Komisi berhasil dicairkan (di-reset)' });
+
+        case 'takeover_domain':
+          const td_domain = String(body.domain || "").trim().toLowerCase();
+          const td_email = String(body.email || "").trim().toLowerCase();
+          await env.DB.prepare("UPDATE orders SET domain = ? WHERE LOWER(email) = ? AND id_produk = 'SF1D' AND (status = 'Lunas' OR status = 'Success')").bind(td_domain, td_email).run();
+          return jsonRes({status: 'success', message: 'Domain berhasil dipindahkan!'});
+
+        // --- UTILS ---
+        case 'purge_cf_cache':
+          const zId = settings.cf_zone_id; const cfTok = settings.cf_api_token;
+          if (!zId || !cfTok) return jsonRes({ status: 'error', message: 'Konfigurasi Cloudflare belum disetting!' });
+          const cfRes = await fetch(`https://api.cloudflare.com/client/v4/zones/${zId}/purge_cache`, { method: 'POST', headers: { 'Authorization': `Bearer ${cfTok}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ purge_everything: true }) });
+          const cfData = await cfRes.json();
+          return cfData.success ? jsonRes({ status: 'success', message: 'Cache Berhasil Dibersihkan!' }) : jsonRes({ status: 'error', message: 'Cloudflare Error' });
+
+        case 'get_ik_auth':
+          const ikPriv = settings.ik_private_key;
+          if(!ikPriv) return jsonRes({status:'error'});
+          const ikToken = crypto.randomUUID();
+          const ikExp = Math.floor(Date.now()/1000) + 2400;
+          const ikSignStr = ikToken + ikExp;
+          const ikKey = await crypto.subtle.importKey('raw', new TextEncoder().encode(ikPriv), {name: 'HMAC', hash: 'SHA-1'}, false, ['sign']);
+          const ikSigBuf = await crypto.subtle.sign('HMAC', ikKey, new TextEncoder().encode(ikSignStr));
+          const ikSig = Array.from(new Uint8Array(ikSigBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+          return jsonRes({status:'success', token: ikToken, expire: ikExp, signature: ikSig});
+
+        default: return jsonRes({ status: 'error', message: 'Action ' + action + ' unknown' });
+      }
+    } catch (e) { return jsonRes({ status: 'error', message: "Global Fatal Error: " + e.message }); }
+  }
+};

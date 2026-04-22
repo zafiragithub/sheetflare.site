@@ -5,4 +5,3 @@
 /admin       /admin.html       200
 /member      /member.html      200
 /* /index.html       200
-/config.js   /   301

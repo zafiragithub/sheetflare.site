@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="mode-loading">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Katalog Produk Digital SheetFlare - Temukan source code web membership premium, sistem CMS serverless berbasis Google Sheets, dan jasa pembuatan website terima beres.">
+    <meta name="theme-color" content="#00AAE7">
     <title>SheetFlare - Selamat Datang!</title>
-    
+
     <script>
         const path = window.location.pathname;
         const cleanSlug = path.replace(/^\/|\/$/g, '');
         const baseSlug = cleanSlug.replace(/\.html$/, '');
-        
+
         const corePages = ['login', 'dashboard', 'checkout', 'admin', 'akses', 'akses-lms', 'member'];
 
         let isCorePage = corePages.includes(baseSlug);
@@ -26,163 +27,640 @@
 
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="dns-prefetch" href="https://docs.google.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script src="config.js?v=2026"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://unpkg.com">
+
+    <script src="config.js?v=2026" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+        *, *::before, *::after { box-sizing: border-box; }
+        * { margin: 0; padding: 0; }
+
         :root {
-            --brand-blue: #00AAE7;
-            --brand-blue-hover: #0092c7;
-            --brand-blue-light: #e0f7ff;
-            
-            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b; --slate-900: #0f172a;
+            color-scheme: light;
+            --brand-blue: #00aae7;
+            --brand-blue-hover: #008fc4;
+            --brand-blue-soft: #e6f8ff;
+            --brand-blue-ring: rgba(0, 170, 231, 0.18);
+            --ink: #0f172a;
+            --muted: #64748b;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+            --line: #e2e8f0;
+            --line-strong: #cbd5e1;
+            --success: #10b981;
             --rose-500: #f43f5e;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+            --radius: 8px;
+            --container: 1180px;
         }
 
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--slate-50); color: var(--slate-900); overflow-x: hidden; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-height: 100vh; }
-        a { text-decoration: none; color: inherit; }
-        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+        html { scroll-behavior: smooth; text-size-adjust: 100%; }
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 18% 0%, rgba(0, 170, 231, 0.14), transparent 34rem),
+                linear-gradient(180deg, #ffffff 0%, #f8fafc 42%, #ffffff 100%);
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        img, svg { display: block; max-width: 100%; }
+        a { color: inherit; text-decoration: none; }
+        button { border: 0; background: none; color: inherit; cursor: pointer; font: inherit; }
 
         .mode-cms #default-home-container { display: none !important; }
         .mode-default #cms-home-container { display: none !important; }
-        
-        .mode-cms #neutral-loader:not(.transitioning), 
+        .mode-cms #neutral-loader:not(.transitioning),
         .mode-default #neutral-loader:not(.transitioning) { display: none !important; }
-        
-        .mode-loading #cms-home-container, .mode-loading #default-home-container { display: none !important; }
-        
-        #neutral-loader { 
-            position: fixed; inset: 0; z-index: 9999;
-            background-color: var(--slate-50);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        .mode-loading #cms-home-container,
+        .mode-loading #default-home-container { display: none !important; }
+
+        #neutral-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
             overflow: hidden;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s ease-out; 
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.32s ease, visibility 0.32s ease;
         }
         #neutral-loader.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
-        
-        .loader-bg-glow { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
-        .glow-1 { position: absolute; width: 18rem; height: 18rem; background: rgba(0, 170, 231, 0.15); border-radius: 50%; filter: blur(80px); animation: ambient-glow 3s ease-in-out infinite; }
-        .glow-2 { position: absolute; width: 14rem; height: 14rem; background: rgba(0, 146, 199, 0.15); border-radius: 50%; filter: blur(60px); animation: ambient-glow 3s ease-in-out infinite; animation-delay: 1.5s; }
-        
-        .loader-circle-wrap { position: relative; width: 10rem; height: 10rem; display: flex; align-items: center; justify-content: center; z-index: 10; filter: drop-shadow(0 15px 25px rgba(0, 170, 231, 0.1)); }
-        
-        .progress-ring__circle { transform-origin: 50% 50%; animation: spin 1.5s linear infinite; }
-        
-        .loader-brand { margin-top: 2rem; font-size: 1.125rem; font-weight: 900; color: var(--slate-800); letter-spacing: 0.1em; text-transform: uppercase; position: relative; z-index: 10; }
-        .loader-line { width: 3rem; height: 0.25rem; background-color: var(--brand-blue); border-radius: 9999px; margin-top: 0.75rem; opacity: 0.5; position: relative; z-index: 10; }
+        .loader-bg-glow {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .glow-1,
+        .glow-2 {
+            position: absolute;
+            border-radius: 999px;
+            background: rgba(0, 170, 231, 0.16);
+            filter: blur(58px);
+            animation: ambient-glow 2.4s ease-in-out infinite;
+        }
+        .glow-1 { width: 15rem; height: 15rem; }
+        .glow-2 { width: 11rem; height: 11rem; background: rgba(16, 185, 129, 0.12); animation-delay: 1.2s; }
+        .loader-circle-wrap {
+            position: relative;
+            z-index: 1;
+            width: 7.5rem;
+            height: 7.5rem;
+            filter: drop-shadow(0 18px 30px rgba(0, 170, 231, 0.16));
+        }
+        .progress-ring__circle { transform-origin: 50% 50%; animation: spin 1s linear infinite; }
+        .loader-brand {
+            position: relative;
+            z-index: 1;
+            margin-top: 1.35rem;
+            color: var(--ink);
+            font-size: 0.95rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .loader-line {
+            position: relative;
+            z-index: 1;
+            width: 2.75rem;
+            height: 0.22rem;
+            margin-top: 0.75rem;
+            border-radius: 999px;
+            background: var(--brand-blue);
+            opacity: 0.7;
+        }
 
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes ambient-glow { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.1); } }
+        .fade-in { animation: fadeIn 0.42s ease-out both; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes ambient-glow { 0%, 100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.08); } }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 50% { opacity: 0.5; } }
+        @keyframes pulse { 50% { opacity: 0.52; } }
 
-        .header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--slate-200); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .header-container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; height: 4.5rem; display: flex; justify-content: space-between; align-items: center; }
-        .header-logo { font-size: 1.25rem; font-weight: 900; color: var(--slate-900); letter-spacing: -0.025em; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; }
-        @media (min-width: 768px) { .header-logo { font-size: 1.5rem; } }
-        .header-logo svg { width: 1.5rem; height: 1.5rem; color: var(--brand-blue); }
-        @media (min-width: 768px) { .header-logo svg { width: 1.75rem; height: 1.75rem; } }
-        
-        .header-nav { display: flex; align-items: center; gap: 1rem; }
-        .nav-link { font-size: 0.875rem; font-weight: 700; color: var(--slate-600); transition: color 0.2s; display: none; }
-        @media (min-width: 640px) { .nav-link { display: block; } }
-        .nav-link:hover { color: var(--brand-blue); }
-        
-        .btn-login { background-color: var(--brand-blue); color: white; padding: 0.625rem 1.5rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; display: flex; align-items: center; }
-        .btn-login:hover { background-color: var(--brand-blue-hover); transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(0, 170, 231, 0.2); }
-        .btn-login svg { width: 1rem; height: 1rem; margin-left: 0.5rem; }
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.86);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(18px);
+        }
+        .header-container {
+            width: min(100%, var(--container));
+            height: 4.25rem;
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 3vw, 1.75rem);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .header-logo {
+            min-width: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            color: var(--ink);
+            font-size: clamp(1rem, 2.2vw, 1.25rem);
+            font-weight: 900;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+        .logo-mark {
+            width: 2.35rem;
+            height: 2.35rem;
+            border: 1px solid rgba(0, 170, 231, 0.22);
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, #ffffff, var(--brand-blue-soft));
+            color: var(--brand-blue);
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+        }
+        .logo-mark svg { width: 1.25rem; height: 1.25rem; }
+        .site-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .header-nav { display: flex; align-items: center; gap: 0.45rem; }
+        .nav-link {
+            display: none;
+            min-height: 2.5rem;
+            align-items: center;
+            padding: 0 0.75rem;
+            border-radius: var(--radius);
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 800;
+            transition: color 0.18s ease, background-color 0.18s ease;
+        }
+        @media (min-width: 640px) { .nav-link { display: inline-flex; } }
+        .nav-link:hover { color: var(--brand-blue-hover); background: var(--brand-blue-soft); }
+        .btn-login {
+            min-height: 2.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0 1rem;
+            border-radius: var(--radius);
+            background: var(--brand-blue);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 170, 231, 0.18);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+            white-space: nowrap;
+        }
+        .btn-login:hover { background: var(--brand-blue-hover); box-shadow: 0 14px 28px rgba(0, 170, 231, 0.24); transform: translateY(-1px); }
+        .btn-login svg { width: 1rem; height: 1rem; }
 
-        .page-header { max-width: 80rem; margin: 0 auto; padding: 4rem 1.5rem 2rem; text-align: center; }
-        .page-title { font-size: 2.25rem; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 1rem; color: var(--slate-900); line-height: 1.2; }
-        @media (min-width: 768px) { .page-title { font-size: 3.5rem; } }
-        .page-title-highlight { color: var(--brand-blue); }
-        .page-subtitle { font-size: 1.125rem; font-weight: 500; color: var(--slate-600); max-width: 42rem; margin: 0 auto; line-height: 1.625; }
+        .page-header {
+            width: min(100%, var(--container));
+            margin: 0 auto;
+            padding: clamp(3.25rem, 8vw, 6.5rem) clamp(1rem, 3vw, 1.75rem) clamp(1.8rem, 4vw, 2.8rem);
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: clamp(1.5rem, 4vw, 3rem);
+            align-items: center;
+        }
+        @media (min-width: 900px) {
+            .page-header { grid-template-columns: minmax(0, 1.12fr) 0.88fr; }
+        }
+        .eyebrow {
+            width: fit-content;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.1rem;
+            padding: 0.42rem 0.7rem;
+            border: 1px solid rgba(0, 170, 231, 0.2);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--brand-blue-hover);
+            box-shadow: var(--shadow-sm);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .eyebrow svg { width: 0.95rem; height: 0.95rem; }
+        .page-title {
+            max-width: 760px;
+            color: var(--ink);
+            font-size: clamp(2.35rem, 7.4vw, 5.25rem);
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 0.98;
+        }
+        .page-title-highlight {
+            color: var(--brand-blue);
+            display: inline-block;
+        }
+        .page-subtitle {
+            max-width: 630px;
+            margin-top: 1.2rem;
+            color: var(--muted);
+            font-size: clamp(1rem, 2.4vw, 1.18rem);
+            font-weight: 500;
+            line-height: 1.75;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.65rem;
+        }
+        .btn-primary,
+        .btn-secondary {
+            min-height: 2.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            border-radius: var(--radius);
+            padding: 0 1.05rem;
+            font-size: 0.88rem;
+            font-weight: 900;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+        .btn-primary { background: var(--ink); color: #fff; box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18); }
+        .btn-secondary { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.82); color: var(--ink); }
+        .btn-secondary:hover { background: #fff; box-shadow: var(--shadow-md); transform: translateY(-1px); }
+        .btn-primary svg,
+        .btn-secondary svg { width: 1rem; height: 1rem; }
 
-        .catalog-section { max-width: 80rem; margin: 0 auto; padding: 2rem 1.5rem 5rem; flex-grow: 1; width: 100%; }
+        .hero-panel {
+            position: relative;
+            isolation: isolate;
+            min-height: 19rem;
+            border: 1px solid rgba(226, 232, 240, 0.82);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(230, 248, 255, 0.82)),
+                radial-gradient(circle at 80% 16%, rgba(16, 185, 129, 0.22), transparent 16rem);
+            box-shadow: var(--shadow-lg);
+        }
+        .hero-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.055) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
+        }
+        .hero-panel-inner { padding: clamp(1rem, 4vw, 1.45rem); }
+        .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+        .metric-card {
+            min-height: 7.1rem;
+            padding: 1rem;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: var(--shadow-sm);
+        }
+        .metric-icon {
+            width: 2rem;
+            height: 2rem;
+            display: grid;
+            place-items: center;
+            margin-bottom: 0.85rem;
+            border-radius: var(--radius);
+            background: var(--brand-blue-soft);
+            color: var(--brand-blue-hover);
+        }
+        .metric-icon svg { width: 1.05rem; height: 1.05rem; }
+        .metric-value { color: var(--ink); font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 900; line-height: 1; }
+        .metric-label { margin-top: 0.35rem; color: var(--muted); font-size: 0.78rem; font-weight: 700; line-height: 1.4; }
+        .hero-note {
+            margin-top: 0.75rem;
+            padding: 1rem;
+            border: 1px solid rgba(0, 170, 231, 0.18);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+            line-height: 1.55;
+        }
 
-        .grid-products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-        @media (min-width: 768px) { .grid-products { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
-        @media (min-width: 1024px) { .grid-products { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
+        .catalog-section {
+            width: min(100%, var(--container));
+            margin: 0 auto;
+            padding: clamp(1.5rem, 4vw, 2.4rem) clamp(1rem, 3vw, 1.75rem) clamp(4rem, 8vw, 6rem);
+            flex-grow: 1;
+        }
+        .section-head {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.15rem;
+        }
+        .section-title { font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 900; letter-spacing: 0; line-height: 1.12; }
+        .section-copy { margin-top: 0.45rem; color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
+        .section-pill {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            min-height: 2.35rem;
+            padding: 0 0.8rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+        .section-pill svg { width: 0.95rem; height: 0.95rem; color: var(--success); }
+        @media (min-width: 760px) { .section-pill { display: inline-flex; } }
 
-        .prod-card { background-color: white; border-radius: 0.75rem; border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; transition: all 0.2s ease-in-out; overflow: hidden; position: relative; }
-        .prod-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-0.25rem); border-color: var(--brand-blue-light); }
-        
-        .prod-img-wrap { width: 100%; aspect-ratio: 1 / 1; background-color: var(--slate-100); position: relative; overflow: hidden; border-bottom: 1px solid var(--slate-100); }
-        .prod-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .prod-card:hover .prod-img { transform: scale(1.05); }
-        
-        .prod-badge-abs { position: absolute; top: 0.75rem; left: 0.75rem; z-index: 10; background-color: var(--brand-blue); color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.5625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        @media (min-width: 768px) { .prod-badge-abs { padding: 0.375rem 0.625rem; font-size: 0.625rem; } }
-        
-        .prod-body { padding: 1.25rem; display: flex; flex-direction: column; flex-grow: 1; }
-        
-        .prod-title { font-size: 1rem; font-weight: 800; color: var(--slate-900); margin-bottom: 0.5rem; line-height: 1.3; transition: color 0.2s; }
-        @media (min-width: 768px) { .prod-title { font-size: 1.125rem; } }
-        .prod-card:hover .prod-title { color: var(--brand-blue); }
-        
-        .prod-desc { font-size: 0.75rem; color: var(--slate-500); margin-bottom: 1.5rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.6; }
-        @media (min-width: 768px) { .prod-desc { font-size: 0.875rem; } }
-        
-        .prod-footer { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; margin-top: auto; padding-top: 1.25rem; border-top: 1px solid var(--slate-100); gap: 0.75rem; }
-        @media (min-width: 768px) { .prod-footer { flex-direction: row; align-items: center; gap: 0.5rem; } }
-        
-        .prod-price { font-size: 1rem; font-weight: 900; color: var(--slate-900); }
-        @media (min-width: 768px) { .prod-price { font-size: 1.125rem; } }
-        
-        .btn-detail { background-color: var(--slate-800); color: white; padding: 0.625rem 0; border-radius: 0.375rem; font-weight: 800; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; width: 100%; text-align: center; }
-        @media (min-width: 768px) { .btn-detail { width: auto; padding: 0.625rem 1.25rem; font-size: 0.75rem; } }
-        .btn-detail:hover { background-color: var(--brand-blue); }
+        .grid-products {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: clamp(0.8rem, 2.2vw, 1.25rem);
+        }
+        @media (min-width: 760px) { .grid-products { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1080px) { .grid-products { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-        .skel-loader { text-align: center; grid-column: 1 / -1; padding: 1rem 0; margin-bottom: 0.5rem; }
-        .skel-loader-text { color: var(--slate-400); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        
-        .skeleton { background-color: var(--slate-200); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        .skel-card { background-color: white; border-radius: 0.75rem; border: 1px solid var(--slate-200); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-        
-        .skel-card.hidden-sm { display: none; } @media (min-width: 768px) { .skel-card.hidden-sm { display: flex; } }
-        .skel-card.hidden-md { display: none; } @media (min-width: 1024px) { .skel-card.hidden-md { display: flex; } }
-        
-        .skel-img { width: 100%; aspect-ratio: 1 / 1; border-bottom: 1px solid var(--slate-100); }
-        .skel-body { padding: 1.25rem; display: flex; flex-direction: column; flex-grow: 1; }
-        .skel-title { height: 1.25rem; border-radius: 0.25rem; width: 75%; margin-bottom: 1rem; }
-        .skel-line { height: 0.875rem; border-radius: 0.25rem; width: 100%; margin-bottom: 0.5rem; }
-        .skel-line.short { width: 83.333333%; margin-bottom: 1.5rem; flex: 1; }
-        .skel-footer { display: flex; flex-direction: column; padding-top: 1.25rem; border-top: 1px solid var(--slate-100); gap: 0.75rem; }
-        @media (min-width: 768px) { .skel-footer { flex-direction: row; justify-content: space-between; align-items: center; gap: 0.5rem; } }
-        .skel-price { height: 1.25rem; border-radius: 0.25rem; width: 60%; }
-        @media (min-width: 768px) { .skel-price { width: 5rem; } }
-        .skel-btn { height: 2rem; border-radius: 0.375rem; width: 100%; }
-        @media (min-width: 768px) { .skel-btn { height: 2.25rem; width: 6rem; } }
+        .prod-card {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.92);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .prod-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 170, 231, 0.32);
+            box-shadow: var(--shadow-lg);
+        }
+        .prod-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f1f5f9, #e6f8ff);
+        }
+        .prod-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.45s ease, filter 0.45s ease;
+        }
+        .prod-card:hover .prod-img { transform: scale(1.045); filter: saturate(1.04); }
+        .prod-badge-abs {
+            position: absolute;
+            top: 0.7rem;
+            left: 0.7rem;
+            z-index: 2;
+            max-width: calc(100% - 1.4rem);
+            padding: 0.34rem 0.52rem;
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            border-radius: var(--radius);
+            background: rgba(15, 23, 42, 0.82);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.15);
+            backdrop-filter: blur(10px);
+            font-size: 0.56rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .prod-body {
+            min-width: 0;
+            padding: clamp(0.9rem, 2.5vw, 1.1rem);
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+        }
+        .prod-title {
+            color: var(--ink);
+            font-size: clamp(0.92rem, 2vw, 1.05rem);
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 1.34;
+            transition: color 0.18s ease;
+            overflow-wrap: anywhere;
+        }
+        .prod-card:hover .prod-title { color: var(--brand-blue-hover); }
+        .prod-desc {
+            margin-top: 0.55rem;
+            color: var(--muted);
+            font-size: clamp(0.76rem, 1.8vw, 0.86rem);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .prod-footer {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--line);
+        }
+        @media (min-width: 760px) {
+            .prod-footer { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+        }
+        .prod-price {
+            color: var(--ink);
+            font-size: clamp(0.96rem, 2vw, 1.08rem);
+            font-weight: 900;
+            white-space: nowrap;
+        }
+        .btn-detail {
+            min-height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            background: var(--ink);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            text-align: center;
+            text-transform: uppercase;
+            transition: background-color 0.18s ease, transform 0.18s ease;
+            padding: 0 0.85rem;
+        }
+        .btn-detail:hover { background: var(--brand-blue); transform: translateY(-1px); }
 
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: white; border: 1px dashed var(--slate-300); border-radius: 0.5rem; }
-        .empty-icon { width: 4rem; height: 4rem; background: var(--slate-100); color: var(--slate-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
-        .empty-icon svg { width: 2rem; height: 2rem; }
-        .empty-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); margin-bottom: 0.5rem; }
-        .empty-desc { color: var(--slate-500); font-size: 0.875rem; }
+        .skel-loader {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            padding: 0.25rem 0 0.75rem;
+        }
+        .skel-loader-text {
+            width: fit-content;
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            animation: pulse 1.7s ease-in-out infinite;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #eef2f7 25%, #f8fafc 37%, #eef2f7 63%);
+            background-size: 400% 100%;
+            animation: shimmer 1.15s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+        .skel-card {
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        .skel-card.hidden-sm { display: none; }
+        @media (min-width: 760px) { .skel-card.hidden-sm { display: flex; } }
+        .skel-card.hidden-md { display: none; }
+        @media (min-width: 1080px) { .skel-card.hidden-md { display: flex; } }
+        .skel-img { width: 100%; aspect-ratio: 1 / 1; }
+        .skel-body { padding: 1rem; display: flex; flex: 1; flex-direction: column; }
+        .skel-title { height: 1.15rem; width: 76%; margin-bottom: 0.9rem; border-radius: 6px; }
+        .skel-line { height: 0.82rem; width: 100%; margin-bottom: 0.48rem; border-radius: 6px; }
+        .skel-line.short { width: 82%; margin-bottom: 1.25rem; flex: 1; }
+        .skel-footer { display: grid; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+        @media (min-width: 760px) { .skel-footer { grid-template-columns: minmax(0, 1fr) 5.8rem; align-items: center; } }
+        .skel-price { height: 1.1rem; width: 64%; border-radius: 6px; }
+        .skel-btn { height: 2.25rem; width: 100%; border-radius: var(--radius); }
 
-        .footer { background-color: white; border-top: 1px solid var(--slate-200); padding-top: 3rem; margin-top: auto; }
-        .footer-grid { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr; gap: 2rem; text-align: center; }
-        @media (min-width: 768px) { .footer-grid { grid-template-columns: repeat(3, 1fr); text-align: left; } }
-        
-        .footer-brand { font-size: 1.25rem; font-weight: 900; color: var(--slate-900); margin-bottom: 1rem; text-transform: uppercase; }
-        .footer-desc { font-size: 0.875rem; color: var(--slate-500); line-height: 1.5; }
-        
-        .footer-title { font-weight: 800; font-size: 0.875rem; margin-bottom: 1rem; color: var(--slate-800); text-transform: uppercase; letter-spacing: 0.05em; }
-        .footer-list { list-style: none; font-size: 0.875rem; color: var(--slate-500); display: flex; flex-direction: column; gap: 0.5rem; }
-        .footer-link { transition: color 0.2s; font-weight: 500; }
-        .footer-link:hover { color: var(--brand-blue); }
-        
-        .footer-contact { font-size: 0.875rem; color: var(--slate-500); margin-bottom: 0.5rem; font-weight: 500; }
-        
-        .footer-bottom { text-align: center; font-size: 0.75rem; color: var(--slate-400); margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--slate-100); font-weight: 500; }
+        .empty-state {
+            grid-column: 1 / -1;
+            min-height: 19rem;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 3rem 1.25rem;
+            border: 1px dashed var(--line-strong);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .empty-icon {
+            width: 3.65rem;
+            height: 3.65rem;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 1rem;
+            border-radius: var(--radius);
+            background: var(--brand-blue-soft);
+            color: var(--brand-blue-hover);
+        }
+        .empty-icon svg { width: 1.75rem; height: 1.75rem; }
+        .empty-title { color: var(--ink); font-size: 1.2rem; font-weight: 900; }
+        .empty-desc { max-width: 28rem; margin: 0.45rem auto 0; color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+        .footer {
+            margin-top: auto;
+            border-top: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.86);
+        }
+        .footer-grid {
+            width: min(100%, var(--container));
+            margin: 0 auto;
+            padding: 2.5rem clamp(1rem, 3vw, 1.75rem);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.8rem;
+        }
+        @media (min-width: 760px) { .footer-grid { grid-template-columns: 1.25fr 0.8fr 1fr; } }
+        .footer-brand {
+            color: var(--ink);
+            font-size: 1.08rem;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            margin-bottom: 0.7rem;
+        }
+        .footer-desc,
+        .footer-contact {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+            font-weight: 500;
+        }
+        .footer-title {
+            margin-bottom: 0.85rem;
+            color: var(--ink);
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .footer-list { list-style: none; display: grid; gap: 0.52rem; color: var(--muted); font-size: 0.9rem; font-weight: 600; }
+        .footer-link { transition: color 0.18s ease; }
+        .footer-link:hover { color: var(--brand-blue-hover); }
+        .footer-bottom {
+            border-top: 1px solid var(--line);
+            padding: 1.25rem clamp(1rem, 3vw, 1.75rem);
+            color: #94a3b8;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 520px) {
+            .header-container { height: 4rem; }
+            .logo-mark { width: 2.15rem; height: 2.15rem; }
+            .site-name-text { max-width: 44vw; }
+            .btn-login { min-height: 2.35rem; padding: 0 0.78rem; font-size: 0.72rem; }
+            .page-title { line-height: 1.03; }
+            .hero-actions { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; }
+            .metric-grid { gap: 0.62rem; }
+            .metric-card { min-height: 6.6rem; padding: 0.8rem; }
+            .metric-value { font-size: 1.2rem; }
+            .metric-label { font-size: 0.72rem; }
+            .prod-badge-abs { font-size: 0.5rem; }
+            .prod-body { padding: 0.82rem; }
+            .prod-footer { gap: 0.65rem; }
+            .btn-detail { width: 100%; padding: 0 0.5rem; font-size: 0.66rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -194,18 +672,18 @@
         </div>
 
         <div class="loader-circle-wrap">
-            <svg style="width: 100%; height: 100%;" width="160" height="160" viewBox="0 0 160 160">
+            <svg style="width: 100%; height: 100%;" width="140" height="140" viewBox="0 0 160 160" aria-hidden="true">
                 <defs>
                     <linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="#00AAE7" />
-                        <stop offset="100%" stop-color="#0092c7" />
+                        <stop offset="100%" stop-color="#008fc4" />
                     </linearGradient>
                     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                         <feGaussianBlur stdDeviation="4" result="blur" />
                         <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                 </defs>
-                <circle cx="80" cy="80" r="70" fill="none" stroke="#e2e8f0" stroke-width="8" opacity="0.5" />
+                <circle cx="80" cy="80" r="70" fill="none" stroke="#e2e8f0" stroke-width="8" opacity="0.6" />
                 <circle id="loading-circle" class="progress-ring__circle" cx="80" cy="80" r="70" fill="none" stroke="url(#loaderGrad)" stroke-width="8" stroke-dasharray="110 330" stroke-linecap="round" filter="url(#glow)" />
             </svg>
         </div>
@@ -214,24 +692,24 @@
 
         <script>
             (function(){
-                if(document.documentElement.className !== 'mode-loading') return;
+                if(!document.documentElement.classList.contains('mode-loading')) return;
 
                 const loaderEl = document.getElementById('neutral-loader');
-                
+
                 window.completeLoadingAnimation = function(callback) {
                     try {
                         if (loaderEl) {
                             loaderEl.classList.add('transitioning');
                             loaderEl.style.setProperty('display', 'flex', 'important');
-                            
-                            setTimeout(() => { 
+
+                            setTimeout(() => {
                                 loaderEl.classList.add('fade-out');
                                 setTimeout(() => {
                                     loaderEl.style.setProperty('display', 'none', 'important');
                                     loaderEl.classList.remove('transitioning');
                                     if(callback) callback();
-                                }, 500);
-                            }, 300); 
+                                }, 320);
+                            }, 140);
                         } else {
                             if(callback) callback();
                         }
@@ -246,85 +724,129 @@
     <div id="cms-home-container" style="width: 100%; min-height: 100vh;" class="fade-in"></div>
 
     <div id="default-home-container" style="width: 100%; min-height: 100vh;" class="fade-in">
-        
+
         <header class="header">
             <div class="header-container">
-                <a href="/" class="header-logo">
-                    <i data-lucide="layers"></i> <span class="dyn-site-name">SHEETFLARE</span>
+                <a href="/" class="header-logo" aria-label="Beranda">
+                    <span class="logo-mark"><i data-lucide="layers"></i></span>
+                    <span class="site-name-text dyn-site-name">SHEETFLARE</span>
                 </a>
-                <div class="header-nav">
+                <nav class="header-nav" aria-label="Navigasi utama">
                     <a href="/" class="nav-link">Beranda</a>
                     <a href="/login" class="btn-login">
                         Login <i data-lucide="log-in"></i>
                     </a>
-                </div>
+                </nav>
             </div>
         </header>
 
-        <section class="page-header">
-            <h1 class="page-title">Halo, Senang Berjumpa <br><span class="page-title-highlight">Dengan Anda! 👋</span></h1>
-            <p class="page-subtitle dyn-site-tagline">Temukan berbagai solusi dan inovasi digital yang dirancang khusus untuk mendukung produktivitas dan pertumbuhan bisnis Anda.</p>
-        </section>
-
-        <section class="catalog-section">
-            <div id="public-products" class="grid-products">
-                
-                <div class="skel-loader"><p class="skel-loader-text">Memuat Katalog Produk...</p></div>
-                
-                <div class="skel-card">
-                    <div class="skel-img skeleton"></div>
-                    <div class="skel-body">
-                        <div class="skel-title skeleton"></div>
-                        <div class="skel-line skeleton"></div>
-                        <div class="skel-line skeleton short"></div>
-                        <div class="skel-footer">
-                            <div class="skel-price skeleton"></div>
-                            <div class="skel-btn skeleton"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="skel-card">
-                    <div class="skel-img skeleton"></div>
-                    <div class="skel-body">
-                        <div class="skel-title skeleton"></div>
-                        <div class="skel-line skeleton"></div>
-                        <div class="skel-line skeleton short"></div>
-                        <div class="skel-footer">
-                            <div class="skel-price skeleton"></div>
-                            <div class="skel-btn skeleton"></div>
-                        </div>
+        <main>
+            <section class="page-header">
+                <div>
+                    <div class="eyebrow"><i data-lucide="sparkles"></i> Katalog digital premium</div>
+                    <h1 class="page-title">Solusi digital yang siap membantu bisnis Anda <span class="page-title-highlight">tumbuh lebih cepat.</span></h1>
+                    <p class="page-subtitle dyn-site-tagline">Temukan berbagai solusi dan inovasi digital yang dirancang khusus untuk mendukung produktivitas dan pertumbuhan bisnis Anda.</p>
+                    <div class="hero-actions">
+                        <a href="#public-products" class="btn-primary"><i data-lucide="shopping-bag"></i> Lihat Katalog</a>
+                        <a href="/login" class="btn-secondary"><i data-lucide="user-check"></i> Masuk Member</a>
                     </div>
                 </div>
 
-                <div class="skel-card hidden-sm">
-                    <div class="skel-img skeleton"></div>
-                    <div class="skel-body">
-                        <div class="skel-title skeleton"></div>
-                        <div class="skel-line skeleton"></div>
-                        <div class="skel-line skeleton short"></div>
-                        <div class="skel-footer">
-                            <div class="skel-price skeleton"></div>
-                            <div class="skel-btn skeleton"></div>
+                <div class="hero-panel" aria-label="Ringkasan layanan">
+                    <div class="hero-panel-inner">
+                        <div class="metric-grid">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i data-lucide="zap"></i></div>
+                                <div class="metric-value">Cepat</div>
+                                <div class="metric-label">Akses produk digital tanpa proses rumit.</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon"><i data-lucide="shield-check"></i></div>
+                                <div class="metric-value">Aman</div>
+                                <div class="metric-label">Alur checkout dan akses tetap terjaga.</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon"><i data-lucide="layout-dashboard"></i></div>
+                                <div class="metric-value">CMS</div>
+                                <div class="metric-label">Konten bisa dikelola dari data Sheet.</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon"><i data-lucide="headphones"></i></div>
+                                <div class="metric-value">Siap</div>
+                                <div class="metric-label">Didesain untuk kebutuhan bisnis modern.</div>
+                            </div>
                         </div>
+                        <p class="hero-note">Katalog otomatis memuat data terbaru dan tetap menampilkan cache saat koneksi sedang tidak stabil.</p>
                     </div>
+                </div>
+            </section>
+
+            <section class="catalog-section" aria-labelledby="catalog-title">
+                <div class="section-head">
+                    <div>
+                        <h2 class="section-title" id="catalog-title">Katalog Produk</h2>
+                        <p class="section-copy">Pilih produk digital yang paling sesuai dengan kebutuhan Anda.</p>
+                    </div>
+                    <div class="section-pill"><i data-lucide="check-circle-2"></i> Update otomatis</div>
                 </div>
 
-                <div class="skel-card hidden-md">
-                    <div class="skel-img skeleton"></div>
-                    <div class="skel-body">
-                        <div class="skel-title skeleton"></div>
-                        <div class="skel-line skeleton"></div>
-                        <div class="skel-line skeleton short"></div>
-                        <div class="skel-footer">
-                            <div class="skel-price skeleton"></div>
-                            <div class="skel-btn skeleton"></div>
+                <div id="public-products" class="grid-products">
+                    <div class="skel-loader"><p class="skel-loader-text">Memuat Katalog Produk...</p></div>
+
+                    <div class="skel-card">
+                        <div class="skel-img skeleton"></div>
+                        <div class="skel-body">
+                            <div class="skel-title skeleton"></div>
+                            <div class="skel-line skeleton"></div>
+                            <div class="skel-line skeleton short"></div>
+                            <div class="skel-footer">
+                                <div class="skel-price skeleton"></div>
+                                <div class="skel-btn skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skel-card">
+                        <div class="skel-img skeleton"></div>
+                        <div class="skel-body">
+                            <div class="skel-title skeleton"></div>
+                            <div class="skel-line skeleton"></div>
+                            <div class="skel-line skeleton short"></div>
+                            <div class="skel-footer">
+                                <div class="skel-price skeleton"></div>
+                                <div class="skel-btn skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skel-card hidden-sm">
+                        <div class="skel-img skeleton"></div>
+                        <div class="skel-body">
+                            <div class="skel-title skeleton"></div>
+                            <div class="skel-line skeleton"></div>
+                            <div class="skel-line skeleton short"></div>
+                            <div class="skel-footer">
+                                <div class="skel-price skeleton"></div>
+                                <div class="skel-btn skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skel-card hidden-md">
+                        <div class="skel-img skeleton"></div>
+                        <div class="skel-body">
+                            <div class="skel-title skeleton"></div>
+                            <div class="skel-line skeleton"></div>
+                            <div class="skel-line skeleton short"></div>
+                            <div class="skel-footer">
+                                <div class="skel-price skeleton"></div>
+                                <div class="skel-btn skeleton"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-            </div>
-        </section>
+            </section>
+        </main>
 
         <footer class="footer">
             <div class="footer-grid">
@@ -374,65 +896,139 @@
         }
 
         const executeTransition = (callback) => {
-            if (window.completeLoadingAnimation) { 
-                callback(); 
-                window.completeLoadingAnimation(); 
-            } 
-            else { 
-                callback(); 
+            if (window.completeLoadingAnimation) {
+                callback();
+                window.completeLoadingAnimation();
+            }
+            else {
+                callback();
             }
         };
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, (char) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[char]));
+        }
+
+        function normalizePrice(value) {
+            if (typeof value === 'number') return value;
+            let text = String(value || '0').trim();
+            if (text.includes(',') && /,\d{1,2}$/.test(text)) text = text.replace(/,\d{1,2}$/, '');
+            return Number(text.replace(/[^\d-]/g, '') || 0);
+        }
 
         function renderCatalog(products) {
             const container = document.getElementById('public-products');
             if (!products || products.length === 0) {
                 container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon"><i data-lucide="package-x"></i></div>
-                    <h3 class="empty-title">Katalog Kosong</h3>
-                    <p class="empty-desc">Belum ada produk yang diterbitkan. Silakan cek kembali nanti.</p>
+                    <div>
+                        <div class="empty-icon"><i data-lucide="package-x"></i></div>
+                        <h3 class="empty-title">Katalog Kosong</h3>
+                        <p class="empty-desc">Belum ada produk yang diterbitkan. Silakan cek kembali nanti.</p>
+                    </div>
                 </div>`;
                 if(typeof lucide !== 'undefined') lucide.createIcons();
                 return;
             }
-            
-            container.innerHTML = [...products].reverse().map((p) => {
-                const targetLink = (p.lp_url && p.lp_url !== "") ? `/${p.lp_url.replace(/^\/|\/$/g, '').trim()}` : `/checkout?id=${p.id}`;
+
+            container.innerHTML = [...products].reverse().map((p, index) => {
+                const cleanLpUrl = p.lp_url ? String(p.lp_url).replace(/^\/|\/$/g, '').trim() : '';
+                const targetLink = cleanLpUrl !== "" ? `/${cleanLpUrl}` : `/checkout?id=${encodeURIComponent(p.id || '')}`;
                 const imgUrl = p.gambar || 'https://ik.imagekit.io/maihfdgfn5/download.png';
-                
+                const productName = escapeHtml(p.nama || 'Produk Digital');
+                const productDesc = escapeHtml(p.deskripsi || 'Akses materi premium kami di sini.');
+                const productPrice = normalizePrice(p.harga).toLocaleString('id-ID');
+                const loadingMode = index < 2 ? 'eager' : 'lazy';
+                const fetchPriority = index < 2 ? 'high' : 'auto';
+
                 return `
-                <div class="prod-card" style="padding: 0;">
+                <article class="prod-card">
                     <div class="prod-img-wrap">
                         <span class="prod-badge-abs">PRODUK DIGITAL</span>
-                        <img src="${imgUrl}" alt="${p.nama}" class="prod-img" loading="lazy">
+                        <img src="${escapeHtml(imgUrl)}" alt="${productName}" class="prod-img" loading="${loadingMode}" fetchpriority="${fetchPriority}" decoding="async">
                     </div>
                     <div class="prod-body">
-                        <h3 class="prod-title">${p.nama}</h3>
-                        <p class="prod-desc">${p.deskripsi || 'Akses materi premium kami di sini.'}</p>
+                        <h3 class="prod-title">${productName}</h3>
+                        <p class="prod-desc">${productDesc}</p>
                         <div class="prod-footer">
-                            <span class="prod-price">Rp ${Number(p.harga).toLocaleString('id-ID')}</span>
-                            <a href="${targetLink}" class="btn-detail">Lihat Detail</a>
+                            <span class="prod-price">Rp ${productPrice}</span>
+                            <a href="${escapeHtml(targetLink)}" class="btn-detail">Lihat Detail</a>
                         </div>
                     </div>
-                </div>
+                </article>
                 `;
             }).join('');
-            
+
             if(typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        function renderCmsPage(rData) {
+            document.documentElement.className = 'mode-cms';
+            const cmsContainer = document.getElementById('cms-home-container');
+            cmsContainer.innerHTML = rData.html;
+
+            let styleTag = document.getElementById('cms-custom-style');
+            if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'cms-custom-style'; document.head.appendChild(styleTag); }
+            styleTag.innerHTML = rData.css || '';
+            if(rData.title) document.title = rData.title;
+
+            setTimeout(() => {
+                const scripts = Array.from(cmsContainer.getElementsByTagName('script'));
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    if (oldScript.src) newScript.src = oldScript.src; else newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+                if(typeof lucide !== 'undefined') lucide.createIcons();
+            }, 10);
+        }
+
         async function fetchPageDataFast() {
-            if (isRedirecting) return; 
-            
+            if (isRedirecting) return;
+
             if (isCorePage) {
-                document.body.innerHTML = `<div style="text-align:center;padding-top:20vh;font-family:sans-serif;color:#1e293b;">
+                document.body.innerHTML = `<div style="text-align:center;padding:20vh 20px 0;font-family:ui-sans-serif,system-ui,sans-serif;color:#1e293b;">
                     <h2 style="font-size:32px;font-weight:900;">Sistem Terhenti</h2>
-                    <p style="color:#64748b;">Halaman <b>${baseSlug}.html</b> tidak ditemukan di Server/Cloudflare Anda.<br>Pastikan Anda telah mengupload seluruh file sistem dengan lengkap.</p>
+                    <p style="color:#64748b;line-height:1.6;">Halaman <b>${baseSlug}.html</b> tidak ditemukan di Server/Cloudflare Anda.<br>Pastikan Anda telah mengupload seluruh file sistem dengan lengkap.</p>
                 </div>`;
                 return;
             }
 
             const activeSheetId = (typeof SHEET_ID !== 'undefined' && SHEET_ID !== '') ? SHEET_ID : '1QHPTp3m7MSUvw4bAbDarAUG_DbPSpKHB10epncRBoEo';
+            let hydratedFromCache = false;
+
+            if (cleanSlug === '') {
+                try {
+                    const cachedSettings = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+                    if (cachedSettings && cachedSettings.data) applyGlobalSettings(cachedSettings.data);
+                } catch(e) {}
+
+                const cachedHomeStr = localStorage.getItem(CACHE_KEY_HOME);
+                const hasCachedCustomHome = localStorage.getItem(USE_CUSTOM_HOME_FLAG) === 'true' && cachedHomeStr;
+                const cachedCatStrFast = localStorage.getItem(CACHE_KEY_CATALOG);
+
+                if (hasCachedCustomHome) {
+                    try {
+                        executeTransition(() => renderCmsPage(JSON.parse(cachedHomeStr)));
+                        hydratedFromCache = true;
+                    } catch(e) {}
+                } else if (cachedCatStrFast) {
+                    try {
+                        executeTransition(() => {
+                            document.documentElement.className = 'mode-default';
+                            renderCatalog(JSON.parse(cachedCatStrFast));
+                        });
+                        hydratedFromCache = true;
+                    } catch(e) {}
+                }
+            }
 
             try {
                 let targetSlug = cleanSlug;
@@ -442,7 +1038,7 @@
                         const setRes = await fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Settings`);
                         const setText = await setRes.text();
                         const setJson = JSON.parse(setText.substring(47).slice(0, -2));
-                        
+
                         if(setJson.table && setJson.table.rows) {
                             const dataSet = {};
                             setJson.table.rows.forEach(r => {
@@ -464,45 +1060,27 @@
                     const pageRes = await fetch(`https://docs.google.com/spreadsheets/d/${activeSheetId}/gviz/tq?tqx=out:json&sheet=Pages&tq=${query}`);
                     const pageText = await pageRes.text();
                     const pageJson = JSON.parse(pageText.substring(47).slice(0, -2));
-                    
+
                     if (pageJson.table && pageJson.table.rows && pageJson.table.rows.length > 0) {
                         const row = pageJson.table.rows[0].c;
                         const rData = { title: row[2]?row[2].v:'Halaman', html: row[3]?row[3].v:'', css: '' };
                         const freshDataStr = JSON.stringify(rData);
-                        
+
                         if (cleanSlug === '') {
                             localStorage.setItem(USE_CUSTOM_HOME_FLAG, 'true');
                             localStorage.setItem(CACHE_KEY_HOME, freshDataStr);
                         }
 
                         executeTransition(() => {
-                            document.documentElement.className = 'mode-cms';
-                            const cmsContainer = document.getElementById('cms-home-container');
-                            cmsContainer.innerHTML = rData.html;
-                            
-                            let styleTag = document.getElementById('cms-custom-style');
-                            if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'cms-custom-style'; document.head.appendChild(styleTag); }
-                            styleTag.innerHTML = rData.css || '';
-                            if(rData.title) document.title = rData.title;
-                            
-                            setTimeout(() => {
-                                const scripts = Array.from(cmsContainer.getElementsByTagName('script'));
-                                scripts.forEach(oldScript => {
-                                    const newScript = document.createElement('script');
-                                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                                    if (oldScript.src) newScript.src = oldScript.src; else newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                                });
-                                if(typeof lucide !== 'undefined') lucide.createIcons();
-                            }, 10);
+                            renderCmsPage(rData);
                         });
                         return; 
                     } else if (cleanSlug !== '') {
                         executeTransition(() => {
                             document.body.innerHTML = `
-                            <div style="font-family:sans-serif;text-align:center;padding-top:15vh;background:#f8f9fa;height:100vh;display:flex;flex-direction:column;align-items:center;">
-                                <h1 style="font-size:100px;margin:0;color:#1e293b;line-height:1;font-weight:900;">404</h1>
-                                <p style="color:#64748b;margin-bottom:30px;font-size:16px;">Halaman "<b>/${cleanSlug}</b>" tidak ditemukan.</p>
+                            <div style="font-family:ui-sans-serif,system-ui,sans-serif;text-align:center;padding:15vh 20px 0;background:#f8f9fa;height:100vh;display:flex;flex-direction:column;align-items:center;">
+                                <h1 style="font-size:clamp(72px,18vw,110px);margin:0;color:#1e293b;line-height:1;font-weight:900;">404</h1>
+                                <p style="color:#64748b;margin-bottom:30px;font-size:16px;line-height:1.6;">Halaman "<b>/${cleanSlug}</b>" tidak ditemukan.</p>
                                 <a href="/" style="background:#00AAE7;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;box-shadow:0 10px 15px -3px rgba(0,170,231,0.2);">Kembali ke Beranda</a>
                             </div>`;
                         });
@@ -515,7 +1093,7 @@
                     localStorage.removeItem(CACHE_KEY_HOME);
 
                     const cachedCatStr = localStorage.getItem(CACHE_KEY_CATALOG);
-                    if (cachedCatStr) {
+                    if (cachedCatStr && !hydratedFromCache) {
                         executeTransition(() => {
                             document.documentElement.className = 'mode-default';
                             renderCatalog(JSON.parse(cachedCatStr));
@@ -531,11 +1109,11 @@
                             const katalogData = [];
                             json.table.rows.forEach(row => {
                                 const c = row.c;
-                                katalogData.push({ 
-                                    id: c[0]?c[0].v:'', 
-                                    nama: c[1]?c[1].v:'', 
-                                    deskripsi: c[2]?c[2].v:'', 
-                                    harga: c[4]?(c[4].f||c[4].v):0, 
+                                katalogData.push({
+                                    id: c[0]?c[0].v:'',
+                                    nama: c[1]?c[1].v:'',
+                                    deskripsi: c[2]?c[2].v:'',
+                                    harga: c[4]?(c[4].f||c[4].v):0,
                                     lp_url: c[6]?c[6].v:'',
                                     gambar: c[13]?c[13].v:''
                                 });
@@ -564,9 +1142,11 @@
                                 document.documentElement.className = 'mode-default';
                                 document.getElementById('public-products').innerHTML = `
                                 <div class="empty-state">
-                                    <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
-                                    <h3 class="empty-title">Koneksi Terputus</h3>
-                                    <p class="empty-desc">Gagal terhubung ke database Google Sheets. Pastikan ID Sheet Anda sudah benar.</p>
+                                    <div>
+                                        <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
+                                        <h3 class="empty-title">Koneksi Terputus</h3>
+                                        <p class="empty-desc">Gagal terhubung ke database Google Sheets. Pastikan ID Sheet Anda sudah benar.</p>
+                                    </div>
                                 </div>`;
                                 if(typeof lucide !== 'undefined') lucide.createIcons();
                             });
@@ -584,16 +1164,18 @@
                         } else {
                             document.getElementById('public-products').innerHTML = `
                             <div class="empty-state">
-                                <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
-                                <h3 class="empty-title">Error Koneksi</h3>
-                                <p class="empty-desc">Gagal memuat katalog produk.</p>
+                                <div>
+                                    <div class="empty-icon"><i data-lucide="wifi-off"></i></div>
+                                    <h3 class="empty-title">Error Koneksi</h3>
+                                    <p class="empty-desc">Gagal memuat katalog produk.</p>
+                                </div>
                             </div>`;
                             if(typeof lucide !== 'undefined') lucide.createIcons();
                         }
                     });
                 } else {
                     executeTransition(() => {
-                        document.body.innerHTML = '<div style="font-family:sans-serif;text-align:center;padding-top:100px;background:#f8f9fa;height:100vh;"><h1 style="font-size:80px;margin:0;color:#1e293b;">Error</h1><p style="color:#64748b;margin-bottom:30px;">Gagal terhubung ke server.</p><a href="/" style="background:#00AAE7;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Kembali ke Beranda</a></div>';
+                        document.body.innerHTML = '<div style="font-family:ui-sans-serif,system-ui,sans-serif;text-align:center;padding:100px 20px 0;background:#f8f9fa;height:100vh;"><h1 style="font-size:80px;margin:0;color:#1e293b;">Error</h1><p style="color:#64748b;margin-bottom:30px;">Gagal terhubung ke server.</p><a href="/" style="background:#00AAE7;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Kembali ke Beranda</a></div>';
                     });
                 }
             }
@@ -603,7 +1185,7 @@
             if(typeof lucide !== 'undefined') lucide.createIcons();
             const yearEl = document.getElementById('current-year');
             if(yearEl) yearEl.textContent = new Date().getFullYear();
-            
+
             fetchPageDataFast();
         });
     </script>
